@@ -15,6 +15,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <log4j2-version>2.13.3</log4j2-version>
+    <picocli-version>4.6.1</picocli-version>
   </properties>
 
   <dependencyManagement>
@@ -55,6 +56,12 @@
       <artifactId>log4j-slf4j-impl</artifactId>
       <scope>runtime</scope>
       <version>${log4j2-version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>info.picocli</groupId>
+      <artifactId>picocli</artifactId>
+      <version>${picocli-version}</version>
     </dependency>
 
     <!-- testing -->
