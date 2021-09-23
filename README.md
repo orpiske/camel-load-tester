@@ -33,6 +33,6 @@ mvn -Pcamel-3.11.2 clean package && ./start-consumer.sh kafka-host:9092 3.11.2 1
 4. Run the test on the snapshot code (repeat many times as required for obtaining stable and reproducible results, but at least 3 and equal to the amount of times ran on the baseline):
 
 ```shell
-mvn -Pcamel-3.12.0-SNAPSHOT clean package && ./start-consumer.sh kafka-host:9092 3.11.2 1000000000 1
+mvn -Pcamel-3.12.0-SNAPSHOT clean package && ./start-consumer.sh kafka-host:9092 3.12.0-SNAPSHOT 1000000000 1
 ```
 
