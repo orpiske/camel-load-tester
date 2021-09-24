@@ -1,4 +1,4 @@
-Camel Java Router Project
+Camel Kafka Mock Tester
 =========================
 
 Introduction
