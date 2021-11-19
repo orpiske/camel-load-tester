@@ -112,12 +112,30 @@
       </properties>
     </profile>
     <profile>
-      <id>camel-3.12.0-SNAPSHOT</id>
+      <id>camel-3.12.0</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <camel.version>3.12.0</camel.version>
+      </properties>
+    </profile>
+    <profile>
+      <id>camel-3.13.0</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <camel.version>3.13.0</camel.version>
+      </properties>
+    </profile>
+    <profile>
+      <id>camel-3.14.0</id>
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
       <properties>
-        <camel.version>3.12.0-SNAPSHOT</camel.version>
+        <camel.version>3.14.0-SNAPSHOT</camel.version>
       </properties>
     </profile>
   </profiles>
