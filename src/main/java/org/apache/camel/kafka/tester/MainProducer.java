@@ -6,10 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.LongAdder;
 
-import org.apache.camel.CamelContext;
 import org.apache.camel.component.dataset.ListDataSet;
-import org.apache.camel.component.dataset.SimpleDataSet;
-import org.apache.camel.component.kafka.KafkaComponent;
 import org.apache.camel.main.Main;
 
 /**
@@ -45,7 +42,7 @@ public class MainProducer {
 
             main.run();
         }
-    }
 
+    }
 }
 
