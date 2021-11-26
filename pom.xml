@@ -91,17 +91,43 @@
         </configuration>
       </plugin>
 
-      <!-- Allows the example to be run via 'mvn camel:run' -->
       <plugin>
-        <groupId>org.apache.camel</groupId>
-        <artifactId>camel-maven-plugin</artifactId>
-        <version>3.11.1</version>
-        <configuration>
-          <logClasspath>true</logClasspath>
-          <mainClass>org.apache.camel.kafka.tester.MainApp</mainClass>
-        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.3</version>
+        <executions>
+          <execution>
+            <id>share-consumer</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>org.apache.camel.kafka.tester.MainConsumer</mainClass>
+                </transformer>
+              </transformers>
+              <finalName>${project.artifactId}-${project.version}-consumer</finalName>
+            </configuration>
+          </execution>
+          <execution>
+            <id>share-producer</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>org.apache.camel.kafka.tester.MainProducer</mainClass>
+                </transformer>
+              </transformers>
+              <finalName>${project.artifactId}-${project.version}-producer</finalName>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
-
     </plugins>
   </build>
 
