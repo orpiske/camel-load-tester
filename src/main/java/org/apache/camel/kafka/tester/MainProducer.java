@@ -36,8 +36,16 @@ public class MainProducer {
 
         main.bind("testSet", listDataSet);
 
+        int batchSize = Integer.parseInt(System.getProperty("test.batch.size", "0"));
+
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(name))) {
-            main.configure().addRoutesBuilder(new MyProducer(longAdder));
+
+            if (batchSize > 0) {
+                main.configure().addRoutesBuilder(new MyProducer(longAdder, true, batchSize));
+            } else {
+                main.configure().addRoutesBuilder(new MyProducer(longAdder, false, 0));
+            }
+
             main.addMainListener(new TestMainListener(bw, longAdder, testSize, main::stop));
 
             main.run();
