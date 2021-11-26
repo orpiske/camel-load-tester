@@ -133,12 +133,12 @@
 
   <profiles>
     <profile>
-      <id>camel-3.11.2</id>
+      <id>camel-3.11.4</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
-        <camel.version>3.11.2</camel.version>
+        <camel.version>3.11.4</camel.version>
       </properties>
     </profile>
     <profile>
