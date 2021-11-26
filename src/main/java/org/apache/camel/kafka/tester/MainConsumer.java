@@ -2,16 +2,9 @@ package org.apache.camel.kafka.tester;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.LongAdder;
 
-import org.apache.camel.CamelContext;
-import org.apache.camel.main.BaseMainSupport;
 import org.apache.camel.main.Main;
-import org.apache.camel.main.MainListener;
 
 /**
  * A Camel Application
