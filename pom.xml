@@ -108,7 +108,7 @@
                   <mainClass>org.apache.camel.kafka.tester.MainConsumer</mainClass>
                 </transformer>
               </transformers>
-              <finalName>${project.artifactId}-${project.version}-consumer</finalName>
+              <finalName>${project.artifactId}-${camel.version}-consumer</finalName>
             </configuration>
           </execution>
           <execution>
@@ -123,7 +123,7 @@
                   <mainClass>org.apache.camel.kafka.tester.MainProducer</mainClass>
                 </transformer>
               </transformers>
-              <finalName>${project.artifactId}-${project.version}-producer</finalName>
+              <finalName>${project.artifactId}-${camel.version}-producer</finalName>
             </configuration>
           </execution>
         </executions>
