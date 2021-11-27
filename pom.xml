@@ -61,13 +61,6 @@
       <scope>runtime</scope>
       <version>${log4j2-version}</version>
     </dependency>
-
-    <!-- testing -->
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-test</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
@@ -123,7 +116,12 @@
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <mainClass>org.apache.camel.kafka.tester.MainProducer</mainClass>
                 </transformer>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                  <resource>META-INF/services/org/apache/camel/TypeConverterLoader</resource>
+                </transformer>
               </transformers>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <shadedClassifierName>executable-jar</shadedClassifierName>
               <finalName>${project.artifactId}-${camel.version}-producer</finalName>
             </configuration>
           </execution>
