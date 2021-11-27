@@ -53,6 +53,7 @@
       <artifactId>camel-dataset</artifactId>
     </dependency>
 
+
     <!-- logging -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -139,6 +140,15 @@
       </activation>
       <properties>
         <camel.version>3.11.4</camel.version>
+      </properties>
+    </profile>
+    <profile>
+      <id>camel-3.11.5</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <camel.version>3.11.5-SNAPSHOT</camel.version>
       </properties>
     </profile>
     <profile>
