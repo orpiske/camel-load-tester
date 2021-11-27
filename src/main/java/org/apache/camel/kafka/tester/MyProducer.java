@@ -26,18 +26,16 @@ public class MyProducer extends RouteBuilder {
     public void configure() {
 
         if (!aggregate) {
-            from("dataset:testSet")
-                    .to("kafka:test?workerPoolCoreSize=15&workerPoolMaxSize=25")
+            from("dataset:testSet?produceDelay=0")
+                    .to("kafka:test")
                     .process(exchange -> longAdder.increment());
         } else {
-            from("dataset:testSet")
+            from("dataset:testSet?produceDelay=0&initialDelay=2000")
                     .aggregate(constant(true), new GroupedExchangeAggregationStrategy())
                     .completionSize(batchSize)
-                    .to("kafka:test?workerPoolCoreSize=15&workerPoolMaxSize=25")
+                    .to("kafka:test")
                     .process(exchange -> longAdder.add(batchSize));
         }
-
-
     }
 
 }
