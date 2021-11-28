@@ -2,11 +2,9 @@ package org.apache.camel.kafka.tester;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.LongAdder;
 
-import org.apache.camel.component.dataset.ListDataSet;
+import org.apache.camel.component.dataset.SimpleDataSet;
 import org.apache.camel.main.Main;
 
 /**
@@ -25,16 +23,12 @@ public class MainProducer {
         LongAdder longAdder = new LongAdder();
         int testSize = Integer.parseInt(System.getProperty("camel.main.durationMaxMessages", "0"));
 
-        List<Object> dataList = new ArrayList<>(testSize);
-        String testData = "test";
+        SimpleDataSet simpleDataSet = new SimpleDataSet();
 
-        for (int i = 0; i < testSize; i++) {
-            dataList.add(testData + "-" + i);
-        }
+        simpleDataSet.setDefaultBody("test");
+        simpleDataSet.setSize(testSize);
 
-        ListDataSet listDataSet = new ListDataSet(dataList);
-
-        main.bind("testSet", listDataSet);
+        main.bind("testSet", simpleDataSet);
 
         int batchSize = Integer.parseInt(System.getProperty("test.batch.size", "0"));
 
