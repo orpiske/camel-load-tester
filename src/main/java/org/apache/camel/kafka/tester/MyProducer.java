@@ -26,11 +26,11 @@ public class MyProducer extends RouteBuilder {
     public void configure() {
 
         if (!aggregate) {
-            from("dataset:testSet?produceDelay=0")
+            from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}")
                     .to("kafka:test")
                     .process(exchange -> longAdder.increment());
         } else {
-            from("dataset:testSet?produceDelay=0&initialDelay=2000")
+            from("dataset:testSet?produceDelay=0&initialDelay={{initial.delay:2000}}&minRate={{?min.rate}}&preloadSize={{?preload.size}}")
                     .aggregate(constant(true), new GroupedExchangeAggregationStrategy())
                     .completionSize(batchSize)
                     .to("kafka:test")
