@@ -5,8 +5,12 @@ import java.time.Instant;
 import java.util.concurrent.atomic.LongAdder;
 
 import org.apache.camel.kafka.tester.io.writer.RateWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Reporter {
+    private static final Logger LOG = LoggerFactory.getLogger(Reporter.class);
+
     @FunctionalInterface
     interface Action {
         void execute();
@@ -34,7 +38,7 @@ public class Reporter {
         try {
             writer.write(0, difference, Instant.now());
         } catch (Exception e) {
-            System.err.println("Unable to update records: " + e.getMessage());
+            LOG.error("Unable to update records: {}", e.getMessage());
         }
     }
 
@@ -48,8 +52,7 @@ public class Reporter {
 
     private boolean skipExceededCount() {
         if (lastCount >= testSize) {
-            System.out.println("Processed more messages than setup: " + lastCount + " > "
-                    + testSize);
+            LOG.warn("Processed more messages than setup: {} > {}", lastCount, testSize);
 
             return true;
         }
@@ -60,7 +63,8 @@ public class Reporter {
     private void progress(long testSize) {
         long delta = (testSize - lastCount);
         double progress = 100.0 * ((double) delta / (double) testSize);
-        System.out.printf("Remaining: %.5f%% (%d of %d) - %d messages to finish%n", progress, lastCount, testSize, delta);
+        String message = String.format("Remaining: %.5f%% (%d of %d) - %d messages to finish", progress, lastCount, testSize, delta);
+        LOG.info(message);
     }
 
     public void update() {
@@ -78,9 +82,13 @@ public class Reporter {
 
             try {
                 writer.tryWrite(0, difference, Instant.now());
-                System.out.printf("Processed %d messages%n", lastCount);
+                LOG.info("Processed {} messages", lastCount);
             } catch (IOException e) {
-                System.err.println("Unable to perform the last update: " + e.getMessage());
+                if (LOG.isDebugEnabled()) {
+                    LOG.error("Unable to perform the last update: {}", e.getMessage(), e);
+                } else {
+                    LOG.error("Unable to perform the last update: {}", e.getMessage());
+                }
             }
         }
     }
@@ -95,7 +103,7 @@ public class Reporter {
         progress(testSize);
 
         if (staleCounter > 6) {
-            System.out.println("The test is stalled for too long");
+            LOG.warn("The test is stalled for too long");
             staleAction.execute();
         }
     }
