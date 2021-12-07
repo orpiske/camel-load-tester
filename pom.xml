@@ -117,6 +117,9 @@
                     <Multi-Release>true</Multi-Release>
                   </manifestEntries>
                 </transformer>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                  <resource>META-INF/services/org/apache/camel/TypeConverterLoader</resource>
+                </transformer>
               </transformers>
               <finalName>${project.artifactId}-${camel.version}-consumer</finalName>
             </configuration>
