@@ -9,12 +9,12 @@ import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
 /**
  * A Camel Java DSL Router
  */
-public class MyProducer extends RouteBuilder {
+public class TestProducer extends RouteBuilder {
     private final LongAdder longAdder;
     private final boolean aggregate;
     private final int batchSize;
 
-    public MyProducer(LongAdder longAdder, boolean aggregate, int batchSize) {
+    public TestProducer(LongAdder longAdder, boolean aggregate, int batchSize) {
         this.longAdder = longAdder;
         this.aggregate = aggregate;
         this.batchSize = batchSize;

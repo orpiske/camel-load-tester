@@ -39,9 +39,9 @@ public class MainProducer {
         File reportFile = new File(name);
         try (RateWriter rateWriter = new BinaryRateWriter(reportFile, FileHeader.WRITER_DEFAULT_PRODUCER)) {
             if (batchSize > 0) {
-                main.configure().addRoutesBuilder(new MyProducer(longAdder, true, batchSize));
+                main.configure().addRoutesBuilder(new TestProducer(longAdder, true, batchSize));
             } else {
-                main.configure().addRoutesBuilder(new MyProducer(longAdder, false, 0));
+                main.configure().addRoutesBuilder(new TestProducer(longAdder, false, 0));
             }
 
             main.addMainListener(new TestMainListener(rateWriter, longAdder, testSize, main::stop));

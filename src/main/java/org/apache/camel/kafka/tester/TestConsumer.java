@@ -7,10 +7,10 @@ import org.apache.camel.builder.RouteBuilder;
 /**
  * A Camel Java DSL Router
  */
-public class MyConsumer extends RouteBuilder {
+public class TestConsumer extends RouteBuilder {
     private final LongAdder longAdder;
 
-    public MyConsumer(LongAdder longAdder) {
+    public TestConsumer(LongAdder longAdder) {
         this.longAdder = longAdder;
     }
 
