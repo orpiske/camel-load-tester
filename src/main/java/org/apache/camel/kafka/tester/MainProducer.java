@@ -1,13 +1,14 @@
 package org.apache.camel.kafka.tester;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.LongAdder;
 
+import org.HdrHistogram.SingleWriterRecorder;
 import org.apache.camel.component.dataset.SimpleDataSet;
 import org.apache.camel.kafka.tester.io.common.FileHeader;
 import org.apache.camel.kafka.tester.io.writer.BinaryRateWriter;
+import org.apache.camel.kafka.tester.io.writer.LatencyWriter;
 import org.apache.camel.kafka.tester.io.writer.RateWriter;
 import org.apache.camel.main.Main;
 
@@ -22,26 +23,23 @@ public class MainProducer {
     public static void main(String... args) throws Exception {
         Main main = new Main();
 
-        String name = System.getProperty("test.file", "producer-test.data");
+        final String testRateFileName = System.getProperty("test.rate.file", "producer-rate.data");
 
-        LongAdder longAdder = new LongAdder();
+        final LongAdder longAdder = new LongAdder();
         int testSize = Integer.parseInt(System.getProperty("camel.main.durationMaxMessages", "0"));
 
-        SimpleDataSet simpleDataSet = new SimpleDataSet();
-
-        simpleDataSet.setDefaultBody("test");
-        simpleDataSet.setSize(testSize);
-
-        main.bind("testSet", simpleDataSet);
+        bindDataSet(main, testSize);
 
         int batchSize = Integer.parseInt(System.getProperty("test.batch.size", "0"));
 
-        File reportFile = new File(name);
-        try (RateWriter rateWriter = new BinaryRateWriter(reportFile, FileHeader.WRITER_DEFAULT_PRODUCER)) {
+        SingleWriterRecorder latencyRecorder = new SingleWriterRecorder(TimeUnit.HOURS.toMillis(1), 3);
+
+        File testRateFile = new File(testRateFileName);
+        try (RateWriter rateWriter = new BinaryRateWriter(testRateFile, FileHeader.WRITER_DEFAULT_PRODUCER)) {
             if (batchSize > 0) {
-                main.configure().addRoutesBuilder(new TestProducer(longAdder, true, batchSize));
+                main.configure().addRoutesBuilder(new TestProducer(latencyRecorder, longAdder, true, batchSize));
             } else {
-                main.configure().addRoutesBuilder(new TestProducer(longAdder, false, 0));
+                main.configure().addRoutesBuilder(new TestProducer(latencyRecorder, longAdder, false, 0));
             }
 
             main.addMainListener(new TestMainListener(rateWriter, longAdder, testSize, main::stop));
@@ -49,6 +47,19 @@ public class MainProducer {
             main.run();
         }
 
+        final String testLatenciesFileName = System.getProperty("test.latencies.file", "producer-latencies.hdr");
+        try (LatencyWriter latencyWriter = new LatencyWriter(new File(testLatenciesFileName))) {
+            latencyWriter.outputIntervalHistogram(latencyRecorder.getIntervalHistogram());
+        }
+    }
+
+    private static void bindDataSet(Main main, int testSize) {
+        SimpleDataSet simpleDataSet = new SimpleDataSet();
+
+        simpleDataSet.setDefaultBody("test");
+        simpleDataSet.setSize(testSize);
+
+        main.bind("testSet", simpleDataSet);
     }
 }
 
