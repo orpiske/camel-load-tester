@@ -41,7 +41,7 @@
                   <resource>META-INF/services/org/apache/camel/TypeConverterLoader</resource>
                 </transformer>
               </transformers>
-              <finalName>${project.artifactId}-${camel.version}-consumer</finalName>
+              <finalName>${project.artifactId}-${camel.version}</finalName>
             </configuration>
           </execution>
         </executions>

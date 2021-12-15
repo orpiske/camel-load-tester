@@ -38,7 +38,7 @@
                             </transformers>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <shadedClassifierName>executable-jar</shadedClassifierName>
-                            <finalName>${project.artifactId}-${camel.version}-producer</finalName>
+                            <finalName>${project.artifactId}-${camel.version}</finalName>
                         </configuration>
                     </execution>
                 </executions>
