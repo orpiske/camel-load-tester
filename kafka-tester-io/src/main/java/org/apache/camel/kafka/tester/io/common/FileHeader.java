@@ -7,7 +7,7 @@ public class FileHeader {
 
     private final String formatName;
     private final int fileVersion;
-    private final int testSuiteVersion;
+    private final int camelVersion;
     private final Role role;
 
     public static final int VERSION_NUMERIC;
@@ -32,7 +32,7 @@ public class FileHeader {
         BYTES = FORMAT_NAME_SIZE + Integer.BYTES + Integer.BYTES + Integer.BYTES;
     }
 
-    public FileHeader(final String formatName, int fileVersion, int testSuiteVersion, Role role) {
+    public FileHeader(final String formatName, int fileVersion, int camelVersion, Role role) {
         if (formatName == null || formatName.isEmpty() || formatName.length() > FORMAT_NAME_SIZE) {
             throw new IllegalArgumentException("The format name '" +
                     (formatName == null ? "null" : formatName) + "' is not valid");
@@ -46,7 +46,7 @@ public class FileHeader {
         }
 
         this.fileVersion = fileVersion;
-        this.testSuiteVersion = testSuiteVersion;
+        this.camelVersion = camelVersion;
         this.role = role;
     }
 
@@ -58,8 +58,8 @@ public class FileHeader {
         return fileVersion;
     }
 
-    public int getTestSuiteVersion() {
-        return testSuiteVersion;
+    public int getCamelVersion() {
+        return camelVersion;
     }
 
     public Role getRole() {
