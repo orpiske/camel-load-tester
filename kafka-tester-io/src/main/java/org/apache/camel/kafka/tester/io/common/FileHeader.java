@@ -19,7 +19,7 @@ public class FileHeader {
     public static final int BYTES;
 
     static {
-        String camelVersion = System.getProperty("camel.version");
+        String camelVersion = System.getProperty("camel.version", "0");
         VERSION_NUMERIC = Integer.parseInt(camelVersion.replace(".", "").replaceAll("[a-zA-Z-]",""));
 
         WRITER_DEFAULT_PRODUCER = new FileHeader(FORMAT_NAME, CURRENT_FILE_VERSION,
