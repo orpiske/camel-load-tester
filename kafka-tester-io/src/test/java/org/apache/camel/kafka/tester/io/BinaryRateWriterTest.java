@@ -73,7 +73,7 @@ public class BinaryRateWriterTest {
             FileHeader fileHeader = reader.getHeader();
             assertEquals(FileHeader.FORMAT_NAME, fileHeader.getFormatName().trim());
             assertEquals(FileHeader.CURRENT_FILE_VERSION, fileHeader.getFileVersion());
-            assertEquals(FileHeader.VERSION_NUMERIC, fileHeader.getTestSuiteVersion());
+            assertEquals(FileHeader.VERSION_NUMERIC, fileHeader.getCamelVersion());
             assertEquals(Role.PRODUCER, fileHeader.getRole());
         } catch (IOException e) {
             Assertions.fail(e.getMessage());
@@ -93,7 +93,7 @@ public class BinaryRateWriterTest {
             FileHeader fileHeader = reader.getHeader();
             assertEquals(FileHeader.FORMAT_NAME, fileHeader.getFormatName().trim());
             assertEquals(FileHeader.CURRENT_FILE_VERSION, fileHeader.getFileVersion());
-            assertEquals(FileHeader.VERSION_NUMERIC, fileHeader.getTestSuiteVersion());
+            assertEquals(FileHeader.VERSION_NUMERIC, fileHeader.getCamelVersion());
             assertEquals(Role.PRODUCER, fileHeader.getRole());
 
             long count = 0;
