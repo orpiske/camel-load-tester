@@ -5,11 +5,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.apache.camel</groupId>
-  <artifactId>kafka-tester</artifactId>
-  <packaging>jar</packaging>
+  <artifactId>kafka-tester-parent</artifactId>
+  <packaging>pom</packaging>
   <version>1.0.0-SNAPSHOT</version>
 
-  <name>A Camel Route</name>
+
+  <name>Camel Kafka Tester</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -18,6 +19,9 @@
     <commons-lang3-version>3.12.0</commons-lang3-version>
     <hdr-histogram-version>2.1.12</hdr-histogram-version>
     <junit-jupiter-version>5.8.1</junit-jupiter-version>
+    <maven-compiler-plugin-version>3.8.1</maven-compiler-plugin-version>
+    <maven-resources-plugin-version>3.2.0</maven-resources-plugin-version>
+    <maven-shade-plugin-version>3.2.4</maven-shade-plugin-version>
   </properties>
 
   <dependencyManagement>
@@ -30,155 +34,64 @@
         <scope>import</scope>
         <type>pom</type>
       </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons-lang3-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hdrhistogram</groupId>
+        <artifactId>HdrHistogram</artifactId>
+        <version>${hdr-histogram-version}</version>
+      </dependency>
+
+      <!-- logging -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <scope>runtime</scope>
+        <version>${log4j2-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${junit-jupiter-version}</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <dependencies>
-
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-main</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-kafka</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-timer</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-dataset</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>${commons-lang3-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.hdrhistogram</groupId>
-      <artifactId>HdrHistogram</artifactId>
-      <version>${hdr-histogram-version}</version>
-    </dependency>
-
-
-    <!-- logging -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j-impl</artifactId>
-      <scope>runtime</scope>
-      <version>${log4j2-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>${junit-jupiter-version}</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 
   <build>
     <defaultGoal>install</defaultGoal>
 
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>3.2.0</version>
-        <configuration>
-          <encoding>UTF-8</encoding>
-        </configuration>
-      </plugin>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin-version}</version>
+          <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${maven-resources-plugin-version}</version>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>${maven-shade-plugin-version}</version>
+        </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.4</version>
-        <executions>
-          <execution>
-            <id>share-consumer</id>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>org.apache.camel.kafka.tester.MainConsumer</mainClass>
-                  <manifestEntries>
-                    <Multi-Release>true</Multi-Release>
-                  </manifestEntries>
-                </transformer>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                  <resource>META-INF/services/org/apache/camel/TypeConverterLoader</resource>
-                </transformer>
-              </transformers>
-              <finalName>${project.artifactId}-${camel.version}-consumer</finalName>
-            </configuration>
-          </execution>
-          <execution>
-            <id>share-producer</id>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>org.apache.camel.kafka.tester.MainProducer</mainClass>
-                  <manifestEntries>
-                    <Multi-Release>true</Multi-Release>
-                  </manifestEntries>
-                </transformer>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                  <resource>META-INF/services/org/apache/camel/TypeConverterLoader</resource>
-                </transformer>
-              </transformers>
-              <shadedArtifactAttached>true</shadedArtifactAttached>
-              <shadedClassifierName>executable-jar</shadedClassifierName>
-              <finalName>${project.artifactId}-${camel.version}-producer</finalName>
-            </configuration>
-          </execution>
-          <execution>
-            <id>share-analyzer</id>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>org.apache.camel.kafka.tester.MainAnalyzer</mainClass>
-                  <manifestEntries>
-                    <Multi-Release>true</Multi-Release>
-                  </manifestEntries>
-                </transformer>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                  <resource>META-INF/services/org/apache/camel/TypeConverterLoader</resource>
-                </transformer>
-              </transformers>
-              <shadedArtifactAttached>true</shadedArtifactAttached>
-              <shadedClassifierName>executable-jar</shadedClassifierName>
-              <finalName>${project.artifactId}-${camel.version}-analyzer</finalName>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
+      </plugins>
+
+    </pluginManagement>
   </build>
 
   <profiles>
@@ -228,5 +141,12 @@
       </properties>
     </profile>
   </profiles>
+
+  <modules>
+    <module>kafka-tester-io</module>
+    <module>kafka-tester-common</module>
+    <module>kafka-testers</module>
+
+  </modules>
 
 </project>
