@@ -75,7 +75,7 @@ public class MainAnalyzer {
 
         AbstractHdrPlotter.SeriesData seriesData = new AbstractHdrPlotter.SeriesData();
 
-        seriesData.seriesName = "baseline";
+        seriesData.seriesName = "Baseline";
         seriesData.yData = baseline;
 
         hdrPlotter.plot(testHistogram, seriesData);
@@ -130,7 +130,7 @@ public class MainAnalyzer {
 
         AbstractRatePlotter.SeriesData seriesData = new AbstractRatePlotter.SeriesData();
 
-        seriesData.seriesName = "baseline";
+        seriesData.seriesName = "Baseline";
         seriesData.yData = yDataBaseline;
         plotter.plot(xData, yDataTest, seriesData);
     }
