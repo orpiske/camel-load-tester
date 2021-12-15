@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -105,7 +106,7 @@ public class MainAnalyzer {
     }
 
     private static void plot(RateData testData) throws IOException {
-        RatePlotter plotter = new RatePlotter("rate");
+        RatePlotter plotter = new RatePlotter(testData.header.getRole().toString().toLowerCase(Locale.ROOT));
 
         ChartProperties chartProperties = new ChartProperties();
 
@@ -118,7 +119,7 @@ public class MainAnalyzer {
     }
 
     private static void plot(RateData testData, RateData baselineData) throws IOException {
-        RatePlotter plotter = new RatePlotter("rate");
+        RatePlotter plotter = new RatePlotter(testData.header.getRole().toString().toLowerCase(Locale.ROOT));
         ChartProperties chartProperties = new ChartProperties();
 
         chartProperties.setSeriesName(ChartProperties.capitilizeOnly(testData.header.getRole().toString()) + " " + testData.header.getCamelVersion());
