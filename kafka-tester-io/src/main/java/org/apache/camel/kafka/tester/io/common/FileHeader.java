@@ -10,7 +10,7 @@ public class FileHeader {
     private final int testSuiteVersion;
     private final Role role;
 
-    public static final int VERSION_NUMERIC = 100;
+    public static final int VERSION_NUMERIC;
     public static final String FORMAT_NAME = "maestro";
     public static final int CURRENT_FILE_VERSION = 1;
 
@@ -19,6 +19,9 @@ public class FileHeader {
     public static final int BYTES;
 
     static {
+        String camelVersion = System.getProperty("camel.version");
+        VERSION_NUMERIC = Integer.parseInt(camelVersion.replace(".", "").replaceAll("[a-zA-Z-]",""));
+
         WRITER_DEFAULT_PRODUCER = new FileHeader(FORMAT_NAME, CURRENT_FILE_VERSION,
                 VERSION_NUMERIC, Role.PRODUCER);
 
