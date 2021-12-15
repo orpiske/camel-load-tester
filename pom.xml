@@ -15,10 +15,11 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <log4j2-version>2.13.3</log4j2-version>
+    <log4j2-version>2.16.0</log4j2-version>
     <commons-lang3-version>3.12.0</commons-lang3-version>
     <hdr-histogram-version>2.1.12</hdr-histogram-version>
     <junit-jupiter-version>5.8.1</junit-jupiter-version>
+    <xchart-version>3.5.0</xchart-version>
     <maven-compiler-plugin-version>3.8.1</maven-compiler-plugin-version>
     <maven-resources-plugin-version>3.2.0</maven-resources-plugin-version>
     <maven-shade-plugin-version>3.2.4</maven-shade-plugin-version>
@@ -45,6 +46,13 @@
         <version>${hdr-histogram-version}</version>
       </dependency>
 
+      <!-- Plotting -->
+      <dependency>
+        <groupId>org.knowm.xchart</groupId>
+        <artifactId>xchart</artifactId>
+        <version>${xchart-version}</version>
+      </dependency>
+
       <!-- logging -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -52,6 +60,19 @@
         <scope>runtime</scope>
         <version>${log4j2-version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>${log4j2-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>${log4j2-version}</version>
+      </dependency>
+
+      <!-- testing -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter</artifactId>
