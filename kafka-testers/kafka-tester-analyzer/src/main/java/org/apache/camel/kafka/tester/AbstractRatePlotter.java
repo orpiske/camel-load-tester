@@ -61,7 +61,7 @@ public abstract class AbstractRatePlotter {
 
 
     /**
-     * Sets the the grid lines should be visible
+     * Sets the grid lines should be visible
      * @param plotGridLinesVisible true to make the grid lines visible or false otherwise
      */
     public void setPlotGridLinesVisible(boolean plotGridLinesVisible) {

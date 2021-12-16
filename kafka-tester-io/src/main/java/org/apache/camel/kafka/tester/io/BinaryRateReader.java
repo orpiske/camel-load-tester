@@ -87,7 +87,7 @@ public class BinaryRateReader implements AutoCloseable {
 
     /**
      * Read an entry from the file
-     * @return An rate entry from the file or null on end-of-file
+     * @return A rate entry from the file or null on end-of-file
      * @throws IOException if unable to read the entry
      */
     public RateEntry readRecord() throws IOException {
