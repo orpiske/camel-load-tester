@@ -20,7 +20,7 @@ public class MainConsumer {
     public static void main(String... args) throws Exception {
         Main main = new Main();
 
-        String name = System.getProperty("test.file", "consumer-test.data");
+        String name = System.getProperty("test.rate.file", "consumer-rate.data");
 
         LongAdder longAdder = new LongAdder();
         long testSize = Long.parseLong(System.getProperty("camel.main.durationMaxMessages", "0"));
