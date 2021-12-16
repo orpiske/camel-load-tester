@@ -297,6 +297,10 @@ public class MainAnalyzer {
     }
 
     public static Optional<Histogram> getAccumulated(final String histogramFileName) throws FileNotFoundException {
+        if (histogramFileName == null || histogramFileName.isEmpty()) {
+            return Optional.ofNullable(null);
+        }
+
         File histogramFile = new File(histogramFileName);
 
         return Optional.of(getAccumulated(histogramFile));
