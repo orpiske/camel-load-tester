@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.HdrHistogram.Histogram;
 import org.HdrHistogram.HistogramIterationValue;
@@ -121,9 +122,9 @@ public class HdrPlotter extends AbstractHdrPlotter {
         while (iterator.hasNext()) {
             HistogramIterationValue value = iterator.next();
 
-            LOG.debug("Percentile: {}", value.getPercentile());
-            LOG.debug("Value: {}", value.getTotalCountToThisValue());
-            LOG.trace("All data: {}", value);
+            LOG.info("Percentile: {}", value.getPercentile());
+            LOG.info("Value: {}", value.getTotalCountToThisValue());
+            LOG.info("All data: {}", value);
 
             histogramXY.xData.add(value.getPercentile());
             histogramXY.yData.add(value.getValueIteratedTo());

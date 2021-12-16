@@ -33,7 +33,7 @@ public class MainProducer {
 
         int batchSize = Integer.parseInt(System.getProperty("test.batch.size", "0"));
 
-        SingleWriterRecorder latencyRecorder = new SingleWriterRecorder(TimeUnit.HOURS.toMillis(1), 3);
+        SingleWriterRecorder latencyRecorder = new SingleWriterRecorder(TimeUnit.HOURS.toMicros(1), 3);
 
         File testRateFile = new File(testRateFileName);
         try (RateWriter rateWriter = new BinaryRateWriter(testRateFile, FileHeader.WRITER_DEFAULT_PRODUCER)) {

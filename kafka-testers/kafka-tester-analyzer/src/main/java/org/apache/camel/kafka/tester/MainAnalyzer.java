@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 public class MainAnalyzer {
     private static final Logger LOG = LoggerFactory.getLogger(MainAnalyzer.class);
+    private static final String TIME_UNIT_NAME = System.getProperty("latencies.timeunit", "microseconds");
 
     private static class RateData {
         FileHeader header;
@@ -66,13 +67,13 @@ public class MainAnalyzer {
     }
 
     private static void plot(Histogram histogram) throws IOException {
-        HdrPlotter hdrPlotter = new HdrPlotter("latency");
+        HdrPlotter hdrPlotter = new HdrPlotter("latency", TIME_UNIT_NAME);
 
         hdrPlotter.plot(histogram);
     }
 
     private static void plot(Histogram testHistogram, Histogram baseline) throws IOException {
-        HdrPlotter hdrPlotter = new HdrPlotter("latency");
+        HdrPlotter hdrPlotter = new HdrPlotter("latency", TIME_UNIT_NAME);
 
         AbstractHdrPlotter.SeriesData seriesData = new AbstractHdrPlotter.SeriesData();
 

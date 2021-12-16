@@ -2,6 +2,7 @@ package org.apache.camel.kafka.tester;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.LongAdder;
 
 import org.HdrHistogram.SingleWriterRecorder;
@@ -55,7 +56,7 @@ public class TestProducer extends RouteBuilder {
         Instant sent = exchange.getProperty("CREATE_TIME", Instant.class);
         if (sent != null) {
             Duration duration = Duration.between(sent, Instant.now());
-            latencyRecorder.recordValue(duration.toMillis());
+            latencyRecorder.recordValue(TimeUnit.NANOSECONDS.toMicros(duration.toNanos()));
         } else {
             LOG.warn("Skipping latency processing for exchange due to missing CREATE_TIME property");
         }
