@@ -114,9 +114,9 @@ public class HdrPlotter extends AbstractHdrPlotter {
         HistogramXY histogramXY = new HistogramXY();
 
         for (HistogramIterationValue value : hdrData.recordedValues()) {
-            LOG.info("Percentile: {}", value.getPercentile());
-            LOG.info("Value: {}", value.getTotalCountToThisValue());
-            LOG.info("All data: {}", value);
+            LOG.debug("Percentile: {}", value.getPercentile());
+            LOG.debug("Value: {}", value.getTotalCountToThisValue());
+            LOG.trace("All data: {}", value);
 
             histogramXY.xData.add(value.getPercentile());
             histogramXY.yData.add(value.getValueIteratedTo());
