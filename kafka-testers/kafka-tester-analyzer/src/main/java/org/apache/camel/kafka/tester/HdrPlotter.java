@@ -19,7 +19,6 @@ package org.apache.camel.kafka.tester;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.Iterator;
 
 import org.HdrHistogram.Histogram;
 import org.HdrHistogram.HistogramIterationValue;
