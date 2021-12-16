@@ -165,7 +165,7 @@
             <img src="$rateFile" alt=""/>
         </div>
 
-#if ($latencyFile != '')
+#if ($latencyFile && $latencyFile != '')
         <div>
             <table>
                 <tr>
