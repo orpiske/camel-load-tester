@@ -355,20 +355,19 @@ public class MainAnalyzer {
     public static void generateReport() {
         VelocityTemplateParser templateParser = new VelocityTemplateParser(REPORT_PROPERTIES);
 
-
         File outputFile;
         try {
             outputFile = templateParser.getOutputFile(new File(OUTPUT_DIR));
-        } catch (IOException e) {
+
+            try (FileWriter fw = new FileWriter(outputFile)) {
+                templateParser.parse(fw);
+                System.out.println("Template file was written to " + outputFile);
+            }
+        } catch (CamelException | IOException e) {
             System.err.println(e.getMessage());
             return;
         }
 
-        try (FileWriter fw = new FileWriter(outputFile)) {
-            templateParser.parse("report.html", fw);
-            System.out.println("Template file was written to " + outputFile);
-        } catch (CamelException | IOException e) {
-            e.printStackTrace();
-        }
+
     }
 }

@@ -51,7 +51,7 @@ public class VelocityTemplateParser {
         Velocity.init(props);
     }
 
-    public void parse(String templateFileName, Writer writer) throws CamelException {
+    public void parse(Writer writer) throws CamelException {
         VelocityContext context = new VelocityContext();
 
         try {
@@ -78,19 +78,9 @@ public class VelocityTemplateParser {
 
     private void loadTemplateProperties(VelocityContext context) throws IOException {
         reportProperties.forEach((k, v) -> context.put(k.toString(), v));
-
-        context.put("testRateMax", "99999");
-
-//        overridePropertyList(context, properties, "kameletProperties");
-//        overridePropertyList(context, properties, "requiredKameletProperties");
-//        overridePropertyList(context, properties, "kameletBeans");
-//        overridePropertyList(context, properties, "fromParameters");
-//        overridePropertyList(context, properties, "toParameters");
     }
 
     public File getOutputFile(File outputDir) throws IOException {
-//        String outputFileName = properties.getProperty("kameletMetadataName") + ".kamelet.yaml";
-
         File outputFile = new File(outputDir, "report.html");
         if (outputFile.exists()) {
             throw new IOException("Resource already exists: " + outputFile);
