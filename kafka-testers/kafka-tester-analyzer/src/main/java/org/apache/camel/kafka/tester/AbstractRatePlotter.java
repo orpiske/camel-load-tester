@@ -106,7 +106,7 @@ public abstract class AbstractRatePlotter {
                 .theme(Styler.ChartTheme.Matlab)
                 .build();
 
-        chart.getStyler().setPlotBackgroundColor(ChartColor.getAWTColor(ChartColor.WHITE));
+        chart.getStyler().setPlotBackgroundColor(ChartColor.WHITE.getColor());
         chart.getStyler().setChartBackgroundColor(Color.WHITE);
         chart.getStyler().setChartTitleBoxBackgroundColor(new Color(0, 222, 0));
 
