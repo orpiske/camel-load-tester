@@ -44,7 +44,7 @@ public class BinaryRateReaderTest {
         String path = this.getClass().getResource(".").getPath();
         reportFile = new File(path, "testHeader.dat");
 
-        Assertions.assertDoesNotThrow(() -> generateDataFilePredictable());
+        Assertions.assertDoesNotThrow(this::generateDataFilePredictable);
 
         try (BinaryRateReader reader = new BinaryRateReader(reportFile)) {
 

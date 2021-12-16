@@ -107,34 +107,34 @@ public class MainAnalyzer {
     }
 
     private static void plot(RateData testData) throws IOException {
-        RatePlotter plotter = new RatePlotter(testData.header.getRole().toString().toLowerCase(Locale.ROOT));
-
-        ChartProperties chartProperties = new ChartProperties();
-
-        chartProperties.setSeriesName(ChartProperties.capitilizeOnly(testData.header.getRole().toString()) + " " + testData.header.getCamelVersion());
-        plotter.setChartProperties(chartProperties);
+        RatePlotter plotter = createStandardPlotter(testData.header);
 
         List<Date> xData = testData.entries.stream().map(r -> new Date(r.getTimestamp())).collect(Collectors.toList());
-        List<Long> yData = testData.entries.stream().map(r -> r.getCount()).collect(Collectors.toList());
+        List<Long> yData = testData.entries.stream().map(RateEntry::getCount).collect(Collectors.toList());
         plotter.plot(xData, yData);
     }
 
     private static void plot(RateData testData, RateData baselineData) throws IOException {
-        RatePlotter plotter = new RatePlotter(testData.header.getRole().toString().toLowerCase(Locale.ROOT));
-        ChartProperties chartProperties = new ChartProperties();
-
-        chartProperties.setSeriesName(ChartProperties.capitilizeOnly(testData.header.getRole().toString()) + " " + testData.header.getCamelVersion());
-        plotter.setChartProperties(chartProperties);
+        RatePlotter plotter = createStandardPlotter(testData.header);
 
         List<Date> xData = testData.entries.stream().map(r -> new Date(r.getTimestamp())).collect(Collectors.toList());
-        List<Long> yDataTest = testData.entries.stream().map(r -> r.getCount()).collect(Collectors.toList());
-        List<Long> yDataBaseline = baselineData.entries.stream().map(r -> r.getCount()).collect(Collectors.toList());
+        List<Long> yDataTest = testData.entries.stream().map(RateEntry::getCount).collect(Collectors.toList());
+        List<Long> yDataBaseline = baselineData.entries.stream().map(RateEntry::getCount).collect(Collectors.toList());
 
         AbstractRatePlotter.SeriesData seriesData = new AbstractRatePlotter.SeriesData();
 
         seriesData.seriesName = "Baseline";
         seriesData.yData = yDataBaseline;
         plotter.plot(xData, yDataTest, seriesData);
+    }
+
+    private static RatePlotter createStandardPlotter(FileHeader testData) {
+        RatePlotter plotter = new RatePlotter(testData.getRole().toString().toLowerCase(Locale.ROOT));
+        ChartProperties chartProperties = new ChartProperties();
+
+        chartProperties.setSeriesName(ChartProperties.capitilizeOnly(testData.getRole().toString()) + " " + testData.getCamelVersion());
+        plotter.setChartProperties(chartProperties);
+        return plotter;
     }
 
     private static void analyze(RateData testData) {

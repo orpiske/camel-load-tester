@@ -62,7 +62,7 @@ public class BinaryRateWriterTest {
 
     @Test
     public void testHeader() {
-        Assertions.assertDoesNotThrow(() -> generateDataFilePredictable());
+        Assertions.assertDoesNotThrow(this::generateDataFilePredictable);
         Assumptions.assumeTrue(reportFile.exists());
 
         try (BinaryRateReader reader = new BinaryRateReader(reportFile)) {
@@ -82,7 +82,7 @@ public class BinaryRateWriterTest {
 
     @Test
     public void testHeaderReadWriteRecords() throws IOException {
-        Assertions.assertDoesNotThrow(() -> generateDataFilePredictable());
+        Assertions.assertDoesNotThrow(this::generateDataFilePredictable);
         Assumptions.assumeTrue(reportFile.exists());
 
         try (BinaryRateReader reader = new BinaryRateReader(reportFile)) {
