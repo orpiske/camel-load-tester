@@ -77,7 +77,7 @@ public class MainAnalyzer {
 
         AbstractHdrPlotter.SeriesData seriesData = new AbstractHdrPlotter.SeriesData();
 
-        seriesData.seriesName = "Baseline " + baseline.getTag() == null ? "" : baseline.getTag();
+        seriesData.seriesName = "Baseline " + (baseline.getTag() == null ? "" : baseline.getTag());
         seriesData.yData = baseline;
 
         hdrPlotter.plot(testHistogram, seriesData);
