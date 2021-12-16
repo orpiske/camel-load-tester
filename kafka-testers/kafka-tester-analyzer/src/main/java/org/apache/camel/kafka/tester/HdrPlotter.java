@@ -91,11 +91,11 @@ public class HdrPlotter extends AbstractHdrPlotter {
      * @throws IOException if unable to save the bitmap file
      */
     private void plot(HistogramXY histogramXY, SeriesData... extraYSeries) throws IOException {
-        if (histogramXY.xData == null || histogramXY.xData.size() == 0) {
+        if (histogramXY.xData == null || histogramXY.xData.isEmpty()) {
             throw new IllegalArgumentException("The 'X' column data set is empty");
         }
 
-        if (histogramXY.yData == null || histogramXY.yData.size() == 0) {
+        if (histogramXY.yData == null || histogramXY.yData.isEmpty()) {
             throw new IllegalArgumentException("The 'Y' column data set is empty");
         }
 
