@@ -117,11 +117,7 @@ public class HdrPlotter extends AbstractHdrPlotter {
     private HistogramXY convertToHistogramXY(Histogram hdrData) {
         HistogramXY histogramXY = new HistogramXY();
 
-        Iterator<HistogramIterationValue> iterator = hdrData.recordedValues().iterator();
-
-        while (iterator.hasNext()) {
-            HistogramIterationValue value = iterator.next();
-
+        for (HistogramIterationValue value : hdrData.recordedValues()) {
             LOG.info("Percentile: {}", value.getPercentile());
             LOG.info("Value: {}", value.getTotalCountToThisValue());
             LOG.info("All data: {}", value);

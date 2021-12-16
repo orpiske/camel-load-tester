@@ -27,8 +27,8 @@ public abstract class AbstractHdrPlotter {
     }
 
     public static class HistogramXY {
-        List<Double> xData;
-        List<Long> yData;
+        final List<Double> xData;
+        final List<Long> yData;
 
         public HistogramXY() {
             xData = new ArrayList<>();
