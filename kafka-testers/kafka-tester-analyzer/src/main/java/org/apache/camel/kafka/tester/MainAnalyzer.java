@@ -30,6 +30,7 @@ public class MainAnalyzer {
     private static final Logger LOG = LoggerFactory.getLogger(MainAnalyzer.class);
     private static final String TIME_UNIT_NAME = System.getProperty("latencies.timeunit", "microseconds");
     private static final String OUTPUT_DIR = System.getProperty("output.dir", ".");
+    private static final String TEST_NAME = System.getProperty("test.name");
     private static final Properties REPORT_PROPERTIES = new Properties();
 
 
@@ -357,6 +358,7 @@ public class MainAnalyzer {
 
         File outputFile;
         try {
+            REPORT_PROPERTIES.put("testName", TEST_NAME);
             outputFile = templateParser.getOutputFile(new File(OUTPUT_DIR));
 
             try (FileWriter fw = new FileWriter(outputFile)) {

@@ -95,7 +95,7 @@
 </head>
 <body>
 <div>
-    <h1>Performance test report</h1>
+    <h1>Performance test report: $testName</h1>
 </div>
     <div>
         <table>
