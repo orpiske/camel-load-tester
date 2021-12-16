@@ -81,7 +81,11 @@ public class HdrPlotter extends AbstractHdrPlotter {
     }
 
     protected void plotAll(HistogramXY histogramXY, SeriesData... extraYSeries) throws IOException {
-        plotSingleAt(histogramXY, baseName + "_all.png", extraYSeries);
+        plotSingleAt(histogramXY, getFileName(), extraYSeries);
+    }
+
+    public String getFileName() {
+        return baseName + "_all.png";
     }
 
 

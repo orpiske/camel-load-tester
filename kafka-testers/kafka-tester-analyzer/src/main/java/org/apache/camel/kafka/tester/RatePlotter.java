@@ -61,7 +61,11 @@ public class RatePlotter extends AbstractRatePlotter {
             chart.addSeries(seriesData.seriesName, xData, seriesData.yData);
         }
 
-        BitmapEncoder.saveBitmap(chart, baseName + "_rate.png", BitmapEncoder.BitmapFormat.PNG);
+        BitmapEncoder.saveBitmap(chart, getFileName(), BitmapEncoder.BitmapFormat.PNG);
+    }
+
+    public String getFileName() {
+        return baseName + "_rate.png";
     }
 
     @Override

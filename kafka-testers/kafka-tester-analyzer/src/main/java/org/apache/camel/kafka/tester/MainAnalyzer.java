@@ -2,6 +2,7 @@ package org.apache.camel.kafka.tester;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -10,12 +11,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.HdrHistogram.DoubleHistogram;
 import org.HdrHistogram.EncodableHistogram;
 import org.HdrHistogram.Histogram;
 import org.HdrHistogram.HistogramLogReader;
+import org.apache.camel.CamelException;
 import org.apache.camel.kafka.tester.io.BinaryRateReader;
 import org.apache.camel.kafka.tester.io.common.FileHeader;
 import org.apache.camel.kafka.tester.io.common.RateEntry;
@@ -26,11 +29,9 @@ import org.slf4j.LoggerFactory;
 public class MainAnalyzer {
     private static final Logger LOG = LoggerFactory.getLogger(MainAnalyzer.class);
     private static final String TIME_UNIT_NAME = System.getProperty("latencies.timeunit", "microseconds");
+    private static final String OUTPUT_DIR = System.getProperty("output.dir", ".");
+    private static final Properties REPORT_PROPERTIES = new Properties();
 
-    private static class RateData {
-        FileHeader header;
-        List<RateEntry> entries;
-    }
 
     public static void main(String[] args) throws IOException {
         String testRateFile = System.getProperty("test.rate.file");
@@ -64,6 +65,8 @@ public class MainAnalyzer {
         } else {
             LOG.warn("Latency file does not exist");
         }
+
+        generateReport();
     }
 
     private static void plot(Histogram histogram) throws IOException {
@@ -81,6 +84,7 @@ public class MainAnalyzer {
         seriesData.yData = baseline;
 
         hdrPlotter.plot(testHistogram, seriesData);
+        REPORT_PROPERTIES.put("latencyFile", hdrPlotter.getFileName());
     }
 
     private static void analyze(Histogram histogram) {
@@ -104,23 +108,37 @@ public class MainAnalyzer {
         LOG.info("p50 (median) latency: {} / baseline: {}", histogram.getValueAtPercentile(50.0), baseline.getValueAtPercentile(50.0));
         double p50Delta = histogram.getValueAtPercentile(50.0) - baseline.getValueAtPercentile(50.0);
         logDeltas(p50Delta, "p50 (median) latency");
+        REPORT_PROPERTIES.put("testP50", histogram.getValueAtPercentile(50.0));
+        REPORT_PROPERTIES.put("baselineP50", baseline.getValueAtPercentile(50.0));
+        REPORT_PROPERTIES.put("deltaP50", p50Delta);
 
         LOG.info("p90 latency: {} / baseline: {}", histogram.getValueAtPercentile(90.0), baseline.getValueAtPercentile(90.0));
-
         double p90Delta = histogram.getValueAtPercentile(90.0) - baseline.getValueAtPercentile(90.0);
         logDeltas(p90Delta, "p90 latency");
+        REPORT_PROPERTIES.put("testP90", histogram.getValueAtPercentile(90.0));
+        REPORT_PROPERTIES.put("baselineP90", baseline.getValueAtPercentile(90.0));
+        REPORT_PROPERTIES.put("deltaP90", p90Delta);
 
         LOG.info("p95 latency: {} / baseline: {}", histogram.getValueAtPercentile(95.0), baseline.getValueAtPercentile(95.0));
         double p95Delta = histogram.getValueAtPercentile(95.0) - baseline.getValueAtPercentile(95.0);
         logDeltas(p95Delta, "p95 latency");
+        REPORT_PROPERTIES.put("testP95", histogram.getValueAtPercentile(95.0));
+        REPORT_PROPERTIES.put("baselineP95", baseline.getValueAtPercentile(95.0));
+        REPORT_PROPERTIES.put("deltaP95", p95Delta);
 
         LOG.info("p99 latency: {} / baseline: {}", histogram.getValueAtPercentile(99.0), baseline.getValueAtPercentile(99.0));
         double p99Delta = histogram.getValueAtPercentile(99.0) - baseline.getValueAtPercentile(99.0);
         logDeltas(p99Delta, "p99 latency");
+        REPORT_PROPERTIES.put("testP99", histogram.getValueAtPercentile(99.0));
+        REPORT_PROPERTIES.put("baselineP99", baseline.getValueAtPercentile(99.0));
+        REPORT_PROPERTIES.put("deltaP99", p99Delta);
 
         LOG.info("p99.9 latency: {} / baseline: {}", histogram.getValueAtPercentile(99.9), baseline.getValueAtPercentile(99.9));
         double p999Delta = histogram.getValueAtPercentile(99.9) - baseline.getValueAtPercentile(99.9);
         logDeltas(p999Delta, "p99.9 latency");
+        REPORT_PROPERTIES.put("testP999", histogram.getValueAtPercentile(99.9));
+        REPORT_PROPERTIES.put("baselineP999", baseline.getValueAtPercentile(99.9));
+        REPORT_PROPERTIES.put("deltaP999", p999Delta);
     }
 
     private static void plot(RateData testData) throws IOException {
@@ -143,6 +161,7 @@ public class MainAnalyzer {
         seriesData.seriesName = "Baseline " + baselineData.header.getCamelVersion();
         seriesData.yData = yDataBaseline;
         plotter.plot(xData, yDataTest, seriesData);
+        REPORT_PROPERTIES.put("rateFile", plotter.getFileName());
     }
 
     private static RatePlotter createStandardPlotter(FileHeader testData) {
@@ -176,16 +195,23 @@ public class MainAnalyzer {
         LOG.info("Test suite version: {}", testData.header.getCamelVersion());
         LOG.info("Version: {}", testData.header.getFileVersion());
         LOG.info("Type: {}", testData.header.getRole().name());
+        REPORT_PROPERTIES.put("testCamelVersion", testData.header.getCamelVersion());
+        REPORT_PROPERTIES.put("baselineCamelVersion", baselineData.header.getCamelVersion());
 
         LOG.info("Test version: {} / Baseline version: {}", testData.header.getCamelVersion(), baselineData.header.getCamelVersion());
+
 
         LOG.info("");
         LOG.info("TOTAL EXCHANGES:");
         LOG.info("Test: {} | Baseline: {}", testStatistics.getSum(), baselineStatistics.getSum());
+        REPORT_PROPERTIES.put("testTotalExchanges", testStatistics.getSum());
+        REPORT_PROPERTIES.put("baselineTotalExchanges", baselineStatistics.getSum());
+
 
         double totalDelta = testStatistics.getSum() - baselineStatistics.getSum();
         LOG.info("Delta: {}", totalDelta);
         logDeltas(totalDelta, "total number of exchanges");
+        REPORT_PROPERTIES.put("deltaTotalExchanges", totalDelta);
 
         LOG.info("");
         LOG.info("MINIMUM RATE");
@@ -193,6 +219,9 @@ public class MainAnalyzer {
         final double minDelta = testStatistics.getMin() - baselineStatistics.getMin();
         LOG.info("Delta: {}", minDelta);
         logDeltas(minDelta, "minimum rate");
+        REPORT_PROPERTIES.put("testRateMin", testStatistics.getMin());
+        REPORT_PROPERTIES.put("baselineRateMin", baselineStatistics.getMin());
+        REPORT_PROPERTIES.put("deltaRateMin", minDelta);
 
         LOG.info("");
         LOG.info("MAXIMUM RATE:");
@@ -200,6 +229,9 @@ public class MainAnalyzer {
         final double maxDelta = testStatistics.getMax() - baselineStatistics.getMax();
         LOG.info("Delta: {}", maxDelta);
         logDeltas(maxDelta, "maximum rate");
+        REPORT_PROPERTIES.put("testRateMax", testStatistics.getMax());
+        REPORT_PROPERTIES.put("baselineRateMax", baselineStatistics.getMax());
+        REPORT_PROPERTIES.put("deltaRateMax", maxDelta);
 
         LOG.info("");
         LOG.info("MEAN (RATE):");
@@ -207,6 +239,9 @@ public class MainAnalyzer {
         final double meanDelta = testStatistics.getMean() - baselineStatistics.getMean();
         LOG.info("Delta: {}", meanDelta);
         logDeltas(meanDelta, "mean rate");
+        REPORT_PROPERTIES.put("testRateMean", testStatistics.getMean());
+        REPORT_PROPERTIES.put("baselineRateMean", baselineStatistics.getMean());
+        REPORT_PROPERTIES.put("deltaRateMean", meanDelta);
 
         LOG.info("");
         LOG.info("GEOMETRIC MEAN (RATE):");
@@ -214,13 +249,15 @@ public class MainAnalyzer {
         final double geoMeanDelta = testStatistics.getGeometricMean() - baselineStatistics.getGeometricMean();
         LOG.info("Delta: {}", geoMeanDelta);
         logDeltas(geoMeanDelta, "geometric mean rate");
+        REPORT_PROPERTIES.put("testRateGeoMean", testStatistics.getGeometricMean());
+        REPORT_PROPERTIES.put("baselineRateGeoMean", baselineStatistics.getGeometricMean());
+        REPORT_PROPERTIES.put("deltaRateGeoMean", geoMeanDelta);
 
         LOG.info("");
         LOG.info("OTHER:");
         LOG.info("Test standard deviation: {} | Baseline standard deviation: {}", testStatistics.getStandardDeviation(), baselineStatistics.getStandardDeviation());
-
-        LOG.info("");
-        LOG.info("SUMMARY:");
+        REPORT_PROPERTIES.put("testStdDev", testStatistics.getStandardDeviation());
+        REPORT_PROPERTIES.put("baselineStdDev", baselineStatistics.getStandardDeviation());
     }
 
     private static void logDeltas(double delta, String name) {
@@ -313,5 +350,25 @@ public class MainAnalyzer {
         }
 
         return accumulatedHistogram;
+    }
+
+    public static void generateReport() {
+        VelocityTemplateParser templateParser = new VelocityTemplateParser(REPORT_PROPERTIES);
+
+
+        File outputFile;
+        try {
+            outputFile = templateParser.getOutputFile(new File(OUTPUT_DIR));
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+            return;
+        }
+
+        try (FileWriter fw = new FileWriter(outputFile)) {
+            templateParser.parse("report.html", fw);
+            System.out.println("Template file was written to " + outputFile);
+        } catch (CamelException | IOException e) {
+            e.printStackTrace();
+        }
     }
 }

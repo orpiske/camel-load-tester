@@ -21,6 +21,7 @@
     <hdr-histogram-version>2.1.12</hdr-histogram-version>
     <junit-jupiter-version>5.8.1</junit-jupiter-version>
     <xchart-version>3.5.0</xchart-version>
+    <velocity-version>2.3</velocity-version>
     <maven-compiler-plugin-version>3.8.1</maven-compiler-plugin-version>
     <maven-resources-plugin-version>3.2.0</maven-resources-plugin-version>
     <maven-shade-plugin-version>3.2.4</maven-shade-plugin-version>
@@ -57,6 +58,12 @@
         <groupId>org.knowm.xchart</groupId>
         <artifactId>xchart</artifactId>
         <version>${xchart-version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.velocity</groupId>
+        <artifactId>velocity-engine-core</artifactId>
+        <version>${velocity-version}</version>
       </dependency>
 
       <!-- logging -->
