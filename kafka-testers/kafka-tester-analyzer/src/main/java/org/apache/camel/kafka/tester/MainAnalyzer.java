@@ -77,7 +77,7 @@ public class MainAnalyzer {
 
         AbstractHdrPlotter.SeriesData seriesData = new AbstractHdrPlotter.SeriesData();
 
-        seriesData.seriesName = "Baseline";
+        seriesData.seriesName = "Baseline " + baseline.getTag() == null ? "" : baseline.getTag();
         seriesData.yData = baseline;
 
         hdrPlotter.plot(testHistogram, seriesData);
@@ -123,7 +123,7 @@ public class MainAnalyzer {
 
         AbstractRatePlotter.SeriesData seriesData = new AbstractRatePlotter.SeriesData();
 
-        seriesData.seriesName = "Baseline";
+        seriesData.seriesName = "Baseline " + baselineData.header.getCamelVersion();
         seriesData.yData = yDataBaseline;
         plotter.plot(xData, yDataTest, seriesData);
     }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.LongAdder;
 
+import org.HdrHistogram.EncodableHistogram;
 import org.HdrHistogram.SingleWriterRecorder;
 import org.apache.camel.component.dataset.SimpleDataSet;
 import org.apache.camel.kafka.tester.common.TestMainListener;
@@ -50,7 +51,11 @@ public class MainProducer {
 
         final String testLatenciesFileName = System.getProperty("test.latencies.file", "producer-latencies.hdr");
         try (LatencyWriter latencyWriter = new LatencyWriter(new File(testLatenciesFileName))) {
-            latencyWriter.outputIntervalHistogram(latencyRecorder.getIntervalHistogram());
+            EncodableHistogram histogram = latencyRecorder.getIntervalHistogram();
+
+            String camelVersion = System.getProperty("camel.version", "3.x.x");
+            histogram.setTag(camelVersion);
+            latencyWriter.outputIntervalHistogram(histogram);
         }
     }
 
