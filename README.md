@@ -36,3 +36,13 @@ mvn -Pcamel-3.11.2 clean package && ./start-consumer.sh kafka-host:9092 3.11.2 1
 mvn -Pcamel-3.12.0-SNAPSHOT clean package && ./start-consumer.sh kafka-host:9092 3.12.0-SNAPSHOT 1000000000 1
 ```
 
+
+Setup Automation
+===
+
+Edit the `development` inventory in ansible directory to use the hostname or IP of your test host. You should have a user with `sudo` permissions on the test host.
+
+Then run: 
+
+`make development`
+
