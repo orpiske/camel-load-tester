@@ -1,2 +1,2 @@
 admin_groups: users, wheel
-kafka_tester_common_packages: git,java-11-openjdk-devel,zsh,wget,unzip,cockpit,cockpit-pcp
+kafka_tester_common_packages: git,tmux,zsh,wget,unzip,cockpit,cockpit-pcp
