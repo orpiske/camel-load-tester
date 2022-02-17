@@ -12,7 +12,7 @@ function runSingleTest() {
 	echo -e "\n"
 	while [[ $isRunning -eq 0 ]] ; do
 		echo -e -n "\rCannot run because there is a test in progress"
-		sleep 15s
+		sleep 15
 
 		ssh ${TEST_HOST} test -f /home/"${USER}"/current.env
 		isRunning=$?
@@ -43,7 +43,7 @@ function runTest() {
 	while [[ $isRunning -eq 0 ]] ; do
 		currentTime=$(date)
 		echo -e -n "\rWaiting for the last test to complete: ${currentTime}"
-		sleep 15s
+		sleep 15
 
 		ssh ${TEST_HOST} test -f /home/"${USER}"/current.env
 		isRunning=$?
