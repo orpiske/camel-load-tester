@@ -1,4 +1,4 @@
-REMOTE_HOME=/home/opiske
+REMOTE_HOME=/home/${USER}
 TEST_HOST=$1
 TEST_FILE=$2
 
