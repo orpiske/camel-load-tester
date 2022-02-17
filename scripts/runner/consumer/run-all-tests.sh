@@ -4,7 +4,7 @@ DATA_DIR=$3
 
 function runSingleTest() {
 	TEST_FILE=$1
-	ssh "${TEST_HOST}" test -f /home/opiske/current.env
+	ssh "${TEST_HOST}" test -f /home/"${USER}"/current.env
 	isRunning=$?
 
 	echo -e "\n"
@@ -12,7 +12,7 @@ function runSingleTest() {
 		echo -e -n "\rCannot run because there is a test in progress"
 		sleep 15s
 
-		ssh "${TEST_HOST}" test -f /home/opiske/current.env
+		ssh "${TEST_HOST}" test -f /home/"${USER}"/current.env
 		isRunning=$?
 	done
 
@@ -32,7 +32,7 @@ function runTest() {
 		fi
 	fi
 
-	ssh "${TEST_HOST}" test -f /home/opiske/current.env
+	ssh "${TEST_HOST}" test -f /home/"${USER}"/current.env
 	isRunning=$?
 
 	startTime=$(date)
@@ -43,7 +43,7 @@ function runTest() {
 		echo -e -n "\rWaiting for the last test to complete: ${currentTime}"
 		sleep 15s
 
-		ssh "${TEST_HOST}" test -f /home/opiske/current.env
+		ssh "${TEST_HOST}" test -f /home/"${USER}"/current.env
 		isRunning=$?
 	done
 }
@@ -52,4 +52,4 @@ runTest
 echo -e "\r"
 DEST=${DATA_DIR}/$(basename -s .env "${TEST_SET}")
 mkdir -p "${DEST}"
-rsync -avr "${TEST_HOST}":/home/opiske/test-data/ "${DEST}"
+rsync -avr "${TEST_HOST}":/home/"${USER}"/test-data/ "${DEST}"
