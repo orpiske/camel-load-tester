@@ -171,7 +171,7 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
-        <camel.version>3.14.0-SNAPSHOT</camel.version>
+        <camel.version>3.14.1</camel.version>
       </properties>
     </profile>
     <profile>
@@ -180,7 +180,7 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
-        <camel.version>3.15.0-SNAPSHOT</camel.version>
+        <camel.version>3.15.0</camel.version>
       </properties>
     </profile>
   </profiles>
