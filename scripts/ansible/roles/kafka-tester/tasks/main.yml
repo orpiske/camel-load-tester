@@ -1,0 +1,28 @@
+---
+- name: Load role variables
+  when: basic_server_common_packages is not defined
+  include_vars:
+    file: "{{ item }}"
+  with_first_found:
+    - vars/{{ ansible_distribution }}.yml
+    - vars/{{ ansible_os_family }}.yml
+
+- name: Install EPEL
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
+  become: yes
+  command: dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+
+- name: Install requirements
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS' or ansible_distribution == 'Fedora'
+  tags:
+    - basic
+    - packages
+  become: yes
+  package:
+    name: "{{ kafka_tester_common_packages }}"
+    state: present
+
+- name: Put SELinux in permissive mode, logging actions that would be blocked.
+  ansible.posix.selinux:
+    policy: targeted
+    state: permissive

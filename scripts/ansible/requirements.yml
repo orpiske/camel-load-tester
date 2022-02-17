@@ -1,0 +1,14 @@
+- src: https://github.com/orpiske/ansible-centos-stream
+  version: master
+  name: centos-stream
+
+- src: https://github.com/orpiske/ansible-k3s-cluster
+  version: master
+  name: cluster
+
+- src: https://github.com/orpiske/ansible-kafka-role.git
+  scm: git
+  version: master
+  name: kafka-role
+
+
