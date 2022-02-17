@@ -130,7 +130,7 @@
 
   <profiles>
     <profile>
-      <id>camel-3.11.5</id>
+      <id>camel-3.11</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
@@ -139,7 +139,7 @@
       </properties>
     </profile>
     <profile>
-      <id>camel-3.12.0</id>
+      <id>camel-3.12</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
@@ -148,7 +148,7 @@
       </properties>
     </profile>
     <profile>
-      <id>camel-3.13.0</id>
+      <id>camel-3.13</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
@@ -157,7 +157,7 @@
       </properties>
     </profile>
     <profile>
-      <id>camel-3.14.0</id>
+      <id>camel-3.14</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
@@ -166,7 +166,7 @@
       </properties>
     </profile>
     <profile>
-      <id>camel-3.15.0</id>
+      <id>camel-3.15</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
@@ -175,7 +175,7 @@
       </properties>
     </profile>
     <profile>
-      <id>camel-3.16.0</id>
+      <id>camel-3.16</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
