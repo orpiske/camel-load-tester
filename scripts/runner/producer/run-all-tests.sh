@@ -2,7 +2,19 @@ TEST_HOST=$1
 TEST_SET=$2
 DATA_DIR=$3
 
-# touch ~/block.file && $HOME/tools/producer/run-test-producer.sh
+function sendNotification() {
+  which notify-pushover &> /dev/null
+  if [ $? -eq 0 ] ; then
+    notify-pushover "$1"
+  else
+    which notify-send  &> /dev/null
+    if [ $? -eq 0 ] ; then
+      notify-send -t 2000 "$1"
+    else
+      echo "$1"
+    fi
+  fi
+}
 
 function runSingleTest() {
 	TEST_FILE=$1
@@ -19,7 +31,7 @@ function runSingleTest() {
 	done
 
 	echo -e "\nRunning: ${TEST_FILE}"
-	notify-pushover "Starting test ${TEST_FILE}"
+	sendNotification "Starting test ${TEST_FILE}"
 	./run-test.sh ${TEST_HOST} ${TEST_FILE}
 }
 
