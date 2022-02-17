@@ -18,3 +18,4 @@
   hosts: all
   roles:
     - kafka-role
+    - kafka-tester
