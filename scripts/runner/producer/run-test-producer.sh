@@ -4,6 +4,20 @@ ZOOKEEPER_HOST=localhost:2181
 KAFKA_HOME=$HOME/tools/kafka
 TOPIC=test
 
+function sendNotification() {
+  which notify-pushover &> /dev/null
+  if [ $? -eq 0 ] ; then
+    notify-pushover "$1"
+  else
+    which notify-send  &> /dev/null
+    if [ $? -eq 0 ] ; then
+      notify-send -t 2000 "$1"
+    else
+      echo "$1"
+    fi
+  fi
+}
+
 echo "Starting the test producer ..."
 cd ${TEST_HOME}
 while true ; do
@@ -46,7 +60,7 @@ while true ; do
 
 		mv producer-rate.data ${HOME}/test-data/producer-rate-${TEST_NAME}-${CAMEL_VERSION}.data
 		mv producer-latencies.hdr ${HOME}/test-data/producer-latencies-${TEST_NAME}-${CAMEL_VERSION}.hdr
-		notify-pushover "Producer test for ${CAMEL_VERSION} completed (${PRODUCER_MESSAGE_COUNT} messages)"
+		sendNotification "Producer test for ${CAMEL_VERSION} completed (${PRODUCER_MESSAGE_COUNT} messages)"
 
 		rm -f ${HOME}/current.env || true
 	else

@@ -2,6 +2,21 @@ LOAD_TOOL_HOME=$HOME/tools/consumer
 TEST_HOME=$HOME/tools/kafka-tester
 BOOTSTRAP_HOST=localhost:9092
 
+function sendNotification() {
+  which notify-pushover &> /dev/null
+  if [ $? -eq 0 ] ; then
+    notify-pushover "$1"
+  else
+    which notify-send  &> /dev/null
+    if [ $? -eq 0 ] ; then
+      notify-send -t 2000 "$1"
+    else
+      echo "$1"
+    fi
+  fi
+}
+
+
 echo "Starting the test consumer ..."
 cd "${TEST_HOME}" || exit 1
 while true ; do
@@ -57,7 +72,7 @@ while true ; do
 
 		mv consumer-rate.data "${HOME}"/test-data/consumer-rate-${TEST_NAME}-${CAMEL_VERSION}.data
 
-		notify-pushover "Consumer test for ${CAMEL_VERSION} with ${CONSUMERS} consumers completed (${CONSUMER_MESSAGE_COUNT} messages)"
+		sendNotification "Consumer test for ${CAMEL_VERSION} with ${CONSUMERS} consumers completed (${CONSUMER_MESSAGE_COUNT} messages)"
 
 		rm -f ${HOME}/current.env || true
 	else
