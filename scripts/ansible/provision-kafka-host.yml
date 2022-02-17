@@ -14,11 +14,6 @@
 
 # Notes: RHEL subscription will be skipped if not using RHEL
 ---
-- name: Setups the user system
-  hosts: all
-  roles:
-    - user-system
-
 - name: Setups Kafka
   hosts: all
   roles:
