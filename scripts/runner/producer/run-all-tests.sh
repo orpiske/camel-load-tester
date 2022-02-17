@@ -1,6 +1,6 @@
 TEST_HOST=$1
 TEST_SET=$2
-DATA_DIR=$3
+DATA_DIR=${3:-${HOME}/tmp/kafka-tester-data}
 
 function sendNotification() {
   which notify-pushover &> /dev/null
@@ -64,7 +64,7 @@ function runTest() {
 
 
 runTest
-echo -e "\r"
+echo -e -n "\r"
 DEST=${DATA_DIR}/$(basename -s .env ${TEST_SET})
 mkdir -p ${DEST}
 rsync -avr ${TEST_HOST}:/home/"${USER}"/test-data/ ${DEST}
