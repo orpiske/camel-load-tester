@@ -1,6 +1,6 @@
 TEST_HOST=$1
 TEST_SET=$2
-DATA_DIR=$3
+DATA_DIR=${3:-${HOME}/tmp/kafka-tester-data}
 
 function sendNotification() {
   which notify-pushover &> /dev/null
