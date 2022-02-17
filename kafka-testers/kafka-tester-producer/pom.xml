@@ -11,6 +11,13 @@
 
     <artifactId>kafka-tester-producer</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-dataset</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>

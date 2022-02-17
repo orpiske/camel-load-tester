@@ -22,6 +22,7 @@
     <junit-jupiter-version>5.8.1</junit-jupiter-version>
     <xchart-version>3.8.1</xchart-version>
     <velocity-version>2.3</velocity-version>
+    <micrometer-version>1.8.3</micrometer-version>
     <maven-compiler-plugin-version>3.8.1</maven-compiler-plugin-version>
     <maven-resources-plugin-version>3.2.0</maven-resources-plugin-version>
     <maven-shade-plugin-version>3.2.4</maven-shade-plugin-version>
@@ -83,6 +84,15 @@
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
         <version>${log4j2-version}</version>
+      </dependency>
+
+      <!-- Observability -->
+
+
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-registry-influx</artifactId>
+        <version>${micrometer-version}</version>
       </dependency>
 
       <!-- testing -->

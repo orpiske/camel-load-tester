@@ -2,6 +2,8 @@ LOAD_TOOL_HOME=$HOME/tools/consumer
 TEST_HOME=$HOME/tools/kafka-tester
 BOOTSTRAP_HOST=localhost:9092
 
+source "${TEST_HOME}"/consumer.env
+
 function sendNotification() {
   which notify-pushover &> /dev/null
   if [ $? -eq 0 ] ; then
@@ -61,13 +63,21 @@ while true ; do
 				-Dcamel.component.kafka.consumer-streams=${CONSUMERS} \
 				-Dcamel.component.kafka.consumers-count=${CONSUMERS} \
 				-Dcamel.component.kafka.brokers=${BOOTSTRAP_HOST} \
-				-jar kafka-tester-consumer-${CAMEL_VERSION}.jar
+				-Dmetrics.org="${METRICS_ORG}" \
+        -Dmetrics.bucket="${METRICS_BUCKET}" \
+        -Dmetrics.token="${METRICS_TOKEN}" \
+        -Dmetrics.uri="${METRICS_URI}" \
+				-jar kafka-tester-consumer-"${CAMEL_VERSION}".jar
 		else
 			java ${JAVA_OPTS} -Dcamel.version=${CAMEL_VERSION} \
 				-Dcamel.main.durationMaxMessages=${CONSUMER_MESSAGE_COUNT} \
 				-Dcamel.component.kafka.consumers-count=${CONSUMERS} \
 				-Dcamel.component.kafka.brokers=${BOOTSTRAP_HOST} \
-				-jar kafka-tester-consumer-${CAMEL_VERSION}.jar
+				-Dmetrics.org="${METRICS_ORG}" \
+				-Dmetrics.bucket="${METRICS_BUCKET}" \
+				-Dmetrics.token="${METRICS_TOKEN}" \
+				-Dmetrics.uri="${METRICS_URI}" \
+				-jar kafka-tester-consumer-"${CAMEL_VERSION}".jar
 		fi
 
 		mv consumer-rate.data "${HOME}"/test-data/consumer-rate-${TEST_NAME}-${CAMEL_VERSION}.data

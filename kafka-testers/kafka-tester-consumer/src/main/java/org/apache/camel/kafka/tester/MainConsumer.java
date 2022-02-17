@@ -27,7 +27,7 @@ public class MainConsumer {
 
         File reportFile = new File(name);
         try (RateWriter rateWriter = new BinaryRateWriter(reportFile, FileHeader.WRITER_DEFAULT_CONSUMER)) {
-            main.configure().addRoutesBuilder(new TestConsumer(longAdder));
+            main.configure().addRoutesBuilder(new TestConsumerWithMetrics(longAdder));
             main.addMainListener(new TestMainListener(rateWriter, longAdder, testSize, main::stop));
             main.run(args);
         }
