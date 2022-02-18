@@ -4,6 +4,8 @@ ZOOKEEPER_HOST=localhost:2181
 KAFKA_HOME=$HOME/tools/kafka
 TOPIC=test
 
+source ${TEST_HOME}/producer.env
+
 function sendNotification() {
   which notify-pushover &> /dev/null
   if [ $? -eq 0 ] ; then
@@ -55,8 +57,8 @@ while true ; do
 		echo "Starting the test at ${startTime}"
 		java ${JAVA_OPTS} -Dcamel.version=${CAMEL_VERSION} \
 			-Dcamel.main.durationMaxMessages=${PRODUCER_MESSAGE_COUNT} \
-			-Dtest.file=${CAMEL_VERSION}.test -Dcamel.component.kafka.brokers=${BOOTSTRAP_HOST} \
-			-jar kafka-tester-producer-${CAMEL_VERSION}.jar
+			-Dtest.file="${CAMEL_VERSION}".test -Dcamel.component.kafka.brokers=${BOOTSTRAP_HOST} \
+			-jar kafka-tester-producer-"${CAMEL_VERSION}".jar
 
 		mv producer-rate.data ${HOME}/test-data/producer-rate-${TEST_NAME}-${CAMEL_VERSION}.data
 		mv producer-latencies.hdr ${HOME}/test-data/producer-latencies-${TEST_NAME}-${CAMEL_VERSION}.hdr
