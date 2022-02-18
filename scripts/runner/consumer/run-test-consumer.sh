@@ -65,7 +65,7 @@ while true ; do
 				-Dcamel.component.kafka.brokers=${BOOTSTRAP_HOST} \
 				-Dmetrics.org="${METRICS_ORG}" \
         -Dmetrics.bucket="${METRICS_BUCKET}" \
-        -Dmetrics.token="${METRICS_TOKEN}" \
+        -Dmetrics.token="'${METRICS_TOKEN}'" \
         -Dmetrics.uri="${METRICS_URI}" \
 				-jar kafka-tester-consumer-"${CAMEL_VERSION}".jar
 		else
@@ -75,7 +75,7 @@ while true ; do
 				-Dcamel.component.kafka.brokers=${BOOTSTRAP_HOST} \
 				-Dmetrics.org="${METRICS_ORG}" \
 				-Dmetrics.bucket="${METRICS_BUCKET}" \
-				-Dmetrics.token="${METRICS_TOKEN}" \
+				-Dmetrics.token="'${METRICS_TOKEN}'" \
 				-Dmetrics.uri="${METRICS_URI}" \
 				-jar kafka-tester-consumer-"${CAMEL_VERSION}".jar
 		fi

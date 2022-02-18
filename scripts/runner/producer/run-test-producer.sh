@@ -60,7 +60,7 @@ while true ; do
 			-Dtest.file="${CAMEL_VERSION}".test -Dcamel.component.kafka.brokers=${BOOTSTRAP_HOST} \
 			-Dmetrics.org="${METRICS_ORG}" \
       -Dmetrics.bucket="${METRICS_BUCKET}" \
-      -Dmetrics.token="${METRICS_TOKEN}" \
+      -Dmetrics.token="'${METRICS_TOKEN}'" \
       -Dmetrics.uri="${METRICS_URI}" \
 			-jar kafka-tester-producer-"${CAMEL_VERSION}".jar
 
