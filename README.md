@@ -46,3 +46,7 @@ Then run:
 
 `make development`
 
+
+```
+podman run --rm --name influxdb -v influxdb-data:/root/.influxdbv2 -p 8086:8086 quay.io/influxdb/influxdb:v2.0.9
+```
