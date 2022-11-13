@@ -162,7 +162,7 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
-        <camel.version>3.14.1</camel.version>
+        <camel.version>3.14.6</camel.version>
       </properties>
     </profile>
     <profile>
@@ -180,7 +180,25 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
-        <camel.version>3.16.0-SNAPSHOT</camel.version>
+        <camel.version>3.16.0</camel.version>
+      </properties>
+    </profile>
+    <profile>
+      <id>camel-3.18</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <camel.version>3.18.3</camel.version>
+      </properties>
+    </profile>
+    <profile>
+      <id>camel-3.20</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <camel.version>3.20.0-SNAPSHOT</camel.version>
       </properties>
     </profile>
   </profiles>
