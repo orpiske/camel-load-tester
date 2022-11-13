@@ -193,6 +193,15 @@
       </properties>
     </profile>
     <profile>
+      <id>camel-3.19</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <camel.version>3.19.0</camel.version>
+      </properties>
+    </profile>
+    <profile>
       <id>camel-3.20</id>
       <activation>
         <activeByDefault>false</activeByDefault>
