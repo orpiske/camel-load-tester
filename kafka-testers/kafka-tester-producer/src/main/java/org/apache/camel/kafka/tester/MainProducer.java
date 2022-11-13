@@ -25,6 +25,7 @@ public class MainProducer {
     public static void main(String... args) throws Exception {
         Main main = new Main();
 
+        final String topic = System.getProperty("kafka.topic", "test-topic-producer");
         final String testRateFileName = System.getProperty("test.rate.file", "producer-rate.data");
 
         final LongAdder longAdder = new LongAdder();
@@ -39,9 +40,9 @@ public class MainProducer {
         File testRateFile = new File(testRateFileName);
         try (RateWriter rateWriter = new BinaryRateWriter(testRateFile, FileHeader.WRITER_DEFAULT_PRODUCER)) {
             if (batchSize > 0) {
-                main.configure().addRoutesBuilder(new TestProducer(latencyRecorder, longAdder, true, batchSize));
+                main.configure().addRoutesBuilder(new TestProducer(latencyRecorder, longAdder, true, batchSize, topic));
             } else {
-                main.configure().addRoutesBuilder(new TestProducer(latencyRecorder, longAdder, false, 0));
+                main.configure().addRoutesBuilder(new TestProducer(latencyRecorder, longAdder, false, 0, topic));
             }
 
             main.addMainListener(new TestMainListener(rateWriter, longAdder, testSize, main::stop));

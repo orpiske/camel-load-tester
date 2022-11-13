@@ -9,16 +9,18 @@ import org.apache.camel.builder.RouteBuilder;
  */
 public class TestConsumer extends RouteBuilder {
     private final LongAdder longAdder;
+    private final String topic;
 
-    public TestConsumer(LongAdder longAdder) {
+    public TestConsumer(LongAdder longAdder, String topic) {
         this.longAdder = longAdder;
+        this.topic = topic;
     }
 
     /**
      * Let's configure the Camel routing rules using Java code...
      */
     public void configure() {
-        from("kafka:test?autoOffsetReset=earliest")
+        fromF("kafka:%s?autoOffsetReset=earliest", topic)
             .process(exchange -> longAdder.increment());
     }
 

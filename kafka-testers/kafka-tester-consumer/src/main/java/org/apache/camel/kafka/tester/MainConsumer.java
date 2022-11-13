@@ -20,6 +20,7 @@ public class MainConsumer {
     public static void main(String... args) throws Exception {
         Main main = new Main();
 
+        final String topic = System.getProperty("kafka.topic", "test-topic-consumer");
         String name = System.getProperty("test.rate.file", "consumer-rate.data");
 
         LongAdder longAdder = new LongAdder();
@@ -27,7 +28,7 @@ public class MainConsumer {
 
         File reportFile = new File(name);
         try (RateWriter rateWriter = new BinaryRateWriter(reportFile, FileHeader.WRITER_DEFAULT_CONSUMER)) {
-            main.configure().addRoutesBuilder(new TestConsumer(longAdder));
+            main.configure().addRoutesBuilder(new TestConsumer(longAdder, topic));
             main.addMainListener(new TestMainListener(rateWriter, longAdder, testSize, main::stop));
             main.run(args);
         }

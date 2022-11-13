@@ -23,12 +23,14 @@ public class TestProducer extends RouteBuilder {
     private final LongAdder longAdder;
     private final boolean aggregate;
     private final int batchSize;
+    private final String topic;
 
-    public TestProducer(SingleWriterRecorder latencyRecorder, LongAdder longAdder, boolean aggregate, int batchSize) {
+    public TestProducer(SingleWriterRecorder latencyRecorder, LongAdder longAdder, boolean aggregate, int batchSize, String topic) {
         this.latencyRecorder = latencyRecorder;
         this.longAdder = longAdder;
         this.aggregate = aggregate;
         this.batchSize = batchSize;
+        this.topic = topic;
     }
 
     /**
@@ -38,7 +40,7 @@ public class TestProducer extends RouteBuilder {
         if (!aggregate) {
             from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}")
                     .setProperty("CREATE_TIME", Instant::now)
-                    .to("kafka:test")
+                    .toF("kafka:%s", topic)
                     .process(exchange -> longAdder.increment())
                     .process(this::measureExchange);
         } else {
@@ -46,7 +48,7 @@ public class TestProducer extends RouteBuilder {
                     .aggregate(constant(true), new GroupedExchangeAggregationStrategy())
                     .completionSize(batchSize)
                     .setProperty("CREATE_TIME", Instant::now)
-                    .to("kafka:test")
+                    .toF("kafka:%s", topic)
                     .process(exchange -> longAdder.add(batchSize))
                     .process(this::measureExchange);
         }
