@@ -19,6 +19,7 @@ import org.HdrHistogram.EncodableHistogram;
 import org.HdrHistogram.Histogram;
 import org.HdrHistogram.HistogramLogReader;
 import org.apache.camel.CamelException;
+import org.apache.camel.RuntimeCamelException;
 import org.apache.camel.kafka.tester.io.BinaryRateReader;
 import org.apache.camel.kafka.tester.io.common.FileHeader;
 import org.apache.camel.kafka.tester.io.common.RateEntry;
@@ -273,6 +274,10 @@ public class MainAnalyzer {
     private static SummaryStatistics getStats(RateData testData) {
         SummaryStatistics summaryStatistics = new SummaryStatistics();
 
+        if (testData.entries.size() <= 10) {
+            throw new RuntimeCamelException("There are not enough records to generate a summary");
+        }
+
         testData.entries.subList(10, testData.entries.size()).forEach(r -> summaryStatistics.addValue(r.getCount()));
 
         return summaryStatistics;
@@ -288,6 +293,7 @@ public class MainAnalyzer {
 
             RateEntry entry = rateReader.readRecord();
             while (entry != null) {
+                LOG.trace("Reading: {}", entry);
                 rateData.entries.add(entry);
                 entry = rateReader.readRecord();
             }
