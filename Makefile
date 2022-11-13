@@ -4,7 +4,7 @@ TOOLS_HOME?=$(TEST_USER_HOME)/tools
 
 .PHONY: install
 
-CAMEL_VERSIONS?=3.11 3.14 3.15 3.16
+CAMEL_VERSIONS?=3.14 3.18 3.19 3.20
 
 dest-dir:
 	ssh $(TEST_HOST) mkdir -p $(TOOLS_HOME)/kafka-tester/
