@@ -1,6 +1,6 @@
 TEST_HOST?=dione
 TEST_USER_HOME=/home/$(USER)
-TOOLS_HOME?=$(TEST_USER_HOME)/tools
+TOOLS_HOME:=$(TEST_USER_HOME)/tools
 
 .PHONY: install
 
