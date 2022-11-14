@@ -275,7 +275,8 @@ public class MainAnalyzer {
         SummaryStatistics summaryStatistics = new SummaryStatistics();
 
         if (testData.entries.size() <= 10) {
-            throw new RuntimeCamelException("There are not enough records to generate a summary");
+            throw new RuntimeCamelException("There are not enough records to generate a summary. There are only " +
+                    testData.entries.size());
         }
 
         testData.entries.subList(10, testData.entries.size()).forEach(r -> summaryStatistics.addValue(r.getCount()));
@@ -309,7 +310,7 @@ public class MainAnalyzer {
 
         File histogramFile = new File(histogramFileName);
 
-        return Optional.of(getAccumulated(histogramFile));
+        return Optional.ofNullable(getAccumulated(histogramFile));
     }
 
     public static Histogram getAccumulated(final File histogramFile) throws FileNotFoundException {
@@ -377,7 +378,6 @@ public class MainAnalyzer {
             }
         } catch (CamelException | IOException e) {
             System.err.println(e.getMessage());
-            return;
         }
 
 
