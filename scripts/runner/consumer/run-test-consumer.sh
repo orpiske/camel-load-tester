@@ -1,6 +1,7 @@
 LOAD_TOOL_HOME=$HOME/tools/consumer
 TEST_HOME=$HOME/tools/kafka-tester
 BOOTSTRAP_HOST=localhost:9092
+TOPIC=test-topic-consumer
 
 source "${TEST_HOME}"/consumer.env
 
@@ -54,6 +55,13 @@ while true ; do
 		sleep 2s
 
 		startTime=$(date)
+
+		# This command is for Kafka >= 3.x
+    ${KAFKA_HOME}/bin/kafka-topics.sh --bootstrap-server ${BOOTSTRAP_HOST} --create --topic ${TOPIC} --partitions ${CONSUMERS} --replication-factor 1
+    ${KAFKA_HOME}/bin/kafka-topics.sh --bootstrap-server ${BOOTSTRAP_HOST}  --describe --topic ${TOPIC}
+
+    # To force delete the topic, if needed
+    # ${KAFKA_HOME}/bin/kafka-topics.sh --bootstrap-server ${BOOTSTRAP_HOST} --delete --topic ${TOPIC} || true
 
 		echo "Starting the test at ${startTime}"
 		if [[ $CAMEL_VERSION == *"3.11"* ]] ; then

@@ -2,7 +2,7 @@ TEST_HOME=$HOME/tools/kafka-tester
 BOOTSTRAP_HOST=localhost:9092
 ZOOKEEPER_HOST=localhost:2181
 KAFKA_HOME=$HOME/tools/kafka
-TOPIC=test
+TOPIC=test-topic-producer
 
 source ${TEST_HOME}/producer.env
 
@@ -50,7 +50,11 @@ while true ; do
 		sudo systemctl start kafka@$USER
 		sleep 2s
 
-		# ${KAFKA_HOME}/bin/kafka-topics.sh --zookeeper ${ZOOKEEPER_HOST} --delete --topic ${TOPIC} || true
+    # To view topic metadata
+		# ${KAFKA_HOME}/bin/kafka-topics.sh --bootstrap-server ${BOOTSTRAP_HOST}  --describe --topic ${TOPIC}
+
+		# To force delete the topic, if needed
+    # ${KAFKA_HOME}/bin/kafka-topics.sh --bootstrap-server ${BOOTSTRAP_HOST} --delete --topic ${TOPIC} || true
 
 		startTime=$(date)
 
