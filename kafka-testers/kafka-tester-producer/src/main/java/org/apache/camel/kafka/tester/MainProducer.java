@@ -40,9 +40,9 @@ public class MainProducer {
         File testRateFile = new File(testRateFileName);
         try (RateWriter rateWriter = new BinaryRateWriter(testRateFile, FileHeader.WRITER_DEFAULT_PRODUCER)) {
             if (batchSize > 0) {
-                main.configure().addRoutesBuilder(new TestProducer(latencyRecorder, longAdder, true, batchSize, topic));
+                main.configure().addRoutesBuilder(new TestNoopProducer(latencyRecorder, longAdder, true, batchSize, topic));
             } else {
-                main.configure().addRoutesBuilder(new TestProducer(latencyRecorder, longAdder, false, 0, topic));
+                main.configure().addRoutesBuilder(new TestNoopProducer(latencyRecorder, longAdder, false, 0, topic));
             }
 
             main.addMainListener(new TestMainListener(rateWriter, longAdder, testSize, main::stop));
