@@ -38,13 +38,13 @@ public class KafkaProducerRouteBuilder extends RouteBuilder {
      */
     public void configure() {
         if (!aggregate) {
-            from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}")
+            from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}&dataSetIndex=off")
                     .setProperty("CREATE_TIME", Instant::now)
                     .toF("kafka:%s", topic)
                     .process(exchange -> longAdder.increment())
                     .process(this::measureExchange);
         } else {
-            from("dataset:testSet?produceDelay=0&initialDelay={{initial.delay:2000}}&minRate={{?min.rate}}&preloadSize={{?preload.size}}")
+            from("dataset:testSet?produceDelay=0&initialDelay={{initial.delay:2000}}&minRate={{?min.rate}}&preloadSize={{?preload.size}}&dataSetIndex=off")
                     .aggregate(constant(true), new GroupedExchangeAggregationStrategy())
                     .completionSize(batchSize)
                     .setProperty("CREATE_TIME", Instant::now)
