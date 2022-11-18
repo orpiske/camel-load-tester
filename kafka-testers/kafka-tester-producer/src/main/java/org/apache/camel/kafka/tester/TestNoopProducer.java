@@ -30,10 +30,10 @@ public class TestNoopProducer extends RouteBuilder {
      */
     public void configure() {
         if (!aggregate) {
-            from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}")
+            from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}&dataSetIndex=off")
                     .process(exchange -> longAdder.increment());
         } else {
-            from("dataset:testSet?produceDelay=0&initialDelay={{initial.delay:2000}}&minRate={{?min.rate}}&preloadSize={{?preload.size}}")
+            from("dataset:testSet?produceDelay=0&initialDelay={{initial.delay:2000}}&minRate={{?min.rate}}&preloadSize={{?preload.size}}&dataSetIndex=off")
                     .aggregate(constant(true), new GroupedExchangeAggregationStrategy())
                     .completionSize(batchSize)
                     .process(exchange -> longAdder.add(batchSize));
