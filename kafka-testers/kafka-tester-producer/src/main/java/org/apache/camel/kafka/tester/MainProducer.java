@@ -8,13 +8,12 @@ import java.util.concurrent.atomic.LongAdder;
 import org.HdrHistogram.EncodableHistogram;
 import org.HdrHistogram.SingleWriterRecorder;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.dataset.ListDataSet;
 import org.apache.camel.component.dataset.SimpleDataSet;
 import org.apache.camel.kafka.tester.common.TestMainListener;
-import org.apache.camel.kafka.tester.io.common.FileHeader;
 import org.apache.camel.kafka.tester.io.BinaryRateWriter;
 import org.apache.camel.kafka.tester.io.LatencyWriter;
 import org.apache.camel.kafka.tester.io.RateWriter;
+import org.apache.camel.kafka.tester.io.common.FileHeader;
 import org.apache.camel.main.Main;
 
 /**
