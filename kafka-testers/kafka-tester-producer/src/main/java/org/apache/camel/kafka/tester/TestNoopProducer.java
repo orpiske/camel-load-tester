@@ -40,7 +40,6 @@ public class TestNoopProducer extends RouteBuilder {
         if (!aggregate) {
             from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}")
                     .setProperty("CREATE_TIME", Instant::now)
-                    .to("mock:noop")
                     .process(exchange -> longAdder.increment())
                     .process(this::measureExchange);
         } else {
@@ -48,7 +47,6 @@ public class TestNoopProducer extends RouteBuilder {
                     .aggregate(constant(true), new GroupedExchangeAggregationStrategy())
                     .completionSize(batchSize)
                     .setProperty("CREATE_TIME", Instant::now)
-                    .toF("mock:noop")
                     .process(exchange -> longAdder.add(batchSize))
                     .process(this::measureExchange);
         }
