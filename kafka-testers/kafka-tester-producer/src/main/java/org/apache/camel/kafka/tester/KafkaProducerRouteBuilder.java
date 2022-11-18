@@ -16,8 +16,8 @@ import org.slf4j.LoggerFactory;
 /**
  * A Camel Java DSL Router
  */
-public class TestProducer extends RouteBuilder {
-    private static final Logger LOG = LoggerFactory.getLogger(TestProducer.class);
+public class KafkaProducerRouteBuilder extends RouteBuilder {
+    private static final Logger LOG = LoggerFactory.getLogger(KafkaProducerRouteBuilder.class);
 
     private final SingleWriterRecorder latencyRecorder;
     private final LongAdder longAdder;
@@ -25,7 +25,7 @@ public class TestProducer extends RouteBuilder {
     private final int batchSize;
     private final String topic;
 
-    public TestProducer(SingleWriterRecorder latencyRecorder, LongAdder longAdder, boolean aggregate, int batchSize, String topic) {
+    public KafkaProducerRouteBuilder(SingleWriterRecorder latencyRecorder, LongAdder longAdder, boolean aggregate, int batchSize, String topic) {
         this.latencyRecorder = latencyRecorder;
         this.longAdder = longAdder;
         this.aggregate = aggregate;
