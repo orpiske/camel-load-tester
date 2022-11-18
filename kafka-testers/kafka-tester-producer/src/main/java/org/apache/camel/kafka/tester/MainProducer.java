@@ -51,6 +51,7 @@ public class MainProducer {
         switch (routeType) {
             case "kafka": return getKafkaRouteBuilder(longAdder);
             case "noop": return getTestNoopProducer(longAdder);
+            case "noop-threaded": return getTestNoopThreadedProducer(longAdder);
         }
 
         throw new IllegalArgumentException("Invalid route type: " + routeType);
@@ -91,6 +92,11 @@ public class MainProducer {
             System.err.println("Unable to save latency file: " + e.getMessage());
             throw new RuntimeException(e);
         }
+    }
+
+    private static RouteBuilder getTestNoopThreadedProducer(LongAdder longAdder) {
+        int threadCount = Integer.parseInt(System.getProperty("test.thread.count", "1"));
+        return new TestNoopThreadedProducer(longAdder, threadCount);
     }
 
     private static void bindDataSet(Main main, int testSize) {
