@@ -15,23 +15,23 @@ public class TestNoopThreadedProducer extends RouteBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(TestNoopThreadedProducer.class);
 
     private final LongAdder longAdder;
-    private final int threadCount;
+    private final int batchSize;
 
     public TestNoopThreadedProducer(LongAdder longAdder, int batchSize) {
         this.longAdder = longAdder;
-        this.threadCount = batchSize;
+        this.batchSize = batchSize;
     }
 
     /**
      * Let's configure the Camel routing rules using Java code...
      */
     public void configure() {
-        if (threadCount == 0) {
+        if (batchSize == 0) {
             from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}&dataSetIndex=off")
                     .process(exchange -> longAdder.increment());
         } else {
             from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}&dataSetIndex=off")
-                    .threads(threadCount)
+                    .threads(batchSize)
                     .process(exchange -> longAdder.increment());
         }
     }
