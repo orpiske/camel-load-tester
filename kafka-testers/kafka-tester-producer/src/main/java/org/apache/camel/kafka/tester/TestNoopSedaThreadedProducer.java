@@ -10,15 +10,15 @@ import org.slf4j.LoggerFactory;
 /**
  * A Camel Java DSL Router
  */
-public class TestNoopDirectThreadedProducer extends RouteBuilder {
-    private static final Logger LOG = LoggerFactory.getLogger(TestNoopDirectThreadedProducer.class);
+public class TestNoopSedaThreadedProducer extends RouteBuilder {
+    private static final Logger LOG = LoggerFactory.getLogger(TestNoopSedaThreadedProducer.class);
 
     private final LongAdder longAdder;
-    private final int batchSize;
+    private final int threadCount;
 
-    public TestNoopDirectThreadedProducer(LongAdder longAdder, int batchSize) {
+    public TestNoopSedaThreadedProducer(LongAdder longAdder, int threadCount) {
         this.longAdder = longAdder;
-        this.batchSize = batchSize;
+        this.threadCount = threadCount;
     }
 
     /**
@@ -26,14 +26,14 @@ public class TestNoopDirectThreadedProducer extends RouteBuilder {
      */
     public void configure() {
         from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}&dataSetIndex=off")
-                .to("direct:test");
+                .to("seda:test");
 
-        if (batchSize == 0) {
-            from("direct:test")
+        if (threadCount == 0) {
+            from("seda:test")
                     .process(exchange -> longAdder.increment());
         } else {
-            from("direct:test")
-                    .threads(batchSize)
+            fromF("seda:test?concurrentConsumers=%s", threadCount)
+                    .threads(threadCount)
                     .process(exchange -> longAdder.increment());
         }
     }
