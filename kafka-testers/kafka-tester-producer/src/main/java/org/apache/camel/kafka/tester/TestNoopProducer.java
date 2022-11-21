@@ -2,7 +2,6 @@ package org.apache.camel.kafka.tester;
 
 import java.util.concurrent.atomic.LongAdder;
 
-import org.HdrHistogram.SingleWriterRecorder;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
 import org.slf4j.Logger;
