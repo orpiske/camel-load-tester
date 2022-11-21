@@ -29,6 +29,8 @@ public class TestNoopProducer extends RouteBuilder {
      * Let's configure the Camel routing rules using Java code...
      */
     public void configure() {
+        LOG.info("Using batch size: {}", batchSize);
+
         if (!aggregate) {
             from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}&dataSetIndex=off")
                     .process(exchange -> longAdder.increment());

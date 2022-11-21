@@ -25,6 +25,8 @@ public class TestNoopThreadedProducer extends RouteBuilder {
      * Let's configure the Camel routing rules using Java code...
      */
     public void configure() {
+        LOG.info("Using thread count: {}", threadCount);
+
         if (threadCount == 0) {
             from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}&dataSetIndex=off")
                     .process(exchange -> longAdder.increment());

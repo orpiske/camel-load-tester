@@ -44,6 +44,8 @@ public class KafkaProducerRouteBuilder extends RouteBuilder {
                     .process(exchange -> longAdder.increment())
                     .process(this::measureExchange);
         } else {
+            LOG.info("Using batch size: {}", batchSize);
+
             from("dataset:testSet?produceDelay=0&initialDelay={{initial.delay:2000}}&minRate={{?min.rate}}&preloadSize={{?preload.size}}&dataSetIndex=off")
                     .aggregate(constant(true), new GroupedExchangeAggregationStrategy())
                     .completionSize(batchSize)
