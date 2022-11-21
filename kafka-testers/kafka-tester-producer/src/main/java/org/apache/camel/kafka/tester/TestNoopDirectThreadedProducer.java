@@ -14,11 +14,11 @@ public class TestNoopDirectThreadedProducer extends RouteBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(TestNoopDirectThreadedProducer.class);
 
     private final LongAdder longAdder;
-    private final int batchSize;
+    private final int threadCount;
 
-    public TestNoopDirectThreadedProducer(LongAdder longAdder, int batchSize) {
+    public TestNoopDirectThreadedProducer(LongAdder longAdder, int threadCount) {
         this.longAdder = longAdder;
-        this.batchSize = batchSize;
+        this.threadCount = threadCount;
     }
 
     /**
@@ -28,12 +28,12 @@ public class TestNoopDirectThreadedProducer extends RouteBuilder {
         from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}&dataSetIndex=off")
                 .to("direct:test");
 
-        if (batchSize == 0) {
+        if (threadCount == 0) {
             from("direct:test")
                     .process(exchange -> longAdder.increment());
         } else {
             from("direct:test")
-                    .threads(batchSize)
+                    .threads(threadCount)
                     .process(exchange -> longAdder.increment());
         }
     }
