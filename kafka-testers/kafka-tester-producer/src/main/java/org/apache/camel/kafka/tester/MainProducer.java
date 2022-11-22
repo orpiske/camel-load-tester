@@ -15,6 +15,8 @@ import org.apache.camel.kafka.tester.io.LatencyWriter;
 import org.apache.camel.kafka.tester.io.RateWriter;
 import org.apache.camel.kafka.tester.io.common.FileHeader;
 import org.apache.camel.main.Main;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A Camel Application
@@ -24,10 +26,8 @@ public class MainProducer {
     /**
      * A main() so we can easily run these routing rules in our IDE
      */
-    public static void main(String... args) throws Exception {
+    public static void main(String... args) {
         Main main = new Main();
-
-
         final String testRateFileName = System.getProperty("test.rate.file", "producer-rate.data");
 
         final LongAdder longAdder = new LongAdder();
@@ -42,6 +42,12 @@ public class MainProducer {
             main.addMainListener(new TestMainListener(rateWriter, longAdder, testSize, main::stop));
 
             main.run();
+        } catch (Exception e) {
+            Logger log = LoggerFactory.getLogger(MainProducer.class);
+            log.error("Unable to launch the test application: {}", e.getMessage(), e);
+            main.shutdown();
+
+            System.exit(1);
         }
     }
 
@@ -96,18 +102,27 @@ public class MainProducer {
         }
     }
 
+    private static int threadCount() {
+        String strThreadCount = System.getProperty("test.thread.count", "1");
+        if (strThreadCount.equals("max")) {
+            return Runtime.getRuntime().availableProcessors();
+        }
+
+        return Integer.parseInt(strThreadCount);
+    }
+
     private static RouteBuilder getTestNoopThreadedProducer(LongAdder longAdder) {
-        int threadCount = Integer.parseInt(System.getProperty("test.thread.count", "1"));
+        int threadCount = threadCount();
         return new TestNoopThreadedProducer(longAdder, threadCount);
     }
 
     private static RouteBuilder getTestNoopThreadedDirectProducer(LongAdder longAdder) {
-        int threadCount = Integer.parseInt(System.getProperty("test.thread.count", "1"));
+        int threadCount = threadCount();
         return new TestNoopDirectThreadedProducer(longAdder, threadCount);
     }
 
     private static RouteBuilder getTestNoopThreadedSedaProducer(LongAdder longAdder) {
-        int threadCount = Integer.parseInt(System.getProperty("test.thread.count", "1"));
+        int threadCount = threadCount();
         return new TestNoopSedaThreadedProducer(longAdder, threadCount);
     }
 
