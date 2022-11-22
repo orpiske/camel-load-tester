@@ -18,6 +18,8 @@ import org.apache.camel.main.Main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.apache.camel.kafka.tester.common.Parameters.threadCount;
+
 /**
  * A Camel Application
  */
@@ -100,15 +102,6 @@ public class MainProducer {
             System.err.println("Unable to save latency file: " + e.getMessage());
             throw new RuntimeException(e);
         }
-    }
-
-    private static int threadCount() {
-        String strThreadCount = System.getProperty("test.thread.count", "1");
-        if (strThreadCount.equals("max")) {
-            return Runtime.getRuntime().availableProcessors();
-        }
-
-        return Integer.parseInt(strThreadCount);
     }
 
     private static RouteBuilder getTestNoopThreadedProducer(LongAdder longAdder) {
