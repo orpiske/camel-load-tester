@@ -7,6 +7,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.controller.common.config.ConfigHolder;
 import org.apache.camel.controller.common.types.TestExecution;
+import org.apache.camel.controller.common.types.TestState;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
@@ -25,16 +26,30 @@ public class NewTestProcessor implements Processor {
         TestExecution testExecution = exchange.getMessage().getBody(TestExecution.class);
         assert testExecution != null;
 
+        // -Dcamel.main.durationMaxMessages=60000000
+        // -Dtest.producer.type=noop
+        // -javaagent:/Users/opiske/Projects/tmp/type-pollution-agent/agent/target/type-pollution-agent-0.1-SNAPSHOT.jar=org.apache.camel
+
         CommandLine cmdLine = new CommandLine("java");
         cmdLine.addArgument("-Dcamel.version=${camel.version}");
         cmdLine.addArgument("-Dcamel.main.durationMaxMessages=${camel.main.durationMaxMessages}");
         cmdLine.addArgument("-Dcamel.version=${camel.version}");
         cmdLine.addArgument("-Dcamel.component.kafka.brokers=${camel.component.kafka.brokers}");
 
+        if (testExecution.getTester().equals("producer")) {
+            cmdLine.addArgument("-Dtest.producer.type=${test.type}");
+        } else {
+            cmdLine.addArgument("-Dtest.consumer.type=${test.type}");
+        }
+
         cmdLine.addArgument("-Dtest.file=${camel.version}.test");
 
         cmdLine.addArgument("-jar");
-        cmdLine.addArgument("${tester.deployment.dir}/kafka-tester-producer-${camel.version}.jar");
+        if (testExecution.getTester().equals("producer")) {
+            cmdLine.addArgument("${tester.deployment.dir}/kafka-tester-producer-${camel.version}.jar");
+        } else {
+            cmdLine.addArgument("${tester.deployment.dir}/kafka-tester-consumer-${camel.version}.jar");
+        }
 
         Map<String, Object> map = new HashMap<>();
 
@@ -42,6 +57,7 @@ public class NewTestProcessor implements Processor {
         map.put("camel.main.durationMaxMessages", testExecution.getTestDuration().getDurationValue());
         map.put("tester.deployment.dir", deploymentDir);
         map.put("camel.component.kafka.brokers", ConfigHolder.getInstance().get("camel.component.kafka.brokers"));
+        map.put("test.type", testExecution.getTestType());
 
         cmdLine.setSubstitutionMap(map);
 
@@ -57,6 +73,19 @@ public class NewTestProcessor implements Processor {
 
         resultHandler.waitFor();
 
-        LOG.info("Finished with status: {}", resultHandler.getExitValue());
+        final int exitValue = resultHandler.getExitValue();
+        LOG.info("Finished with status: {}", exitValue);
+
+        TestState testState = new TestState();
+
+        testState.setState("finished");
+        if (exitValue == 0) {
+            testState.setStatus("success");
+        } else {
+            testState.setStatus("failed");
+        }
+        testExecution.setTestState(testState);
+
+        exchange.getMessage().setBody(testExecution);
     }
 }

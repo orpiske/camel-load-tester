@@ -23,8 +23,20 @@ public class Test implements Callable<Integer> {
     @CommandLine.Option(names = {"--camel-version"}, description = "The Camel version under test", required = true)
     private String camelVersion;
 
+    @CommandLine.Option(names = {"--tester"}, description = "The tester to use (producer or consumer)", required = true)
+    private String tester;
+
+    @CommandLine.Option(names = {"--test-name"}, description = "The test name", required = true)
+    private String testName;
+
+    @CommandLine.Option(names = {"--test-type"}, description = "The test type (from the tester) to use (i.e.; noop, noop-seda-threaded, etc)", required = true)
+    private String testType;
+
     @CommandLine.Option(names = {"--test-duration"}, description = "The test duration (max message)", required = true)
     private String durationMaxMessages;
+
+    @CommandLine.Option(names = {"--tester-arguments"}, description = "Additional arguments to pass to the tester")
+    private String testerArguments;
 
     @CommandLine.Option(names = { "-h", "--help" }, usageHelp = true, description = "display a help message")
     private boolean helpRequested = false;
@@ -47,7 +59,6 @@ public class Test implements Callable<Integer> {
             header.setFormatVersion("1.0.0");
             testExecution.setHeader(header);
 
-
             CamelMeta camelMeta = new CamelMeta();
             camelMeta.setCamelVersion(camelVersion);
             testExecution.setCamelMeta(camelMeta);
@@ -56,6 +67,11 @@ public class Test implements Callable<Integer> {
             duration.setDurationType("max-messages");
             duration.setDurationValue(durationMaxMessages);
             testExecution.setTestDuration(duration);
+
+            testExecution.setTester(tester);
+            testExecution.setTestName(testName);
+            testExecution.setTestType(testType);
+            testExecution.setTesterArguments(testerArguments);
 
             ObjectMapper mapper = new ObjectMapper();
             final String body = mapper.writeValueAsString(testExecution);

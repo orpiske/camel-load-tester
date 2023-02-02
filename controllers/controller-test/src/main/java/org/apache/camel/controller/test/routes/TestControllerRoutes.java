@@ -13,6 +13,7 @@ public class TestControllerRoutes extends RouteBuilder {
         from("kafka:test.new")
                 .unmarshal().json(JsonLibrary.Jackson, TestExecution.class)
                 .process(newTestProcessor::process)
+                .marshal().json(JsonLibrary.Jackson)
                 .to("kafka:test.finished");
     }
 }
