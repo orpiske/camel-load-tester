@@ -10,6 +10,7 @@ public class TestExecution {
     private String testName;
     private String testType;
     private String testerArguments;
+    private int timeout;
 
     public String getTesterArguments() {
         return testerArguments;
@@ -81,5 +82,13 @@ public class TestExecution {
 
     public void setTestState(TestState testState) {
         this.testState = testState;
+    }
+
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 }

@@ -35,6 +35,9 @@ public class Test implements Callable<Integer> {
     @CommandLine.Option(names = {"--test-duration"}, description = "The test duration (max message)", required = true)
     private String durationMaxMessages;
 
+    @CommandLine.Option(names = {"--test-timeout"}, defaultValue = "15", description = "The timeout (in minutes) for the test")
+    private int timeout;
+
     @CommandLine.Option(names = {"--tester-arguments"}, description = "Additional arguments to pass to the tester")
     private String testerArguments;
 
@@ -72,6 +75,7 @@ public class Test implements Callable<Integer> {
             testExecution.setTestName(testName);
             testExecution.setTestType(testType);
             testExecution.setTesterArguments(testerArguments);
+            testExecution.setTimeout(timeout);
 
             ObjectMapper mapper = new ObjectMapper();
             final String body = mapper.writeValueAsString(testExecution);

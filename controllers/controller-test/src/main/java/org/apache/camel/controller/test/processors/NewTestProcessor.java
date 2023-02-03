@@ -65,7 +65,13 @@ public class NewTestProcessor implements Processor {
 
         DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
 
-        ExecuteWatchdog watchdog = new ExecuteWatchdog(60*1000);
+        int timeout = testExecution.getTimeout();
+        if (timeout == 0) {
+            timeout = 15;
+        }
+
+        ExecuteWatchdog watchdog = new ExecuteWatchdog(timeout * 1000);
+
         Executor executor = new DefaultExecutor();
         executor.setExitValue(1);
         executor.setWatchdog(watchdog);
