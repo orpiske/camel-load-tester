@@ -1,3 +1,5 @@
-source ./config/launcher.conf
+install_path=$(dirname $0)
 
-java -jar ${TESTER_DIR}/controller-test-${CONTROLLER_VERSION}*.jar -Dconfig.dir=/Users/opiske/tmp/test-config
+source  ${install_path}/config/launcher.conf
+
+java -Dconfig.dir=${TESTER_DIR}/config/ -jar ${TESTER_DIR}/controller-test-${CONTROLLER_VERSION}*.jar
