@@ -29,7 +29,10 @@ gen-config:
 	@mkdir -p $(TARGET_CONFIG_DIR)
 	@echo "camel.component.kafka.brokers="$(KAFKA_URI) > $(APPLICATION_PROPERTIES)
 	@echo "common.data.dir="$(DATA_HOME) >> $(APPLICATION_PROPERTIES)
-	@echo "producer.deployment.dir="$(TESTER_DIR)/ >> $(APPLICATION_PROPERTIES)
+	@echo "common.tester.jvm.start=4G" >> $(APPLICATION_PROPERTIES)
+	@echo "common.tester.jvm.max=4G" >> $(APPLICATION_PROPERTIES)
+
+	@echo "producer.deployment.dir="$(TESTER_DIR) >> $(APPLICATION_PROPERTIES)
 	@echo "consumer.deployment.dir="$(TESTER_DIR) >> $(APPLICATION_PROPERTIES)
 	@echo "analyzer.deployment.dir="$(TESTER_DIR) >> $(APPLICATION_PROPERTIES)
 	@echo "TESTER_DIR="$(TESTER_DIR) > $(LAUNCHER_CONF)
@@ -45,7 +48,6 @@ deploy-scripts:
 	ssh $(TEST_HOST) chmod +x $(TESTER_DIR)/start-controller.sh
 
 deploy: $(CAMEL_VERSIONS) gen-config deploy-config
-
 
 start-session:
 	ssh $(TEST_FILE) ${TEST_HOST} tmux new-session -d -s "controller" $(TESTER_DIR)/start-controller.sh

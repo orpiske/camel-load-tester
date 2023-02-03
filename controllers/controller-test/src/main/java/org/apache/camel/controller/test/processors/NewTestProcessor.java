@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 public class NewTestProcessor implements Processor {
     private static final Logger LOG = LoggerFactory.getLogger(NewTestProcessor.class);
-    private Object dataDir = ConfigHolder.getInstance().get("common.data.dir");
+    private String dataDir = ConfigHolder.getInstance().getProperty("common.data.dir");
 
     @Override
     public void process(Exchange exchange) throws Exception {
@@ -27,6 +27,19 @@ public class NewTestProcessor implements Processor {
         assert testExecution != null;
 
         CommandLine cmdLine = new CommandLine("java");
+
+        String startMemory = ConfigHolder.getInstance().getProperty("common.tester.jvm.start", "4G");
+        if (startMemory != null) {
+            cmdLine.addArgument("-Xms=${startMemory}");
+        }
+
+        String maxMemory = ConfigHolder.getInstance().getProperty("common.tester.jvm.max", "4G");
+        if (maxMemory != null) {
+            cmdLine.addArgument("-Xmx=${maxMemory}");
+        }
+
+        cmdLine.addArgument("-Dcamel.version=${camel.version}");
+
         cmdLine.addArgument("-Dcamel.version=${camel.version}");
         cmdLine.addArgument("-Dcamel.main.durationMaxMessages=${camel.main.durationMaxMessages}");
         cmdLine.addArgument("-Dcamel.version=${camel.version}");
@@ -56,6 +69,8 @@ public class NewTestProcessor implements Processor {
         map.put("test.type", testExecution.getTestType());
         map.put("tester", testExecution.getTester());
         map.put("common.data.dir", dataDir);
+        map.put("startMemory", startMemory);
+        map.put("maxMemory", maxMemory);
 
         cmdLine.setSubstitutionMap(map);
 
