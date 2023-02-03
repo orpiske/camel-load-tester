@@ -1,5 +1,6 @@
 package org.apache.camel.controller.test.processors;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,7 +62,7 @@ public class TestFinishedProcessor implements Processor {
             timeout = 15;
         }
 
-        ExecuteWatchdog watchdog = new ExecuteWatchdog(timeout * 1000);
+        ExecuteWatchdog watchdog = new ExecuteWatchdog(Duration.ofMinutes(timeout).toMillis());
 
         Executor executor = new DefaultExecutor();
         executor.setExitValue(1);
