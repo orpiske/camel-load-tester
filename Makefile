@@ -52,8 +52,3 @@ deploy: $(CAMEL_VERSIONS) gen-config deploy-config
 start-session:
 	ssh $(TEST_FILE) ${TEST_HOST} tmux new-session -d -s "controller" $(TESTER_DIR)/start-controller.sh
 
-start-producer-test-session:
-	ssh $(TEST_HOST) touch $(TEST_USER_HOME)/block.file
-	ssh $(TEST_FILE) ${TEST_HOST} tmux new-session -d -s "producer" $(TOOLS_HOME)/producer/run-test-producer.sh
-
-
