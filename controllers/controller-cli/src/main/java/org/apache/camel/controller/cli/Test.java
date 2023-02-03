@@ -23,6 +23,9 @@ public class Test implements Callable<Integer> {
     @CommandLine.Option(names = {"--camel-version"}, description = "The Camel version under test", required = true)
     private String camelVersion;
 
+    @CommandLine.Option(names = {"--camel-baseline-version"}, description = "The Camel version to compare to")
+    private String camelBaselineVersion;
+
     @CommandLine.Option(names = {"--tester"}, description = "The tester to use (producer or consumer)", required = true)
     private String tester;
 
@@ -64,6 +67,7 @@ public class Test implements Callable<Integer> {
 
             CamelMeta camelMeta = new CamelMeta();
             camelMeta.setCamelVersion(camelVersion);
+            camelMeta.setBaselineVersion(camelBaselineVersion);
             testExecution.setCamelMeta(camelMeta);
 
             TestDuration duration = new TestDuration();

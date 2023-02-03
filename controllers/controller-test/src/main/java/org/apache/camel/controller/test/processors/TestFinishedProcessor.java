@@ -16,8 +16,9 @@ import org.apache.commons.exec.Executor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NewTestProcessor implements Processor {
-    private static final Logger LOG = LoggerFactory.getLogger(NewTestProcessor.class);
+public class TestFinishedProcessor implements Processor {
+    private static final Logger LOG = LoggerFactory.getLogger(TestFinishedProcessor.class);
+    private Object deploymentDir = ConfigHolder.getInstance().get("analyzer.deployment.dir");
     private Object dataDir = ConfigHolder.getInstance().get("common.data.dir");
 
     @Override
@@ -26,31 +27,23 @@ public class NewTestProcessor implements Processor {
         assert testExecution != null;
 
         CommandLine cmdLine = new CommandLine("java");
-        cmdLine.addArgument("-Dcamel.version=${camel.version}");
-        cmdLine.addArgument("-Dcamel.main.durationMaxMessages=${camel.main.durationMaxMessages}");
-        cmdLine.addArgument("-Dcamel.version=${camel.version}");
-        cmdLine.addArgument("-Dcamel.component.kafka.brokers=${camel.component.kafka.brokers}");
 
-        cmdLine.addArgument("-Dtest.${tester}.type=${test.type}");
+        if (testExecution.getCamelMeta().getBaselineVersion() != null) {
+            cmdLine.addArgument("-Dbaseline.rate.file=${common.data.dir}/${tester}/${test.name}/${test.type}/${camel.baseline.version}.data");
+            cmdLine.addArgument("-Dbaseline.latencies.file=${common.data.dir}/${tester}/${test.name}/${test.type}/${camel.baseline.version}.hdr");
+        }
+
         cmdLine.addArgument("-Dtest.rate.file=${common.data.dir}/${tester}/${test.name}/${test.type}/${camel.version}.data");
-
+        cmdLine.addArgument("-Dtest.latencies.file=${common.data.dir}/${tester}/${test.name}/${test.type}/${camel.version}.hdr");
+        cmdLine.addArgument("-Dtest.name=${test.name}");
         cmdLine.addArgument("-jar");
-        cmdLine.addArgument("${tester.deployment.dir}/kafka-tester-${tester}-${camel.version}.jar");
+        cmdLine.addArgument("${analyzer.deployment.dir}/kafka-tester-analyzer-${camel.version}.jar");
 
         Map<String, Object> map = new HashMap<>();
 
         map.put("camel.version", testExecution.getCamelMeta().getCamelVersion());
-        map.put("camel.main.durationMaxMessages", testExecution.getTestDuration().getDurationValue());
-
-        if (testExecution.getTester().equals("producer")) {
-            Object deploymentDir = ConfigHolder.getInstance().get("producer.deployment.dir");
-            map.put("tester.deployment.dir", deploymentDir);
-        } else {
-            Object deploymentDir = ConfigHolder.getInstance().get("consumer.deployment.dir");
-            map.put("tester.deployment.dir", deploymentDir);
-        }
-
-        map.put("camel.component.kafka.brokers", ConfigHolder.getInstance().get("camel.component.kafka.brokers"));
+        map.put("camel.baseline.version", testExecution.getCamelMeta().getBaselineVersion());
+        map.put("analyzer.deployment.dir", deploymentDir);
         map.put("test.name", testExecution.getTestName());
         map.put("test.type", testExecution.getTestType());
         map.put("tester", testExecution.getTester());
@@ -90,5 +83,6 @@ public class NewTestProcessor implements Processor {
         testExecution.setTestState(testState);
 
         exchange.getMessage().setBody(testExecution);
+
     }
 }
