@@ -68,7 +68,11 @@ public class MainAnalyzer {
             LOG.warn("Latency file does not exist");
         }
 
-        generateReport();
+        try {
+            generateReport();
+        } catch (Exception e) {
+            System.exit(1);
+        }
     }
 
     private static void plot(Histogram histogram) throws IOException {
