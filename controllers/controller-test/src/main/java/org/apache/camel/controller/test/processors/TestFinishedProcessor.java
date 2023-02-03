@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.controller.common.config.ConfigHolder;
+import org.apache.camel.controller.common.types.Constants;
 import org.apache.camel.controller.common.types.TestExecution;
 import org.apache.camel.controller.common.types.TestState;
 import org.apache.commons.exec.CommandLine;
@@ -26,6 +27,13 @@ public class TestFinishedProcessor implements Processor {
     public void process(Exchange exchange) throws Exception {
         TestExecution testExecution = exchange.getMessage().getBody(TestExecution.class);
         assert testExecution != null;
+
+        if (testExecution.getTestState().getStatus().equals(Constants.FAILED)) {
+            LOG.info("Skipping analysis due to test failure");
+            exchange.getMessage().setBody(testExecution);
+
+            return;
+        }
 
         CommandLine cmdLine = new CommandLine("java");
 

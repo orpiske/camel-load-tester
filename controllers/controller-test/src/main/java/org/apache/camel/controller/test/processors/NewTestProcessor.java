@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.controller.common.config.ConfigHolder;
+import org.apache.camel.controller.common.types.Constants;
 import org.apache.camel.controller.common.types.TestExecution;
 import org.apache.camel.controller.common.types.TestState;
 import org.apache.commons.exec.CommandLine;
@@ -97,11 +98,11 @@ public class NewTestProcessor implements Processor {
 
         TestState testState = new TestState();
 
-        testState.setState("finished");
+        testState.setState(Constants.FINISHED);
         if (exitValue == 0) {
-            testState.setStatus("success");
+            testState.setStatus(Constants.SUCCESS);
         } else {
-            testState.setStatus("failed");
+            testState.setStatus(Constants.FAILED);
         }
         testExecution.setTestState(testState);
 

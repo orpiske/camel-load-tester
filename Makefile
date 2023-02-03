@@ -47,8 +47,8 @@ deploy-scripts:
 	scp scripts/runner/controller/start-controller.sh $(TEST_HOST):$(TESTER_DIR)
 	ssh $(TEST_HOST) chmod +x $(TESTER_DIR)/start-controller.sh
 
-deploy: $(CAMEL_VERSIONS) gen-config deploy-config
+deploy: $(CAMEL_VERSIONS) gen-config deploy-config deploy-scripts
 
-start-session:
+start-session: deploy-scripts
 	ssh $(TEST_FILE) ${TEST_HOST} tmux new-session -d -s "controller" $(TESTER_DIR)/start-controller.sh
 
