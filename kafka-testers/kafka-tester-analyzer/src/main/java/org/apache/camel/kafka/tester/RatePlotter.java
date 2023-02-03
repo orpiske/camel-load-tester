@@ -17,6 +17,7 @@
 package org.apache.camel.kafka.tester;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -30,8 +31,10 @@ import org.knowm.xchart.style.markers.SeriesMarkers;
 
 public class RatePlotter extends AbstractRatePlotter {
     private final String baseName;
+    private final String outputDir;
 
-    public RatePlotter(final String baseName) {
+    public RatePlotter(final String outputDir, final String baseName) {
+        this.outputDir = outputDir;
         this.baseName = baseName;
     }
 
@@ -65,7 +68,7 @@ public class RatePlotter extends AbstractRatePlotter {
     }
 
     public String getFileName() {
-        return baseName + "_rate.png";
+        return outputDir + File.separator + baseName + "_rate.png";
     }
 
     @Override

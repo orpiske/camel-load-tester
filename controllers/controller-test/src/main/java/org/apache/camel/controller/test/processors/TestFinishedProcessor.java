@@ -36,6 +36,7 @@ public class TestFinishedProcessor implements Processor {
         cmdLine.addArgument("-Dtest.rate.file=${common.data.dir}/${tester}/${test.name}/${test.type}/${camel.version}.data");
         cmdLine.addArgument("-Dtest.latencies.file=${common.data.dir}/${tester}/${test.name}/${test.type}/${camel.version}.hdr");
         cmdLine.addArgument("-Dtest.name=${test.name}");
+        cmdLine.addArgument("-Doutput.dir=${common.data.dir}/reports/${tester}/${test.name}/${test.type}");
         cmdLine.addArgument("-jar");
         cmdLine.addArgument("${analyzer.deployment.dir}/kafka-tester-analyzer-${camel.version}.jar");
 

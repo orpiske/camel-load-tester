@@ -18,6 +18,7 @@ package org.apache.camel.kafka.tester;
 
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 
 import org.HdrHistogram.Histogram;
@@ -39,15 +40,19 @@ import org.slf4j.LoggerFactory;
 public class HdrPlotter extends AbstractHdrPlotter {
     private static final Logger LOG = LoggerFactory.getLogger(HdrPlotter.class);
 
+    private final String outputDir;
     private final String baseName;
 
-    public HdrPlotter(final String baseName) {
+
+    public HdrPlotter(final String outputDir, final String baseName) {
+        this.outputDir = outputDir;
         this.baseName = baseName;
 
         getChartProperties().setyTitle("milliseconds");
     }
 
-    public HdrPlotter(final String baseName, final String timeUnit) {
+    public HdrPlotter(final String outputDir, final String baseName, final String timeUnit) {
+        this.outputDir = outputDir;
         this.baseName = baseName;
 
         getChartProperties().setyTitle(timeUnit);
@@ -85,7 +90,7 @@ public class HdrPlotter extends AbstractHdrPlotter {
     }
 
     public String getFileName() {
-        return baseName + "_all.png";
+        return outputDir + File.separator + baseName + "_all.png";
     }
 
 

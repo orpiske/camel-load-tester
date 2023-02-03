@@ -241,7 +241,6 @@
           <scope>runtime</scope>
           <version>${log4j2-version}</version>
         </dependency>
-
       </dependencies>
     </profile>
   </profiles>
