@@ -31,12 +31,12 @@ public class NewTestProcessor implements Processor {
 
         String startMemory = ConfigHolder.getInstance().getProperty("common.tester.jvm.start", "4G");
         if (startMemory != null) {
-            cmdLine.addArgument("-Xms=${startMemory}");
+            cmdLine.addArgument("-Xms${startMemory}");
         }
 
         String maxMemory = ConfigHolder.getInstance().getProperty("common.tester.jvm.max", "4G");
         if (maxMemory != null) {
-            cmdLine.addArgument("-Xmx=${maxMemory}");
+            cmdLine.addArgument("-Xmx${maxMemory}");
         }
 
         cmdLine.addArgument("-Dcamel.version=${camel.version}");
