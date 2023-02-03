@@ -78,7 +78,7 @@ public class Test implements Callable<Integer> {
 
         ObjectMapper mapper = new ObjectMapper();
         final TestExecution testExecution = mapper.readValue(body, TestExecution.class);
-        System.out.println("Executed: " + testExecution.getTestState().getStatus());
+        System.out.println("Test executed and finished with status: " + testExecution.getTestState().getStatus());
     }
 
     private void sendTestRequest(ProducerTemplate producerTemplate) throws JsonProcessingException {
