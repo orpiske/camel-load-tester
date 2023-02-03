@@ -9,6 +9,7 @@ import org.HdrHistogram.EncodableHistogram;
 import org.HdrHistogram.SingleWriterRecorder;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.dataset.SimpleDataSet;
+import org.apache.camel.kafka.tester.common.IOUtil;
 import org.apache.camel.kafka.tester.common.TestMainListener;
 import org.apache.camel.kafka.tester.io.BinaryRateWriter;
 import org.apache.camel.kafka.tester.io.LatencyWriter;
@@ -37,7 +38,8 @@ public class MainProducer {
 
         bindDataSet(main, testSize);
 
-        File testRateFile = new File(testRateFileName);
+        File testRateFile = IOUtil.create(testRateFileName);
+
         try (RateWriter rateWriter = new BinaryRateWriter(testRateFile, FileHeader.WRITER_DEFAULT_PRODUCER)) {
             RouteBuilder routeBuilder = getRouteBuilder(longAdder);
             main.configure().addRoutesBuilder(routeBuilder);
@@ -92,7 +94,9 @@ public class MainProducer {
 
     private static void saveLatencyFile(SingleWriterRecorder latencyRecorder) {
         final String testLatenciesFileName = System.getProperty("test.latencies.file", "producer-latencies.hdr");
-        try (LatencyWriter latencyWriter = new LatencyWriter(new File(testLatenciesFileName))) {
+        final File path = IOUtil.create(testLatenciesFileName);
+
+        try (LatencyWriter latencyWriter = new LatencyWriter(path)) {
             EncodableHistogram histogram = latencyRecorder.getIntervalHistogram();
 
             String camelVersion = System.getProperty("camel.version", "3.x.x");

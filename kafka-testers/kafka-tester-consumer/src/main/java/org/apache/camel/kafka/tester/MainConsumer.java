@@ -3,6 +3,7 @@ package org.apache.camel.kafka.tester;
 import java.io.File;
 import java.util.concurrent.atomic.LongAdder;
 
+import org.apache.camel.kafka.tester.common.IOUtil;
 import org.apache.camel.kafka.tester.common.TestMainListener;
 import org.apache.camel.kafka.tester.io.common.FileHeader;
 import org.apache.camel.kafka.tester.io.BinaryRateWriter;
@@ -26,7 +27,8 @@ public class MainConsumer {
         LongAdder longAdder = new LongAdder();
         long testSize = Long.parseLong(System.getProperty("camel.main.durationMaxMessages", "0"));
 
-        File reportFile = new File(name);
+        File reportFile = IOUtil.create(name);
+
         try (RateWriter rateWriter = new BinaryRateWriter(reportFile, FileHeader.WRITER_DEFAULT_CONSUMER)) {
             main.configure().addRoutesBuilder(new TestConsumer(longAdder, topic));
             main.addMainListener(new TestMainListener(rateWriter, longAdder, testSize, main::stop));
