@@ -3,8 +3,11 @@ package org.apache.camel.controller.cli;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.CamelContext;
+import org.apache.camel.ConsumerTemplate;
+import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.kafka.KafkaComponent;
 import org.apache.camel.controller.common.types.CamelMeta;
@@ -55,40 +58,58 @@ public class Test implements Callable<Integer> {
             context.start();
 
             final ProducerTemplate producerTemplate = context.createProducerTemplate();
+            System.out.println("Executing the test");
+            sendTestRequest(producerTemplate);
 
-            TestExecution testExecution = new TestExecution();
-
-            testExecution.setId(UUID.randomUUID().toString());
-
-            Header header = new Header();
-
-            header.setFormatVersion("1.0.0");
-            testExecution.setHeader(header);
-
-            CamelMeta camelMeta = new CamelMeta();
-            camelMeta.setCamelVersion(camelVersion);
-            camelMeta.setBaselineVersion(camelBaselineVersion);
-            testExecution.setCamelMeta(camelMeta);
-
-            TestDuration duration = new TestDuration();
-            duration.setDurationType("max-messages");
-            duration.setDurationValue(durationMaxMessages);
-            testExecution.setTestDuration(duration);
-
-            testExecution.setTester(tester);
-            testExecution.setTestName(testName);
-            testExecution.setTestType(testType);
-            testExecution.setTesterArguments(testerArguments);
-            testExecution.setTimeout(timeout);
-
-            ObjectMapper mapper = new ObjectMapper();
-            final String body = mapper.writeValueAsString(testExecution);
-
-            producerTemplate.sendBody("kafka:test.new", body);
+            System.out.println("Waiting for a response");
+            final ConsumerTemplate consumerTemplate = context.createConsumerTemplate();
+            waitForTestResult(consumerTemplate);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         return 0;
+    }
+
+    private static void waitForTestResult(ConsumerTemplate consumerTemplate) throws JsonProcessingException {
+        final Exchange completionExchange = consumerTemplate.receive("kafka:test.finished");
+
+        String body = completionExchange.getMessage().getBody(String.class);
+
+        ObjectMapper mapper = new ObjectMapper();
+        final TestExecution testExecution = mapper.readValue(body, TestExecution.class);
+        System.out.println("Executed: " + testExecution.getTestState().getStatus());
+    }
+
+    private void sendTestRequest(ProducerTemplate producerTemplate) throws JsonProcessingException {
+        TestExecution testExecution = new TestExecution();
+
+        testExecution.setId(UUID.randomUUID().toString());
+
+        Header header = new Header();
+
+        header.setFormatVersion("1.0.0");
+        testExecution.setHeader(header);
+
+        CamelMeta camelMeta = new CamelMeta();
+        camelMeta.setCamelVersion(camelVersion);
+        camelMeta.setBaselineVersion(camelBaselineVersion);
+        testExecution.setCamelMeta(camelMeta);
+
+        TestDuration duration = new TestDuration();
+        duration.setDurationType("max-messages");
+        duration.setDurationValue(durationMaxMessages);
+        testExecution.setTestDuration(duration);
+
+        testExecution.setTester(tester);
+        testExecution.setTestName(testName);
+        testExecution.setTestType(testType);
+        testExecution.setTesterArguments(testerArguments);
+        testExecution.setTimeout(timeout);
+
+        ObjectMapper mapper = new ObjectMapper();
+        final String body = mapper.writeValueAsString(testExecution);
+
+        producerTemplate.sendBody("kafka:test.new", body);
     }
 }
