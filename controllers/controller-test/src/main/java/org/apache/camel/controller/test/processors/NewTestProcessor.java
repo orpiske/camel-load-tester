@@ -39,6 +39,11 @@ public class NewTestProcessor implements Processor {
             cmdLine.addArgument("-Xmx${maxMemory}");
         }
 
+        final String testerArguments = testExecution.getTesterArguments();
+        if (testerArguments != null) {
+            cmdLine.addArgument(testerArguments);
+        }
+
         cmdLine.addArgument("-Dcamel.version=${camel.version}");
 
         cmdLine.addArgument("-Dcamel.version=${camel.version}");
