@@ -2,19 +2,16 @@ package org.apache.camel.kafka.tester;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Properties;
 
 import org.HdrHistogram.DoubleHistogram;
 import org.HdrHistogram.EncodableHistogram;
 import org.HdrHistogram.Histogram;
 import org.HdrHistogram.HistogramLogReader;
-import org.apache.camel.CamelException;
 import org.apache.camel.RuntimeCamelException;
 import org.apache.camel.kafka.tester.common.types.BaselinedTestMetrics;
 import org.apache.camel.kafka.tester.common.types.Metrics;
@@ -28,19 +25,16 @@ import org.slf4j.LoggerFactory;
 
 public class AnalyzerApp {
     private static final Logger LOG = LoggerFactory.getLogger(AnalyzerApp.class);
-    private static final String TEST_NAME = System.getProperty("test.name");
     private static final String TIME_UNIT_NAME = System.getProperty("latencies.timeunit", "microseconds");
     private static final String OUTPUT_DIR = System.getProperty("output.dir", ".");
 
-    private final Properties properties = new Properties();
-    
     public void plot(Histogram histogram) throws IOException {
         HdrPlotter hdrPlotter = new HdrPlotter(OUTPUT_DIR, "latency", TIME_UNIT_NAME);
 
         hdrPlotter.plot(histogram);
     }
 
-    public Properties plot(Histogram testHistogram, Histogram baseline) throws IOException {
+    public void plot(Histogram testHistogram, Histogram baseline, OutputHandler outputHandler) throws IOException {
         HdrPlotter hdrPlotter = new HdrPlotter(OUTPUT_DIR,"latency", TIME_UNIT_NAME);
 
         AbstractHdrPlotter.SeriesData seriesData = new AbstractHdrPlotter.SeriesData();
@@ -49,9 +43,6 @@ public class AnalyzerApp {
         seriesData.yData = baseline;
 
         hdrPlotter.plot(testHistogram, seriesData);
-        properties.put("latencyFile", hdrPlotter.getFileName());
-
-        return properties;
     }
 
     public void analyze(Histogram histogram, OutputHandler outputHandler) {
@@ -213,16 +204,5 @@ public class AnalyzerApp {
         return accumulatedHistogram;
     }
 
-    public void generateReport() throws IOException, CamelException {
-        VelocityTemplateParser templateParser = new VelocityTemplateParser(properties);
 
-        File outputFile;
-        properties.put("testName", TEST_NAME);
-        outputFile = templateParser.getOutputFile(new File(OUTPUT_DIR));
-
-        try (FileWriter fw = new FileWriter(outputFile)) {
-            templateParser.parse(fw);
-            LOG.info("Template file was written to {}", outputFile);
-        }
-    }
 }

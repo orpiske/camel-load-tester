@@ -8,6 +8,7 @@ import org.apache.camel.kafka.tester.common.types.BaselinedTestMetrics;
 import org.apache.camel.kafka.tester.common.types.TestMetrics;
 
 public class PropertiesOutputHandler implements OutputHandler {
+    private static final String testName = System.getProperty("test.name");
     private Properties properties = new Properties();
 
     @Override
@@ -17,6 +18,8 @@ public class PropertiesOutputHandler implements OutputHandler {
 
     @Override
     public void outputWithBaseline(BaselinedTestMetrics testMetrics) {
+        properties.put("testName", testName);
+
         properties.put("testCamelVersion", testMetrics.getTestMetrics().getSutVersion());
         properties.put("baselineCamelVersion", testMetrics.getBaselineMetrics().getSutVersion());
         properties.put("testTotalExchanges", testMetrics.getTestMetrics().getMetrics().getTotal());
@@ -74,5 +77,11 @@ public class PropertiesOutputHandler implements OutputHandler {
                 "P99");
         doPut(testMetrics.getTestMetrics().getMetrics()::getP999Latency, testMetrics.getBaselineMetrics().getMetrics()::getP999Latency,
                 "P999");
+
+        properties.put("latencyFile", "latency_all.png");
+    }
+
+    public Properties getProperties() {
+        return properties;
     }
 }
