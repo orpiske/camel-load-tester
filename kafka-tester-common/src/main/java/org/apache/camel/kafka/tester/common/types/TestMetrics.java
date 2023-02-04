@@ -4,7 +4,7 @@ public class TestMetrics {
     private int testSuiteVersion;
     private int sutVersion;
     private String type;
-    private Metrics testMetrics;
+    private Metrics metrics;
 
     public int getTestSuiteVersion() {
         return testSuiteVersion;
@@ -30,11 +30,11 @@ public class TestMetrics {
         this.type = type;
     }
 
-    public Metrics getTestMetrics() {
-        return testMetrics;
+    public Metrics getMetrics() {
+        return metrics;
     }
 
-    public void setTestMetrics(Metrics testMetrics) {
-        this.testMetrics = testMetrics;
+    public void setMetrics(Metrics metrics) {
+        this.metrics = metrics;
     }
 }

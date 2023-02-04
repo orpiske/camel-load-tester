@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import org.HdrHistogram.Histogram;
+import org.apache.camel.kafka.tester.common.types.BaselinedTestMetrics;
 import org.apache.camel.kafka.tester.output.ConsoleOutputHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,16 +25,18 @@ public class MainAnalyzer {
 
         RateData testRateData = analyzerApp.getRateData(testRateFile);
 
+        BaselinedTestMetrics baselinedTestMetrics = null;
+        final Plotter plotter = new Plotter(OUTPUT_DIR);
         final ConsoleOutputHandler consoleOutputHandler = new ConsoleOutputHandler();
         String baselineRateFile = System.getProperty("baseline.rate.file");
         if (baselineRateFile != null) {
             RateData baselineRateData = analyzerApp.getRateData(baselineRateFile);
 
-            analyzerApp.analyze(testRateData, baselineRateData, consoleOutputHandler);
-            analyzerApp.plot(testRateData, baselineRateData);
+             baselinedTestMetrics = analyzerApp.analyze(testRateData, baselineRateData, consoleOutputHandler);
+            plotter.plot(testRateData, baselineRateData);
         } else {
             analyzerApp.analyze(testRateData, consoleOutputHandler);
-            analyzerApp.plot(testRateData);
+            plotter.plot(testRateData);
         }
 
         Optional<Histogram> testHistogram = analyzerApp.getAccumulated(testLatencies);
@@ -42,7 +45,7 @@ public class MainAnalyzer {
             Optional<Histogram> baseLineHistogram = analyzerApp.getAccumulated(baselineLatencies);
 
             if (baseLineHistogram.isPresent()) {
-                analyzerApp.analyze(testHistogram.get(), baseLineHistogram.get(), consoleOutputHandler);
+                analyzerApp.analyze(testHistogram.get(), baseLineHistogram.get(), baselinedTestMetrics, consoleOutputHandler);
                 analyzerApp.plot(testHistogram.get(), baseLineHistogram.get());
             } else {
                 analyzerApp.analyze(testHistogram.get(), consoleOutputHandler);

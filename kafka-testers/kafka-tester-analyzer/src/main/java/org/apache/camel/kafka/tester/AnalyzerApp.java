@@ -6,13 +6,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import org.HdrHistogram.DoubleHistogram;
 import org.HdrHistogram.EncodableHistogram;
@@ -24,7 +20,6 @@ import org.apache.camel.kafka.tester.common.types.BaselinedTestMetrics;
 import org.apache.camel.kafka.tester.common.types.Metrics;
 import org.apache.camel.kafka.tester.common.types.TestMetrics;
 import org.apache.camel.kafka.tester.io.BinaryRateReader;
-import org.apache.camel.kafka.tester.io.common.FileHeader;
 import org.apache.camel.kafka.tester.io.common.RateEntry;
 import org.apache.camel.kafka.tester.output.OutputHandler;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -45,7 +40,7 @@ public class AnalyzerApp {
         hdrPlotter.plot(histogram);
     }
 
-    public void plot(Histogram testHistogram, Histogram baseline) throws IOException {
+    public Properties plot(Histogram testHistogram, Histogram baseline) throws IOException {
         HdrPlotter hdrPlotter = new HdrPlotter(OUTPUT_DIR,"latency", TIME_UNIT_NAME);
 
         AbstractHdrPlotter.SeriesData seriesData = new AbstractHdrPlotter.SeriesData();
@@ -55,71 +50,34 @@ public class AnalyzerApp {
 
         hdrPlotter.plot(testHistogram, seriesData);
         properties.put("latencyFile", hdrPlotter.getFileName());
+
+        return properties;
     }
 
     public void analyze(Histogram histogram, OutputHandler outputHandler) {
         outputHandler.outputHistogram(histogram);
     }
 
-    public void analyze(Histogram histogram, Histogram baseline, OutputHandler outputHandler) {
-        outputHandler.outputHistogram(histogram, baseline);
+    public void analyze(Histogram histogram, Histogram baseline, BaselinedTestMetrics baselinedTestMetrics,OutputHandler outputHandler) {
+//
 
-        double p50Delta = histogram.getValueAtPercentile(50.0) - baseline.getValueAtPercentile(50.0);
-        properties.put("testP50", histogram.getValueAtPercentile(50.0));
-        properties.put("baselineP50", baseline.getValueAtPercentile(50.0));
-        properties.put("deltaP50", p50Delta);
+        baselinedTestMetrics.getTestMetrics().getMetrics().setStartTimeStamp(histogram.getStartTimeStamp());
+        baselinedTestMetrics.getTestMetrics().getMetrics().setEndTimeStamp(histogram.getEndTimeStamp());
+        baselinedTestMetrics.getTestMetrics().getMetrics().setMaxLatency(histogram.getMaxValue());
 
-        double p90Delta = histogram.getValueAtPercentile(90.0) - baseline.getValueAtPercentile(90.0);
-        properties.put("testP90", histogram.getValueAtPercentile(90.0));
-        properties.put("baselineP90", baseline.getValueAtPercentile(90.0));
-        properties.put("deltaP90", p90Delta);
+        baselinedTestMetrics.getTestMetrics().getMetrics().setP50Latency(histogram.getValueAtPercentile(50.0));
+        baselinedTestMetrics.getTestMetrics().getMetrics().setP90Latency(histogram.getValueAtPercentile(90.0));
+        baselinedTestMetrics.getTestMetrics().getMetrics().setP99Latency(histogram.getValueAtPercentile(95.0));
+        baselinedTestMetrics.getTestMetrics().getMetrics().setP999Latency(histogram.getValueAtPercentile(99.0));
+        baselinedTestMetrics.getTestMetrics().getMetrics().setP50Latency(histogram.getValueAtPercentile(99.9));
 
-        double p95Delta = histogram.getValueAtPercentile(95.0) - baseline.getValueAtPercentile(95.0);
-        properties.put("testP95", histogram.getValueAtPercentile(95.0));
-        properties.put("baselineP95", baseline.getValueAtPercentile(95.0));
-        properties.put("deltaP95", p95Delta);
+        baselinedTestMetrics.getBaselineMetrics().getMetrics().setP50Latency(histogram.getValueAtPercentile(50.0));
+        baselinedTestMetrics.getBaselineMetrics().getMetrics().setP90Latency(histogram.getValueAtPercentile(90.0));
+        baselinedTestMetrics.getBaselineMetrics().getMetrics().setP99Latency(histogram.getValueAtPercentile(95.0));
+        baselinedTestMetrics.getBaselineMetrics().getMetrics().setP999Latency(histogram.getValueAtPercentile(99.0));
+        baselinedTestMetrics.getBaselineMetrics().getMetrics().setP50Latency(histogram.getValueAtPercentile(99.9));
 
-        double p99Delta = histogram.getValueAtPercentile(99.0) - baseline.getValueAtPercentile(99.0);
-        properties.put("testP99", histogram.getValueAtPercentile(99.0));
-        properties.put("baselineP99", baseline.getValueAtPercentile(99.0));
-        properties.put("deltaP99", p99Delta);
-
-        double p999Delta = histogram.getValueAtPercentile(99.9) - baseline.getValueAtPercentile(99.9);
-        properties.put("testP999", histogram.getValueAtPercentile(99.9));
-        properties.put("baselineP999", baseline.getValueAtPercentile(99.9));
-        properties.put("deltaP999", p999Delta);
-    }
-
-    public void plot(RateData testData) throws IOException {
-        RatePlotter plotter = createStandardPlotter(testData.header);
-
-        List<Date> xData = testData.entries.stream().map(r -> new Date(r.getTimestamp())).collect(Collectors.toList());
-        List<Long> yData = testData.entries.stream().map(RateEntry::getCount).collect(Collectors.toList());
-        plotter.plot(xData, yData);
-    }
-
-    public void plot(RateData testData, RateData baselineData) throws IOException {
-        RatePlotter plotter = createStandardPlotter(testData.header);
-
-        List<Date> xData = testData.entries.stream().map(r -> new Date(r.getTimestamp())).collect(Collectors.toList());
-        List<Long> yDataTest = testData.entries.stream().map(RateEntry::getCount).collect(Collectors.toList());
-        List<Long> yDataBaseline = baselineData.entries.stream().map(RateEntry::getCount).collect(Collectors.toList());
-
-        AbstractRatePlotter.SeriesData seriesData = new AbstractRatePlotter.SeriesData();
-
-        seriesData.seriesName = "Baseline " + baselineData.header.getCamelVersion();
-        seriesData.yData = yDataBaseline;
-        plotter.plot(xData, yDataTest, seriesData);
-        properties.put("rateFile", plotter.getFileName());
-    }
-
-    private RatePlotter createStandardPlotter(FileHeader testData) {
-        RatePlotter plotter = new RatePlotter(OUTPUT_DIR, testData.getRole().toString().toLowerCase(Locale.ROOT));
-        ChartProperties chartProperties = new ChartProperties();
-
-        chartProperties.setSeriesName(ChartProperties.capitilizeOnly(testData.getRole().toString()) + " " + testData.getCamelVersion());
-        plotter.setChartProperties(chartProperties);
-        return plotter;
+        outputHandler.outputHistogram(baselinedTestMetrics);
     }
 
     public void analyze(RateData testData, OutputHandler outputHandler) {
@@ -145,14 +103,13 @@ public class AnalyzerApp {
         metrics.setGeoMean(testStatistics.getGeometricMean());
         metrics.setStdDeviation(testStatistics.getStandardDeviation());
 
-        testMetrics.setTestMetrics(metrics);
+        testMetrics.setMetrics(metrics);
         return testMetrics;
     }
 
-    public void analyze(RateData testData, RateData baselineData, OutputHandler outputHandler) {
+    public BaselinedTestMetrics analyze(RateData testData, RateData baselineData, OutputHandler outputHandler) {
         SummaryStatistics testStatistics = getStats(testData);
         SummaryStatistics baselineStatistics = getStats(baselineData);
-
 
         final BaselinedTestMetrics baselinedTestMetrics = new BaselinedTestMetrics();
         baselinedTestMetrics.setTestMetrics(buildTestMetrics(testData, testStatistics));
@@ -160,39 +117,8 @@ public class AnalyzerApp {
 
         outputHandler.outputWithBaseline(baselinedTestMetrics);
 
-        properties.put("testCamelVersion", testData.header.getCamelVersion());
-        properties.put("baselineCamelVersion", baselineData.header.getCamelVersion());
-        properties.put("testTotalExchanges", testStatistics.getSum());
-        properties.put("baselineTotalExchanges", baselineStatistics.getSum());
-
-        double totalDelta = testStatistics.getSum() - baselineStatistics.getSum();
-        properties.put("deltaTotalExchanges", totalDelta);
-
-        final double minDelta = testStatistics.getMin() - baselineStatistics.getMin();
-        properties.put("testRateMin", testStatistics.getMin());
-        properties.put("baselineRateMin", baselineStatistics.getMin());
-        properties.put("deltaRateMin", minDelta);
-
-        final double maxDelta = testStatistics.getMax() - baselineStatistics.getMax();
-        properties.put("testRateMax", testStatistics.getMax());
-        properties.put("baselineRateMax", baselineStatistics.getMax());
-        properties.put("deltaRateMax", maxDelta);
-
-        final double meanDelta = testStatistics.getMean() - baselineStatistics.getMean();
-        properties.put("testRateMean", testStatistics.getMean());
-        properties.put("baselineRateMean", baselineStatistics.getMean());
-        properties.put("deltaRateMean", meanDelta);
-
-        final double geoMeanDelta = testStatistics.getGeometricMean() - baselineStatistics.getGeometricMean();
-        properties.put("testRateGeoMean", testStatistics.getGeometricMean());
-        properties.put("baselineRateGeoMean", baselineStatistics.getGeometricMean());
-        properties.put("deltaRateGeoMean", geoMeanDelta);
-
-        properties.put("testStdDev", testStatistics.getStandardDeviation());
-        properties.put("baselineStdDev", baselineStatistics.getStandardDeviation());
+        return baselinedTestMetrics;
     }
-
-
 
     private SummaryStatistics getStats(RateData testData) {
         SummaryStatistics summaryStatistics = new SummaryStatistics();
