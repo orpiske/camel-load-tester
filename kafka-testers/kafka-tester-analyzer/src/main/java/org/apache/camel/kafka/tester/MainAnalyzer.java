@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import org.HdrHistogram.Histogram;
+import org.apache.camel.kafka.tester.output.ConsoleOutputHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,14 +24,15 @@ public class MainAnalyzer {
 
         RateData testRateData = analyzerApp.getRateData(testRateFile);
 
+        final ConsoleOutputHandler consoleOutputHandler = new ConsoleOutputHandler();
         String baselineRateFile = System.getProperty("baseline.rate.file");
         if (baselineRateFile != null) {
             RateData baselineRateData = analyzerApp.getRateData(baselineRateFile);
 
-            analyzerApp.analyze(testRateData, baselineRateData);
+            analyzerApp.analyze(testRateData, baselineRateData, consoleOutputHandler);
             analyzerApp.plot(testRateData, baselineRateData);
         } else {
-            analyzerApp.analyze(testRateData);
+            analyzerApp.analyze(testRateData, consoleOutputHandler);
             analyzerApp.plot(testRateData);
         }
 
@@ -40,10 +42,10 @@ public class MainAnalyzer {
             Optional<Histogram> baseLineHistogram = analyzerApp.getAccumulated(baselineLatencies);
 
             if (baseLineHistogram.isPresent()) {
-                analyzerApp.analyze(testHistogram.get(), baseLineHistogram.get());
+                analyzerApp.analyze(testHistogram.get(), baseLineHistogram.get(), consoleOutputHandler);
                 analyzerApp.plot(testHistogram.get(), baseLineHistogram.get());
             } else {
-                analyzerApp.analyze(testHistogram.get());
+                analyzerApp.analyze(testHistogram.get(), consoleOutputHandler);
                 analyzerApp.plot(testHistogram.get());
             }
         }
