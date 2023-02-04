@@ -2,6 +2,9 @@ package org.apache.camel.kafka.tester.output;
 
 import org.HdrHistogram.Histogram;
 import org.apache.camel.kafka.tester.RateData;
+import org.apache.camel.kafka.tester.common.types.BaselinedTestMetrics;
+import org.apache.camel.kafka.tester.common.types.Metrics;
+import org.apache.camel.kafka.tester.common.types.TestMetrics;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,68 +21,71 @@ public class ConsoleOutputHandler implements OutputHandler {
     }
 
     @Override
-    public void outputSingleAnalyzis(RateData testData, SummaryStatistics testStatistics) {
-        LOG.info("Test suite version: {}", testData.header.getCamelVersion());
-        LOG.info("Version: {}", testData.header.getFileVersion());
-        LOG.info("Type: {}", testData.header.getRole().name());
-        LOG.info("Total: {}", testStatistics.getSum());
-        LOG.info("Minimum: {}", testStatistics.getMin());
-        LOG.info("Maximum: {}", testStatistics.getMax());
-        LOG.info("Mean: {}", testStatistics.getMean());
-        LOG.info("Geometric mean: {}", testStatistics.getGeometricMean());
-        LOG.info("Standard deviation: {}", testStatistics.getStandardDeviation());
+    public void outputSingleAnalyzis(TestMetrics testMetrics) {
+        LOG.info("Test suite version: {}", testMetrics.getTestSuiteVersion());
+        LOG.info("Type: {}", testMetrics.getType());
+        LOG.info("Total: {}", testMetrics.getTestMetrics().getTotal());
+        LOG.info("Minimum: {}", testMetrics.getTestMetrics().getMinimum());
+        LOG.info("Maximum: {}", testMetrics.getTestMetrics().getMaximum());
+        LOG.info("Mean: {}", testMetrics.getTestMetrics().getMean());
+        LOG.info("Geometric mean: {}", testMetrics.getTestMetrics().getGeoMean());
+        LOG.info("Standard deviation: {}", testMetrics.getTestMetrics().getStdDeviation());
     }
 
+
     @Override
-    public void outputWithBaseline(RateData testData, SummaryStatistics testStatistics, RateData baselineData, SummaryStatistics baselineStatistics) {
+    public void outputWithBaseline(BaselinedTestMetrics baselinedTestMetrics) {
+        final TestMetrics testMetrics = baselinedTestMetrics.getTestMetrics();
+        final TestMetrics baselineMetrics = baselinedTestMetrics.getBaselineMetrics();
+
         LOG.info("TEST INFO:");
-        LOG.info("Test suite version: {}", testData.header.getCamelVersion());
-        LOG.info("Version: {}", testData.header.getFileVersion());
-        LOG.info("Type: {}", testData.header.getRole().name());
-        LOG.info("Test version: {} / Baseline version: {}", testData.header.getCamelVersion(), baselineData.header.getCamelVersion());
+        LOG.info("Test suite version: {}", testMetrics.getTestSuiteVersion());
+        LOG.info("Type: {}", testMetrics.getType());
+        LOG.info("Test version: {} / Baseline version: {}", testMetrics.getSutVersion(), baselineMetrics.getSutVersion());
 
         LOG.info("");
         LOG.info("TOTAL EXCHANGES:");
-        LOG.info("Test: {} | Baseline: {}", testStatistics.getSum(), baselineStatistics.getSum());
+        LOG.info("Test: {} | Baseline: {}", testMetrics.getTestMetrics().getTotal(), baselineMetrics.getTestMetrics().getTotal());
 
-        double totalDelta = testStatistics.getSum() - baselineStatistics.getSum();
+        double totalDelta = testMetrics.getTestMetrics().getTotal() - baselineMetrics.getTestMetrics().getTotal();
         LOG.info("Delta: {}", totalDelta);
         logDeltas(totalDelta, "total number of exchanges");
 
         LOG.info("");
         LOG.info("MINIMUM RATE");
-        LOG.info("Test: {} | Baseline: {}", testStatistics.getMin(), baselineStatistics.getMin());
-        final double minDelta = testStatistics.getMin() - baselineStatistics.getMin();
+        LOG.info("Test: {} | Baseline: {}", testMetrics.getTestMetrics().getMinimum(), baselineMetrics.getTestMetrics().getMinimum());
+        final double minDelta = testMetrics.getTestMetrics().getMinimum() - baselineMetrics.getTestMetrics().getMinimum();
         LOG.info("Delta: {}", minDelta);
         logDeltas(minDelta, "minimum rate");
 
         LOG.info("");
         LOG.info("MAXIMUM RATE:");
-        LOG.info("Test: {} | Baseline: {}", testStatistics.getMax(), baselineStatistics.getMax());
+        LOG.info("Test: {} | Baseline: {}", testMetrics.getTestMetrics().getMaximum(), baselineMetrics.getTestMetrics().getMaximum());
 
-        final double maxDelta = testStatistics.getMax() - baselineStatistics.getMax();
+        final double maxDelta = testMetrics.getTestMetrics().getMaximum() - baselineMetrics.getTestMetrics().getMaximum();
         LOG.info("Delta: {}", maxDelta);
         logDeltas(maxDelta, "maximum rate");
 
         LOG.info("");
         LOG.info("MEAN (RATE):");
-        LOG.info("Test: {} | Baseline: {}", testStatistics.getMean(), baselineStatistics.getMean());
+        LOG.info("Test: {} | Baseline: {}", testMetrics.getTestMetrics().getMean(), baselineMetrics.getTestMetrics().getMean());
 
-        final double meanDelta = testStatistics.getMean() - baselineStatistics.getMean();
+        final double meanDelta = testMetrics.getTestMetrics().getMean() - baselineMetrics.getTestMetrics().getMean();
         LOG.info("Delta: {}", meanDelta);
         logDeltas(meanDelta, "mean rate");
 
         LOG.info("");
         LOG.info("GEOMETRIC MEAN (RATE):");
-        LOG.info("Test: {} | Baseline: {}", testStatistics.getGeometricMean(), baselineStatistics.getGeometricMean());
+        LOG.info("Test: {} | Baseline: {}", testMetrics.getTestMetrics().getGeoMean(), baselineMetrics.getTestMetrics().getGeoMean());
 
-        final double geoMeanDelta = testStatistics.getGeometricMean() - baselineStatistics.getGeometricMean();
+        final double geoMeanDelta = testMetrics.getTestMetrics().getGeoMean() - baselineMetrics.getTestMetrics().getGeoMean();
         LOG.info("Delta: {}", geoMeanDelta);
         logDeltas(geoMeanDelta, "geometric mean rate");
 
         LOG.info("");
         LOG.info("OTHER:");
-        LOG.info("Test standard deviation: {} | Baseline standard deviation: {}", testStatistics.getStandardDeviation(), baselineStatistics.getStandardDeviation());
+        LOG.info("Test standard deviation: {} | Baseline standard deviation: {}", testMetrics.getTestMetrics().getStdDeviation(),
+                baselineMetrics.getTestMetrics().getStdDeviation());
     }
 
     @Override

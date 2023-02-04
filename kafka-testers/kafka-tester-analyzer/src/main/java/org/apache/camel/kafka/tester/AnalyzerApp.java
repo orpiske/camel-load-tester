@@ -20,6 +20,9 @@ import org.HdrHistogram.Histogram;
 import org.HdrHistogram.HistogramLogReader;
 import org.apache.camel.CamelException;
 import org.apache.camel.RuntimeCamelException;
+import org.apache.camel.kafka.tester.common.types.BaselinedTestMetrics;
+import org.apache.camel.kafka.tester.common.types.Metrics;
+import org.apache.camel.kafka.tester.common.types.TestMetrics;
 import org.apache.camel.kafka.tester.io.BinaryRateReader;
 import org.apache.camel.kafka.tester.io.common.FileHeader;
 import org.apache.camel.kafka.tester.io.common.RateEntry;
@@ -122,14 +125,40 @@ public class AnalyzerApp {
     public void analyze(RateData testData, OutputHandler outputHandler) {
         SummaryStatistics testStatistics = getStats(testData);
 
-        outputHandler.outputSingleAnalyzis(testData, testStatistics);
+        TestMetrics testMetrics = buildTestMetrics(testData, testStatistics);
+
+        outputHandler.outputSingleAnalyzis(testMetrics);
+    }
+
+    private static TestMetrics buildTestMetrics(RateData testData, SummaryStatistics testStatistics) {
+        TestMetrics testMetrics = new TestMetrics();
+
+        testMetrics.setTestSuiteVersion(testData.header.getCamelVersion());
+        testMetrics.setSutVersion(testData.header.getCamelVersion());
+        testMetrics.setType(testData.header.getRole().name());
+
+        Metrics metrics = new Metrics();
+        metrics.setTotal(testStatistics.getSum());
+        metrics.setMinimum(testStatistics.getMin());
+        metrics.setMaximum(testStatistics.getMax());
+        metrics.setMean(testStatistics.getMean());
+        metrics.setGeoMean(testStatistics.getGeometricMean());
+        metrics.setStdDeviation(testStatistics.getStandardDeviation());
+
+        testMetrics.setTestMetrics(metrics);
+        return testMetrics;
     }
 
     public void analyze(RateData testData, RateData baselineData, OutputHandler outputHandler) {
         SummaryStatistics testStatistics = getStats(testData);
         SummaryStatistics baselineStatistics = getStats(baselineData);
 
-        outputHandler.outputWithBaseline(testData, testStatistics, baselineData, baselineStatistics);
+
+        final BaselinedTestMetrics baselinedTestMetrics = new BaselinedTestMetrics();
+        baselinedTestMetrics.setTestMetrics(buildTestMetrics(testData, testStatistics));
+        baselinedTestMetrics.setBaselineMetrics(buildTestMetrics(baselineData, baselineStatistics));
+
+        outputHandler.outputWithBaseline(baselinedTestMetrics);
 
         properties.put("testCamelVersion", testData.header.getCamelVersion());
         properties.put("baselineCamelVersion", baselineData.header.getCamelVersion());
