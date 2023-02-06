@@ -30,12 +30,10 @@ import org.knowm.xchart.style.lines.SeriesLines;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
 public class RatePlotter extends AbstractRatePlotter {
-    private final String baseName;
     private final String outputDir;
 
-    public RatePlotter(final String outputDir, final String baseName) {
+    public RatePlotter(final String outputDir) {
         this.outputDir = outputDir;
-        this.baseName = baseName;
     }
 
     private void plotAll(final List<Date> xData, final List<? extends Number> yData, SeriesData...extraYSeries) throws IOException {
@@ -68,7 +66,7 @@ public class RatePlotter extends AbstractRatePlotter {
     }
 
     public String getFileName() {
-        return outputDir + File.separator + baseName + "_rate.png";
+        return outputDir + File.separator + "rate.png";
     }
 
     @Override

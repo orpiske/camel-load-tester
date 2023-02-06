@@ -162,7 +162,7 @@
         </div>
 
         <div>
-            <img src="$rateFile" alt=""/>
+            <img src="rate.png" alt=""/>
         </div>
 
 #if ($latencyFile && $latencyFile != '')

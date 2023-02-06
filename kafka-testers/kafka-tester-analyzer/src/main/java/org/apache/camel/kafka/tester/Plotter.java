@@ -38,11 +38,10 @@ public class Plotter {
         seriesData.yData = yDataBaseline;
         plotter.plot(xData, yDataTest, seriesData);
         return plotter.getFileName();
-//        properties.put("rateFile", plotter.getFileName());
     }
 
     private RatePlotter createStandardPlotter(FileHeader testData) {
-        RatePlotter plotter = new RatePlotter(outputDir, testData.getRole().toString().toLowerCase(Locale.ROOT));
+        RatePlotter plotter = new RatePlotter(outputDir);
         ChartProperties chartProperties = new ChartProperties();
 
         chartProperties.setSeriesName(ChartProperties.capitilizeOnly(testData.getRole().toString()) + " " + testData.getCamelVersion());
