@@ -1,15 +1,21 @@
 package org.apache.camel.controller.test.processors;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.controller.common.config.ConfigHolder;
 import org.apache.camel.controller.common.types.Constants;
 import org.apache.camel.controller.common.types.TestExecution;
 import org.apache.camel.controller.common.types.TestState;
+import org.apache.camel.kafka.tester.common.types.BaselinedTestMetrics;
+import org.apache.camel.kafka.tester.common.types.TestMetrics;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
@@ -91,6 +97,30 @@ public class TestFinishedProcessor implements Processor {
             testState.setStatus("failed");
         }
         testExecution.setTestState(testState);
+
+
+        final String reportDir = dataDir + File.separator + "reports" + File.separator + testExecution.getTester() + File.separator + testExecution.getTestName() + File.separator + testExecution.getTestType();
+        ObjectMapper mapper = new ObjectMapper();
+        if (testExecution.getCamelMeta().getBaselineVersion() != null) {
+            final Path baselinePath = Path.of(reportDir, "baseline.json");
+            LOG.info("Attaching baseline results at {} to the response", baselinePath);
+            if (Files.exists(baselinePath)) {
+                final String baseLine = Files.readString(baselinePath);
+
+                testExecution.setBaselinedTestMetrics(mapper.readValue(baseLine, BaselinedTestMetrics.class));
+            }
+        } else {
+            final Path resultsPath = Path.of(reportDir, "results.json");
+            if (Files.exists(resultsPath)) {
+                LOG.info("Attaching results at {} to the response", resultsPath);
+                final String baseLine = Files.readString(resultsPath);
+
+                testExecution.setTestMetrics(mapper.readValue(baseLine, TestMetrics.class));
+            } else {
+                LOG.warn("No result to attach to the response at either {} or {}", Path.of(reportDir, "results.json"),
+                        Path.of(reportDir, "baseline.json"));
+            }
+        }
 
         exchange.getMessage().setBody(testExecution);
 

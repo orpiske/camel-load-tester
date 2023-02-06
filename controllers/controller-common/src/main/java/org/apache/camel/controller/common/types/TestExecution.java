@@ -1,5 +1,11 @@
 package org.apache.camel.controller.common.types;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import org.apache.camel.kafka.tester.common.types.BaselinedTestMetrics;
+import org.apache.camel.kafka.tester.common.types.TestMetrics;
+import org.apache.camel.kafka.tester.common.types.TestResult;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TestExecution {
     private String id;
     private Header header;
@@ -11,6 +17,8 @@ public class TestExecution {
     private String testType;
     private String testerArguments;
     private int timeout;
+    private TestMetrics testMetrics;
+    private BaselinedTestMetrics baselinedTestMetrics;
 
     public String getTesterArguments() {
         return testerArguments;
@@ -90,5 +98,21 @@ public class TestExecution {
 
     public void setTimeout(int timeout) {
         this.timeout = timeout;
+    }
+
+    public TestMetrics getTestMetrics() {
+        return testMetrics;
+    }
+
+    public void setTestMetrics(TestMetrics testMetrics) {
+        this.testMetrics = testMetrics;
+    }
+
+    public BaselinedTestMetrics getBaselinedTestMetrics() {
+        return baselinedTestMetrics;
+    }
+
+    public void setBaselinedTestMetrics(BaselinedTestMetrics baselinedTestMetrics) {
+        this.baselinedTestMetrics = baselinedTestMetrics;
     }
 }

@@ -1,6 +1,6 @@
 package org.apache.camel.kafka.tester.common.types;
 
-public class TestMetrics {
+public class TestMetrics implements TestResult {
     private int testSuiteVersion;
     private int sutVersion;
     private String type;

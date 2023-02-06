@@ -1,6 +1,6 @@
 package org.apache.camel.kafka.tester.common.types;
 
-public class BaselinedTestMetrics {
+public class BaselinedTestMetrics implements TestResult {
     private TestMetrics testMetrics;
     private TestMetrics baselineMetrics;
 

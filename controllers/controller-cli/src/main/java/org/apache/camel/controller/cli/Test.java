@@ -15,6 +15,9 @@ import org.apache.camel.controller.common.types.Header;
 import org.apache.camel.controller.common.types.TestDuration;
 import org.apache.camel.controller.common.types.TestExecution;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.kafka.tester.common.types.BaselinedTestMetrics;
+import org.apache.camel.kafka.tester.common.types.TestMetrics;
+import org.apache.camel.kafka.tester.common.types.TestResult;
 import picocli.CommandLine;
 
 @CommandLine.Command(name = "test", description = "Run a new performance test")
@@ -63,7 +66,10 @@ public class Test implements Callable<Integer> {
 
             System.out.println("Waiting for a response");
             final ConsumerTemplate consumerTemplate = context.createConsumerTemplate();
-            waitForTestResult(consumerTemplate);
+            if (waitForTestResult(consumerTemplate)) {
+                System.out.println("Waiting for analysis");
+                waitForAnalysisResult(consumerTemplate);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -71,14 +77,42 @@ public class Test implements Callable<Integer> {
         return 0;
     }
 
-    private static void waitForTestResult(ConsumerTemplate consumerTemplate) throws JsonProcessingException {
+    private static boolean waitForTestResult(ConsumerTemplate consumerTemplate) throws JsonProcessingException {
         final Exchange completionExchange = consumerTemplate.receive("kafka:test.finished");
 
         String body = completionExchange.getMessage().getBody(String.class);
 
         ObjectMapper mapper = new ObjectMapper();
         final TestExecution testExecution = mapper.readValue(body, TestExecution.class);
-        System.out.println("Test executed and finished with status: " + testExecution.getTestState().getStatus());
+
+        final String status = testExecution.getTestState().getStatus();
+        System.out.println("Test executed and finished with status: " + status);
+
+        if ("success".equals(status)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static void waitForAnalysisResult(ConsumerTemplate consumerTemplate) throws JsonProcessingException {
+        final Exchange completionExchange = consumerTemplate.receive("kafka:analysis.finished");
+
+        String body = completionExchange.getMessage().getBody(String.class);
+
+        ObjectMapper mapper = new ObjectMapper();
+        final TestExecution testExecution = mapper.readValue(body, TestExecution.class);
+        BaselinedTestMetrics baselinedTestMetrics = testExecution.getBaselinedTestMetrics();
+
+        if (baselinedTestMetrics != null) {
+            System.out.println("Geo mean (baseline): " + baselinedTestMetrics.getBaselineMetrics().getMetrics().getGeoMean());
+            System.out.println("Geo mean (test): " + baselinedTestMetrics.getTestMetrics().getMetrics().getGeoMean());
+        } else {
+            TestMetrics testMetrics = testExecution.getTestMetrics();
+            if (testMetrics != null) {
+                System.out.println("Geo mean (test): " + testMetrics.getMetrics().getGeoMean());
+            }
+        }
     }
 
     private void sendTestRequest(ProducerTemplate producerTemplate) throws JsonProcessingException {
