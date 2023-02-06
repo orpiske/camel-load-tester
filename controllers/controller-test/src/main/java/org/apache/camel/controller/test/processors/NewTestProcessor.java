@@ -1,6 +1,5 @@
 package org.apache.camel.controller.test.processors;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,10 +10,6 @@ import org.apache.camel.controller.common.types.Constants;
 import org.apache.camel.controller.common.types.TestExecution;
 import org.apache.camel.controller.common.types.TestState;
 import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecuteResultHandler;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.ExecuteWatchdog;
-import org.apache.commons.exec.Executor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +22,24 @@ public class NewTestProcessor implements Processor {
         TestExecution testExecution = exchange.getMessage().getBody(TestExecution.class);
         assert testExecution != null;
 
+        CommandLine cmdLine = buildCommand(testExecution);
+
+        final int exitValue = CommandUtil.executeCommand(testExecution, cmdLine);
+
+        TestState testState = new TestState();
+
+        testState.setState(Constants.FINISHED);
+        if (exitValue == 0) {
+            testState.setStatus(Constants.SUCCESS);
+        } else {
+            testState.setStatus(Constants.FAILED);
+        }
+        testExecution.setTestState(testState);
+
+        exchange.getMessage().setBody(testExecution);
+    }
+
+    private CommandLine buildCommand(TestExecution testExecution) {
         CommandLine cmdLine = new CommandLine("java");
 
         String startMemory = ConfigHolder.getInstance().getProperty("common.tester.jvm.start", "4G");
@@ -45,12 +58,8 @@ public class NewTestProcessor implements Processor {
         }
 
         cmdLine.addArgument("-Dcamel.version=${camel.version}");
-
-        cmdLine.addArgument("-Dcamel.version=${camel.version}");
         cmdLine.addArgument("-Dcamel.main.durationMaxMessages=${camel.main.durationMaxMessages}");
-        cmdLine.addArgument("-Dcamel.version=${camel.version}");
         cmdLine.addArgument("-Dcamel.component.kafka.brokers=${camel.component.kafka.brokers}");
-
         cmdLine.addArgument("-Dtest.${tester}.type=${test.type}");
         cmdLine.addArgument("-Dtest.rate.file=${common.data.dir}/${tester}/${test.name}/${test.type}/${camel.version}.data");
 
@@ -81,36 +90,6 @@ public class NewTestProcessor implements Processor {
         cmdLine.setSubstitutionMap(map);
 
         LOG.info("About to execute: {}", cmdLine);
-
-        DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
-
-        int timeout = testExecution.getTimeout();
-        if (timeout == 0) {
-            timeout = 15;
-        }
-
-        ExecuteWatchdog watchdog = new ExecuteWatchdog(Duration.ofMinutes(timeout).toMillis());
-
-        Executor executor = new DefaultExecutor();
-        executor.setExitValue(1);
-        executor.setWatchdog(watchdog);
-        executor.execute(cmdLine, resultHandler);
-
-        resultHandler.waitFor();
-
-        final int exitValue = resultHandler.getExitValue();
-        LOG.info("Finished with status: {}", exitValue);
-
-        TestState testState = new TestState();
-
-        testState.setState(Constants.FINISHED);
-        if (exitValue == 0) {
-            testState.setStatus(Constants.SUCCESS);
-        } else {
-            testState.setStatus(Constants.FAILED);
-        }
-        testExecution.setTestState(testState);
-
-        exchange.getMessage().setBody(testExecution);
+        return cmdLine;
     }
 }

@@ -105,12 +105,16 @@ public class Test implements Callable<Integer> {
         BaselinedTestMetrics baselinedTestMetrics = testExecution.getBaselinedTestMetrics();
 
         if (baselinedTestMetrics != null) {
-            System.out.println("Geo mean (baseline): " + baselinedTestMetrics.getBaselineMetrics().getMetrics().getGeoMean());
-            System.out.println("Geo mean (test): " + baselinedTestMetrics.getTestMetrics().getMetrics().getGeoMean());
+
+            System.out.println("Geo mean (baseline " + baselinedTestMetrics.getBaselineMetrics().getTestSuiteVersion()+ "): "
+                    + baselinedTestMetrics.getBaselineMetrics().getMetrics().getGeoMean());
+            System.out.println("Geo mean (test " + baselinedTestMetrics.getTestMetrics().getTestSuiteVersion() + "): "
+                    + baselinedTestMetrics.getTestMetrics().getMetrics().getGeoMean());
         } else {
             TestMetrics testMetrics = testExecution.getTestMetrics();
             if (testMetrics != null) {
-                System.out.println("Geo mean (test): " + testMetrics.getMetrics().getGeoMean());
+                System.out.println("Geo mean (test " + testMetrics.getTestSuiteVersion() + "): " +
+                        testMetrics.getMetrics().getGeoMean());
             }
         }
     }
