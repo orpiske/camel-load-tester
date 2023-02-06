@@ -116,7 +116,7 @@ public class ConsoleOutputHandler implements OutputHandler {
     }
 
     private void doLogPrintLatency(Supplier<Double> testInfoSuplier, Supplier<Double> baselineInfoSuppler, String title) {
-        LOG.info("{} latency: {} / baseline: {}", title, testInfoSuplier.get(), baselineInfoSuppler.get());
+        LOG.info("{} latency: {} | baseline: {}", title, testInfoSuplier.get(), baselineInfoSuppler.get());
 
         double p50Delta = testInfoSuplier.get() - baselineInfoSuppler.get();
         logDeltas(p50Delta, title);
