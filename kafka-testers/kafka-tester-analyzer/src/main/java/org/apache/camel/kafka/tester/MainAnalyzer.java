@@ -9,6 +9,7 @@ import org.HdrHistogram.Histogram;
 import org.apache.camel.kafka.tester.common.types.BaselinedTestMetrics;
 import org.apache.camel.kafka.tester.output.ConsoleOutputHandler;
 import org.apache.camel.kafka.tester.output.DelegateOutputHandler;
+import org.apache.camel.kafka.tester.output.JsonOutputHandler;
 import org.apache.camel.kafka.tester.output.PropertiesOutputHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +34,12 @@ public class MainAnalyzer {
         final DelegateOutputHandler delegateOutputHandler = new DelegateOutputHandler();
 
 
+
         delegateOutputHandler.add(new ConsoleOutputHandler());
         final PropertiesOutputHandler propertiesOutputHandler = new PropertiesOutputHandler();
         delegateOutputHandler.add(propertiesOutputHandler);
+
+        delegateOutputHandler.add(new JsonOutputHandler(OUTPUT_DIR));
 
         String baselineRateFile = System.getProperty("baseline.rate.file");
         if (baselineRateFile != null) {
