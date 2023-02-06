@@ -45,38 +45,42 @@ public class AnalyzerApp {
         hdrPlotter.plot(testHistogram, seriesData);
     }
 
-    public void analyze(Histogram histogram, OutputHandler outputHandler) {
-        outputHandler.outputHistogram(histogram);
+    public void analyze(Histogram histogram, TestMetrics testMetrics, OutputHandler outputHandler) {
+        setLatencyMetrics(histogram, testMetrics);
+
+        outputHandler.output(testMetrics);
     }
 
     public void analyze(Histogram histogram, Histogram baseline, BaselinedTestMetrics baselinedTestMetrics,OutputHandler outputHandler) {
-//
+        final TestMetrics testMetrics = baselinedTestMetrics.getTestMetrics();
+        setLatencyMetrics(histogram, testMetrics);
 
-        baselinedTestMetrics.getTestMetrics().getMetrics().setStartTimeStamp(histogram.getStartTimeStamp());
-        baselinedTestMetrics.getTestMetrics().getMetrics().setEndTimeStamp(histogram.getEndTimeStamp());
-        baselinedTestMetrics.getTestMetrics().getMetrics().setMaxLatency(histogram.getMaxValue());
+        final TestMetrics baselineMetrics = baselinedTestMetrics.getBaselineMetrics();
+        setLatencyMetrics(baseline, baselineMetrics);
 
-        baselinedTestMetrics.getTestMetrics().getMetrics().setP50Latency(histogram.getValueAtPercentile(50.0));
-        baselinedTestMetrics.getTestMetrics().getMetrics().setP90Latency(histogram.getValueAtPercentile(90.0));
-        baselinedTestMetrics.getTestMetrics().getMetrics().setP99Latency(histogram.getValueAtPercentile(95.0));
-        baselinedTestMetrics.getTestMetrics().getMetrics().setP999Latency(histogram.getValueAtPercentile(99.0));
-        baselinedTestMetrics.getTestMetrics().getMetrics().setP50Latency(histogram.getValueAtPercentile(99.9));
-
-        baselinedTestMetrics.getBaselineMetrics().getMetrics().setP50Latency(histogram.getValueAtPercentile(50.0));
-        baselinedTestMetrics.getBaselineMetrics().getMetrics().setP90Latency(histogram.getValueAtPercentile(90.0));
-        baselinedTestMetrics.getBaselineMetrics().getMetrics().setP99Latency(histogram.getValueAtPercentile(95.0));
-        baselinedTestMetrics.getBaselineMetrics().getMetrics().setP999Latency(histogram.getValueAtPercentile(99.0));
-        baselinedTestMetrics.getBaselineMetrics().getMetrics().setP50Latency(histogram.getValueAtPercentile(99.9));
-
-        outputHandler.outputHistogram(baselinedTestMetrics);
+        outputHandler.output(baselinedTestMetrics);
     }
 
-    public void analyze(RateData testData, OutputHandler outputHandler) {
+    private static void setLatencyMetrics(Histogram histogram, TestMetrics testMetrics) {
+        testMetrics.getMetrics().setStartTimeStamp(histogram.getStartTimeStamp());
+        testMetrics.getMetrics().setEndTimeStamp(histogram.getEndTimeStamp());
+        testMetrics.getMetrics().setMaxLatency(histogram.getMaxValue());
+
+        testMetrics.getMetrics().setP50Latency(histogram.getValueAtPercentile(50.0));
+        testMetrics.getMetrics().setP90Latency(histogram.getValueAtPercentile(90.0));
+        testMetrics.getMetrics().setP99Latency(histogram.getValueAtPercentile(95.0));
+        testMetrics.getMetrics().setP999Latency(histogram.getValueAtPercentile(99.0));
+        testMetrics.getMetrics().setP50Latency(histogram.getValueAtPercentile(99.9));
+    }
+
+    public TestMetrics analyze(RateData testData, OutputHandler outputHandler) {
         SummaryStatistics testStatistics = getStats(testData);
 
         TestMetrics testMetrics = buildTestMetrics(testData, testStatistics);
 
-        outputHandler.outputSingleAnalyzis(testMetrics);
+        outputHandler.output(testMetrics);
+
+        return testMetrics;
     }
 
     private static TestMetrics buildTestMetrics(RateData testData, SummaryStatistics testStatistics) {
@@ -106,7 +110,7 @@ public class AnalyzerApp {
         baselinedTestMetrics.setTestMetrics(buildTestMetrics(testData, testStatistics));
         baselinedTestMetrics.setBaselineMetrics(buildTestMetrics(baselineData, baselineStatistics));
 
-        outputHandler.outputWithBaseline(baselinedTestMetrics);
+        outputHandler.output(baselinedTestMetrics);
 
         return baselinedTestMetrics;
     }

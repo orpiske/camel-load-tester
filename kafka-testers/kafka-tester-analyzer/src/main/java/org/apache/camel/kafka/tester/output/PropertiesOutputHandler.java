@@ -3,7 +3,6 @@ package org.apache.camel.kafka.tester.output;
 import java.util.Properties;
 import java.util.function.Supplier;
 
-import org.HdrHistogram.Histogram;
 import org.apache.camel.kafka.tester.common.types.BaselinedTestMetrics;
 import org.apache.camel.kafka.tester.common.types.TestMetrics;
 
@@ -12,12 +11,12 @@ public class PropertiesOutputHandler implements OutputHandler {
     private Properties properties = new Properties();
 
     @Override
-    public void outputSingleAnalyzis(TestMetrics testMetrics) {
+    public void output(TestMetrics testMetrics) {
         // NO-OP
     }
 
     @Override
-    public void outputWithBaseline(BaselinedTestMetrics testMetrics) {
+    public void output(BaselinedTestMetrics testMetrics) {
         properties.put("testName", testName);
 
         properties.put("testCamelVersion", testMetrics.getTestMetrics().getSutVersion());
@@ -51,22 +50,6 @@ public class PropertiesOutputHandler implements OutputHandler {
         properties.put("testStdDev", testMetrics.getTestMetrics().getMetrics().getStdDeviation());
         properties.put("baselineStdDev", testMetrics.getBaselineMetrics().getMetrics().getStdDeviation());
 
-    }
-
-    @Override
-    public void outputHistogram(Histogram histogram) {
-        // NO-OP
-    }
-
-    private void doPut(Supplier<Double> testInfoSuplier, Supplier<Double> baselineInfoSuppler, String title) {
-        double delta = testInfoSuplier.get() - baselineInfoSuppler.get();
-        properties.put(String.format("test%s", title), testInfoSuplier.get());
-        properties.put(String.format("baseline%s", title), baselineInfoSuppler.get());
-        properties.put(String.format("delta%s", title), delta);
-    }
-
-    @Override
-    public void outputHistogram(BaselinedTestMetrics testMetrics) {
         doPut(testMetrics.getTestMetrics().getMetrics()::getP50Latency, testMetrics.getBaselineMetrics().getMetrics()::getP50Latency,
                 "P50");
         doPut(testMetrics.getTestMetrics().getMetrics()::getP90Latency, testMetrics.getBaselineMetrics().getMetrics()::getP90Latency,
@@ -79,6 +62,14 @@ public class PropertiesOutputHandler implements OutputHandler {
                 "P999");
 
         properties.put("latencyFile", "latency_all.png");
+
+    }
+
+    private void doPut(Supplier<Double> testInfoSuplier, Supplier<Double> baselineInfoSuppler, String title) {
+        double delta = testInfoSuplier.get() - baselineInfoSuppler.get();
+        properties.put(String.format("test%s", title), testInfoSuplier.get());
+        properties.put(String.format("baseline%s", title), baselineInfoSuppler.get());
+        properties.put(String.format("delta%s", title), delta);
     }
 
     public Properties getProperties() {

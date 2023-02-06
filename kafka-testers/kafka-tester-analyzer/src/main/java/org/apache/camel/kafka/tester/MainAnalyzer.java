@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.HdrHistogram.Histogram;
 import org.apache.camel.kafka.tester.common.types.BaselinedTestMetrics;
+import org.apache.camel.kafka.tester.common.types.TestMetrics;
 import org.apache.camel.kafka.tester.output.ConsoleOutputHandler;
 import org.apache.camel.kafka.tester.output.DelegateOutputHandler;
 import org.apache.camel.kafka.tester.output.JsonOutputHandler;
@@ -28,12 +29,11 @@ public class MainAnalyzer {
 
         RateData testRateData = analyzerApp.getRateData(testRateFile);
 
+        TestMetrics testMetrics = null;
         BaselinedTestMetrics baselinedTestMetrics = null;
         final Plotter plotter = new Plotter(OUTPUT_DIR);
 
         final DelegateOutputHandler delegateOutputHandler = new DelegateOutputHandler();
-
-
 
         delegateOutputHandler.add(new ConsoleOutputHandler());
         final PropertiesOutputHandler propertiesOutputHandler = new PropertiesOutputHandler();
@@ -48,7 +48,7 @@ public class MainAnalyzer {
              baselinedTestMetrics = analyzerApp.analyze(testRateData, baselineRateData, delegateOutputHandler);
             plotter.plot(testRateData, baselineRateData);
         } else {
-            analyzerApp.analyze(testRateData, delegateOutputHandler);
+            testMetrics = analyzerApp.analyze(testRateData, delegateOutputHandler);
             plotter.plot(testRateData);
         }
 
@@ -61,7 +61,7 @@ public class MainAnalyzer {
                 analyzerApp.analyze(testHistogram.get(), baseLineHistogram.get(), baselinedTestMetrics, delegateOutputHandler);
                 analyzerApp.plot(testHistogram.get(), baseLineHistogram.get(), delegateOutputHandler);
             } else {
-                analyzerApp.analyze(testHistogram.get(), delegateOutputHandler);
+                analyzerApp.analyze(testHistogram.get(), testMetrics, delegateOutputHandler);
                 analyzerApp.plot(testHistogram.get());
             }
         }
