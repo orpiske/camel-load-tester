@@ -17,6 +17,7 @@ public class TestControllerRoutes extends RouteBuilder {
     @Override
     public void configure() {
         from(KAFKA_TEST_NEW_URI)
+                .routeId("test-new")
                 .unmarshal().json(JsonLibrary.Jackson, TestExecution.class)
                 .process(newTestProcessor::process)
                 .marshal().json(JsonLibrary.Jackson)
@@ -24,6 +25,7 @@ public class TestControllerRoutes extends RouteBuilder {
 
 
         from(KAFKA_TEST_FINISHED_URI)
+                .routeId("test-finished")
                 .unmarshal().json(JsonLibrary.Jackson, TestExecution.class)
                 .process(testFinishedProcessor::process)
                 .marshal().json(JsonLibrary.Jackson)

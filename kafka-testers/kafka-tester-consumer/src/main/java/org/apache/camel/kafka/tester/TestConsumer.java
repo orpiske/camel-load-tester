@@ -21,7 +21,8 @@ public class TestConsumer extends RouteBuilder {
      */
     public void configure() {
         fromF("kafka:%s?autoOffsetReset=earliest", topic)
-            .process(exchange -> longAdder.increment());
+                .routeId("kafka-noop")
+                .process(exchange -> longAdder.increment());
     }
 
 }
