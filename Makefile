@@ -47,6 +47,12 @@ deploy-scripts:
 	scp scripts/runner/controller/start-controller.sh $(TEST_HOST):$(TESTER_DIR)
 	ssh $(TEST_HOST) chmod +x $(TESTER_DIR)/start-controller.sh
 
+deploy-prometheus:
+	ssh $(TEST_HOST) mkdir -p $(TEST_USER_HOME)/tools/prometheus $(TESTER_DIR)/config/prometheus
+	scp resources/prometheus/nodes/config.yaml $(TEST_HOST):$(TESTER_DIR)/config/prometheus
+	ssh $(TEST_HOST) wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.17.2/jmx_prometheus_javaagent-0.17.2.jar -O $(TEST_USER_HOME)/tools/prometheus/jmx_prometheus_javaagent-0.17.2.jar
+	ssh $(TEST_HOST) ln -sf $(TEST_USER_HOME)/tools/prometheus/jmx_prometheus_javaagent-0.17.2.jar $(TEST_USER_HOME)/tools/prometheus/jmx_prometheus_javaagent.jar
+
 deploy: $(CAMEL_VERSIONS) gen-config deploy-config deploy-scripts
 
 start-session: deploy-scripts
