@@ -3,7 +3,6 @@ package org.apache.camel.controller.common.types;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.camel.kafka.tester.common.types.BaselinedTestMetrics;
 import org.apache.camel.kafka.tester.common.types.TestMetrics;
-import org.apache.camel.kafka.tester.common.types.TestResult;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TestExecution {
