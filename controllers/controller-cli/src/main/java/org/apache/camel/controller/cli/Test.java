@@ -17,7 +17,6 @@ import org.apache.camel.controller.common.types.TestExecution;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.kafka.tester.common.types.BaselinedTestMetrics;
 import org.apache.camel.kafka.tester.common.types.TestMetrics;
-import org.apache.camel.kafka.tester.common.types.TestResult;
 import picocli.CommandLine;
 
 @CommandLine.Command(name = "test", description = "Run a new performance test")
@@ -53,6 +52,8 @@ public class Test implements Callable<Integer> {
     @CommandLine.Option(names = { "-h", "--help" }, usageHelp = true, description = "display a help message")
     private boolean helpRequested = false;
 
+    private String testId = UUID.randomUUID().toString();
+
     @Override
     public Integer call() {
         try (CamelContext context = new DefaultCamelContext()) {
@@ -77,13 +78,29 @@ public class Test implements Callable<Integer> {
         return 0;
     }
 
-    private static boolean waitForTestResult(ConsumerTemplate consumerTemplate) throws JsonProcessingException {
-        final Exchange completionExchange = consumerTemplate.receive("kafka:test.finished");
+    private boolean waitForTestResult(ConsumerTemplate consumerTemplate) throws JsonProcessingException {
+        int retries = 10;
+        TestExecution testExecution;
+        do {
+            retries--;
 
-        String body = completionExchange.getMessage().getBody(String.class);
+            final Exchange completionExchange = consumerTemplate.receive("kafka:test.finished");
+            String body = completionExchange.getMessage().getBody(String.class);
 
-        ObjectMapper mapper = new ObjectMapper();
-        final TestExecution testExecution = mapper.readValue(body, TestExecution.class);
+            ObjectMapper mapper = new ObjectMapper();
+            testExecution = mapper.readValue(body, TestExecution.class);
+
+            if (!testId.equals(testExecution.getId())) {
+                System.out.println("The test ID that was received does not match the one sent for the test");
+            } else {
+                break;
+            }
+        } while (retries > 0);
+
+        if (testExecution == null) {
+            System.out.println("No test ID received after several retries");
+            return false;
+        }
 
         final String status = testExecution.getTestState().getStatus();
         System.out.println("Test executed and finished with status: " + status);
@@ -122,7 +139,7 @@ public class Test implements Callable<Integer> {
     private void sendTestRequest(ProducerTemplate producerTemplate) throws JsonProcessingException {
         TestExecution testExecution = new TestExecution();
 
-        testExecution.setId(UUID.randomUUID().toString());
+        testExecution.setId(testId);
 
         Header header = new Header();
 
