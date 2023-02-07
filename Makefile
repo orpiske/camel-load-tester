@@ -50,5 +50,5 @@ deploy-scripts:
 deploy: $(CAMEL_VERSIONS) gen-config deploy-config deploy-scripts
 
 start-session: deploy-scripts
-	ssh $(TEST_FILE) ${TEST_HOST} tmux new-session -d -s "controller" $(TESTER_DIR)/start-controller.sh
+	ssh $(TEST_HOST) tmux new-session -d -s "controller" $(TESTER_DIR)/start-controller.sh
 
