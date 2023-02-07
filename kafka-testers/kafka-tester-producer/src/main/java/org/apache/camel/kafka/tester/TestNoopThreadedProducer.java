@@ -29,9 +29,11 @@ public class TestNoopThreadedProducer extends RouteBuilder {
 
         if (threadCount == 0) {
             from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}&dataSetIndex=off")
+                    .routeId("noop")
                     .process(exchange -> longAdder.increment());
         } else {
             from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}&dataSetIndex=off")
+                    .routeId("noop-threaded")
                     .threads(threadCount)
                     .process(exchange -> longAdder.increment());
         }

@@ -32,9 +32,11 @@ public class TestNoopSedaThreadedProducer extends RouteBuilder {
 
         if (threadCount == 0) {
             from("seda:test")
+                    .routeId("noop-to-seda")
                     .process(exchange -> longAdder.increment());
         } else {
             fromF("seda:test?concurrentConsumers=%s", threadCount)
+                    .routeId("noop-to-seda-threaded")
                     .threads(threadCount)
                     .process(exchange -> longAdder.increment());
         }

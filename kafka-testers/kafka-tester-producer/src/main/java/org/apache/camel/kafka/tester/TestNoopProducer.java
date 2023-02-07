@@ -32,9 +32,11 @@ public class TestNoopProducer extends RouteBuilder {
 
         if (!aggregate) {
             from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}&dataSetIndex=off")
+                    .routeId("noop")
                     .process(exchange -> longAdder.increment());
         } else {
             from("dataset:testSet?produceDelay=0&initialDelay={{initial.delay:2000}}&minRate={{?min.rate}}&preloadSize={{?preload.size}}&dataSetIndex=off")
+                    .routeId("noop-batched")
                     .aggregate(constant(true), new GroupedExchangeAggregationStrategy())
                     .completionSize(batchSize)
                     .process(exchange -> longAdder.add(batchSize));

@@ -31,9 +31,11 @@ public class TestNoopDirectThreadedProducer extends RouteBuilder {
 
         if (threadCount == 0) {
             from("direct:test")
+                    .routeId("noop-to-direct")
                     .process(exchange -> longAdder.increment());
         } else {
             from("direct:test")
+                    .routeId("noop-to-direct-threaded")
                     .threads(threadCount)
                     .process(exchange -> longAdder.increment());
         }

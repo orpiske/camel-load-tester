@@ -39,6 +39,7 @@ public class KafkaProducerRouteBuilder extends RouteBuilder {
     public void configure() {
         if (!aggregate) {
             from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}&dataSetIndex=off")
+                    .routeId("kafka-non-aggregate")
                     .setProperty("CREATE_TIME", Instant::now)
                     .toF("kafka:%s", topic)
                     .process(exchange -> longAdder.increment())
@@ -47,6 +48,7 @@ public class KafkaProducerRouteBuilder extends RouteBuilder {
             LOG.info("Using batch size: {}", batchSize);
 
             from("dataset:testSet?produceDelay=0&initialDelay={{initial.delay:2000}}&minRate={{?min.rate}}&preloadSize={{?preload.size}}&dataSetIndex=off")
+                    .routeId("kafka-aggregate")
                     .aggregate(constant(true), new GroupedExchangeAggregationStrategy())
                     .completionSize(batchSize)
                     .setProperty("CREATE_TIME", Instant::now)
