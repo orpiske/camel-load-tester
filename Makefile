@@ -31,6 +31,7 @@ gen-config:
 	@echo "common.data.dir="$(DATA_HOME) >> $(APPLICATION_PROPERTIES)
 	@echo "common.tester.jvm.start=4G" >> $(APPLICATION_PROPERTIES)
 	@echo "common.tester.jvm.max=4G" >> $(APPLICATION_PROPERTIES)
+	@echo "common.tester.monitoring=-javaagent:$(TEST_USER_HOME)/tools/prometheus/jmx_prometheus_javaagent.jar=0.0.0.0:9404:$(TARGET_CONFIG_DIR)/config/prometheus/config.yaml"
 
 	@echo "producer.deployment.dir="$(TESTER_DIR) >> $(APPLICATION_PROPERTIES)
 	@echo "consumer.deployment.dir="$(TESTER_DIR) >> $(APPLICATION_PROPERTIES)

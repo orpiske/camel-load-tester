@@ -52,6 +52,11 @@ public class NewTestProcessor implements Processor {
             cmdLine.addArgument("-Xmx${maxMemory}");
         }
 
+        String monitoring = ConfigHolder.getInstance().getProperty("common.tester.monitoring");
+        if (monitoring != null) {
+            cmdLine.addArgument(monitoring);
+        }
+
         final String testerArguments = testExecution.getTesterArguments();
         if (testerArguments != null) {
             cmdLine.addArgument(testerArguments);
