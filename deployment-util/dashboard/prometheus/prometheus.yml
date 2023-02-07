@@ -12,20 +12,13 @@ scrape_configs:
   - job_name: test-controller
     metrics_path: /metrics
     static_configs:
-      - targets:
-# Adjust this
-#          - controller-service:9404
+      - targets: ["10.0.151.57:9404"]
+        labels:
+          alias: test-controller
 
-  - job_name: test-producer
+  - job_name: tester
     metrics_path: /metrics
     static_configs:
-      - targets:
-# Adjust this
-#          - test-producer:9405
-
-  - job_name: test-producer
-    metrics_path: /metrics
-    static_configs:
-      - targets:
-# Adjust this
-#          - test-producer:9406
+      - targets: ["10.0.151.57:9405"]
+        labels:
+          alias: tester
