@@ -23,7 +23,7 @@ $(CAMEL_VERSIONS): dest-dir
 	scp kafka-testers/kafka-tester-producer/target/kafka-tester-producer-$@*.jar $(TEST_HOST):$(TESTER_DIR)
 	scp kafka-testers/kafka-tester-consumer/target/kafka-tester-consumer-$@*.jar $(TEST_HOST):$(TESTER_DIR)
 	@[[ $@ == $(CONTROLLER_VERSION) ]] && scp controllers/controller-test/target/controller-test-$@*.jar $(TEST_HOST):$(TESTER_DIR) $(TEST_HOST):$(TESTER_DIR) || echo "Skipping controller for" $@
-	@[[ $@ == $(ANALYZER_VERSION) ]] && scp kafka-testers/kafka-tester-analyzer/target/kafka-tester-analyzer-$@*.jar $(TEST_HOST):$(TESTER_DIR) || echo "Skipping analzyer for" $@
+	@[[ $@ == $(ANALYZER_VERSION) ]] && scp kafka-testers/kafka-tester-analyzer/target/kafka-tester-analyzer-$@*.jar $(TEST_HOST):$(TESTER_DIR)/kafka-tester-analyzer.jar || echo "Skipping analyzer for" $@
 
 gen-config:
 	@mkdir -p $(TARGET_CONFIG_DIR)

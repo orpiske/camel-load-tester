@@ -65,7 +65,6 @@ public class TestFinishedProcessor implements Processor {
     private CommandLine buildTestCommand(TestExecution testExecution) {
         CommandLine cmdLine = new CommandLine("java");
 
-
         if (testExecution.getCamelMeta().getBaselineVersion() != null) {
             cmdLine.addArgument("-Dbaseline.rate.file=${common.data.dir}/${tester}/${test.name}/${test.type}/${camel.baseline.version}.data");
             cmdLine.addArgument("-Dbaseline.latencies.file=${common.data.dir}/${tester}/${test.name}/${test.type}/${camel.baseline.version}.hdr");
@@ -79,7 +78,7 @@ public class TestFinishedProcessor implements Processor {
         cmdLine.addArgument("-Dtest.name=${test.name}");
 
         cmdLine.addArgument("-jar");
-        cmdLine.addArgument("${analyzer.deployment.dir}/kafka-tester-analyzer-${camel.version}.jar");
+        cmdLine.addArgument("${analyzer.deployment.dir}/kafka-tester-analyzer.jar");
 
         Map<String, Object> map = new HashMap<>();
 
