@@ -64,6 +64,7 @@ public class MainProducer {
             case "noop-threaded": return getTestNoopThreadedProducer(longAdder);
             case "noop-threaded-direct": return getTestNoopThreadedDirectProducer(longAdder);
             case "noop-threaded-seda": return getTestNoopThreadedSedaProducer (longAdder);
+            case "threaded-producer": return getThreadedProducerTemplate(longAdder);
         }
 
         throw new IllegalArgumentException("Invalid route type: " + routeType);
@@ -123,13 +124,21 @@ public class MainProducer {
         return new TestNoopSedaThreadedProducer(longAdder, threadCount);
     }
 
+    private static RouteBuilder getThreadedProducerTemplate(LongAdder longAdder) {
+        int threadCount = threadCount();
+        return new ThreadedProducerTemplate(longAdder, threadCount);
+    }
+
     private static void bindDataSet(Main main, int testSize) {
+        final int producers = Integer.parseInt(System.getProperty("test.concurrent.producers", "2"));
+
         SimpleDataSet simpleDataSet = new SimpleDataSet();
 
         simpleDataSet.setDefaultBody(Boolean.TRUE);
         simpleDataSet.setSize(testSize);
 
         main.bind("testSet", simpleDataSet);
+        main.bind("testSet2", simpleDataSet);
     }
 }
 
