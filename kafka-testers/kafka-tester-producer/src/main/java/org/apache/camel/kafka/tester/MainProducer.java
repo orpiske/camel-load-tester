@@ -36,15 +36,23 @@ public class MainProducer {
 
         final LongAdder longAdder = new LongAdder();
         int testSize = Integer.parseInt(System.getProperty("camel.main.durationMaxMessages", "0"));
+        if (testSize == 0) {
+            testSize = Integer.MAX_VALUE - 1;
+        }
 
         bindDataSet(main, testSize);
 
         File testRateFile = IOUtil.create(testRateFileName);
 
         try (RateWriter rateWriter = new BinaryRateWriter(testRateFile, FileHeader.WRITER_DEFAULT_PRODUCER)) {
+            int threadCount = threadCount();
+            main.configure().addRoutesBuilder(new SedaEndRoute(threadCount, longAdder));
+            main.configure().addRoutesBuilder(new DirectEndRoute(threadCount, longAdder));
+
             RouteBuilder routeBuilder = getRouteBuilder(longAdder);
             main.configure().addRoutesBuilder(routeBuilder);
-            WriterReporter writerReporter = new WriterReporter(rateWriter, longAdder, testSize, main::stop);
+
+            WriterReporter writerReporter = new WriterReporter(rateWriter, longAdder, testSize, main::shutdown);
             main.addMainListener(new TestMainListener(writerReporter));
 
             main.run();
@@ -65,7 +73,7 @@ public class MainProducer {
             case "noop": return getTestNoopProducer(longAdder);
             case "noop-threaded": return getTestNoopThreadedProducer(longAdder);
             case "noop-threaded-direct": return getTestNoopThreadedDirectProducer(longAdder);
-            case "noop-threaded-seda": return getTestNoopThreadedSedaProducer (longAdder);
+            case "noop-threaded-seda": return getTestNoopThreadedSedaProducer ();
             case "threaded-producer": return getThreadedProducerTemplate(longAdder);
         }
 
@@ -121,9 +129,9 @@ public class MainProducer {
         return new TestNoopDirectThreadedProducer(longAdder, threadCount);
     }
 
-    private static RouteBuilder getTestNoopThreadedSedaProducer(LongAdder longAdder) {
+    private static RouteBuilder getTestNoopThreadedSedaProducer() {
         int threadCount = threadCount();
-        return new TestNoopSedaThreadedProducer(longAdder, threadCount);
+        return new TestNoopSedaThreadedProducer(threadCount);
     }
 
     private static RouteBuilder getThreadedProducerTemplate(LongAdder longAdder) {
@@ -132,15 +140,12 @@ public class MainProducer {
     }
 
     private static void bindDataSet(Main main, int testSize) {
-        final int producers = Integer.parseInt(System.getProperty("test.concurrent.producers", "2"));
-
         SimpleDataSet simpleDataSet = new SimpleDataSet();
 
         simpleDataSet.setDefaultBody(Boolean.TRUE);
         simpleDataSet.setSize(testSize);
 
         main.bind("testSet", simpleDataSet);
-        main.bind("testSet2", simpleDataSet);
     }
 }
 

@@ -28,16 +28,5 @@ public class TestNoopDirectThreadedProducer extends RouteBuilder {
 
         from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}&dataSetIndex=off")
                 .to("direct:test");
-
-        if (threadCount == 0) {
-            from("direct:test")
-                    .routeId("noop-to-direct")
-                    .process(exchange -> longAdder.increment());
-        } else {
-            from("direct:test")
-                    .routeId("noop-to-direct-threaded")
-                    .threads(threadCount)
-                    .process(exchange -> longAdder.increment());
-        }
     }
 }

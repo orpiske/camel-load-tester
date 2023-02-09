@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.LockSupport;
 
 import org.apache.camel.Exchange;
-import org.apache.camel.ExchangePattern;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.slf4j.Logger;
@@ -97,11 +96,5 @@ public class ThreadedProducerTemplate extends RouteBuilder {
 
         from("direct:start")
                 .process(this::produce);
-
-        fromF("seda:test?concurrentConsumers=%s", threadCount * 2)
-                .routeId("noop-to-seda")
-                .setExchangePattern(ExchangePattern.InOnly)
-                .process(exchange -> longAdder.increment());
-
     }
 }

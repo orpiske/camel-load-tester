@@ -11,11 +11,9 @@ import org.slf4j.LoggerFactory;
 public class TestNoopSedaThreadedProducer extends RouteBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(TestNoopSedaThreadedProducer.class);
 
-    private final LongAdder longAdder;
     private final int threadCount;
 
-    public TestNoopSedaThreadedProducer(LongAdder longAdder, int threadCount) {
-        this.longAdder = longAdder;
+    public TestNoopSedaThreadedProducer(int threadCount) {
         this.threadCount = threadCount;
     }
 
