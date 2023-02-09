@@ -2,7 +2,6 @@ package org.apache.camel.kafka.tester;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.LockSupport;
 
 import org.apache.camel.Exchange;
@@ -14,20 +13,17 @@ import org.slf4j.LoggerFactory;
 public class ThreadedProducerTemplate extends RouteBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(ThreadedProducerTemplate.class);
 
-    private final LongAdder longAdder;
     private final int threadCount;
     private final int testSize = Integer.parseInt(System.getProperty("camel.main.durationMaxMessages", "0"));
     private final ExecutorService executorService;
-    private final int targetRate;
+    private int targetRate;
 
-    public ThreadedProducerTemplate(LongAdder longAdder, int threadCount) {
-        this.longAdder = longAdder;
+    public ThreadedProducerTemplate(int threadCount) {
         this.threadCount = threadCount;
 
         executorService = Executors.newFixedThreadPool(threadCount);
-        targetRate = Integer.valueOf(System.getProperty("test.target.rate", "50000"));
+        targetRate = Integer.valueOf(System.getProperty("test.target.rate", "100000"));
     }
-
 
     private static long getExchangeInterval(final long rate) {
         return rate > 0 ? (1_000_000_000L / rate) : 0;
