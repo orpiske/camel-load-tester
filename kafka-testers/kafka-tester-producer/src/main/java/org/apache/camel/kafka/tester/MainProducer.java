@@ -70,23 +70,22 @@ public class MainProducer {
 
         switch (routeType) {
             case "kafka": return getKafkaRouteBuilder(longAdder);
-            case "noop": return getTestNoopProducer(longAdder);
-            case "noop-threaded": return getTestNoopThreadedProducer(longAdder);
-            case "noop-threaded-direct": return getTestNoopThreadedDirectProducer(longAdder);
-            case "noop-threaded-seda": return getTestNoopThreadedSedaProducer ();
+            case "dataset-batched-processor":
+            case "noop": return getDataSetBatchedProcessor(longAdder);
+            case "noop-threaded": return getDataSetThreadedProcessor(longAdder);
+            case "dataset-noop-to-direct":
+            case "noop-threaded-producer": return getDataSetNoopToDirect();
+            case "dataset-noop-to-seda":
+            case "noop-threaded-seda": return getDataSetNoopToSeda();
             case "threaded-producer": return getThreadedProducerTemplate();
         }
 
         throw new IllegalArgumentException("Invalid route type: " + routeType);
     }
 
-    private static TestNoopProducer getTestNoopProducer(LongAdder longAdder) {
-        int batchSize = Integer.parseInt(System.getProperty("test.batch.size", "0"));
-        if (batchSize > 0) {
-            return new TestNoopProducer(longAdder, true, batchSize);
-        } else {
-            return new TestNoopProducer(longAdder, false, batchSize);
-        }
+    private static DataSetBatchedProcessor getDataSetBatchedProcessor(LongAdder longAdder) {
+        int batchSize = Integer.parseInt(System.getProperty("test.batch.size", "1"));
+        return new DataSetBatchedProcessor(longAdder, batchSize);
     }
 
     private static KafkaProducerRouteBuilder getKafkaRouteBuilder(LongAdder longAdder) {
@@ -119,19 +118,19 @@ public class MainProducer {
         }
     }
 
-    private static RouteBuilder getTestNoopThreadedProducer(LongAdder longAdder) {
+    private static RouteBuilder getDataSetThreadedProcessor(LongAdder longAdder) {
         int threadCount = threadCount();
-        return new TestNoopThreadedProducer(longAdder, threadCount);
+        return new DataSetThreadedProcessor(longAdder, threadCount);
     }
 
-    private static RouteBuilder getTestNoopThreadedDirectProducer(LongAdder longAdder) {
+    private static RouteBuilder getDataSetNoopToDirect() {
         int threadCount = threadCount();
-        return new TestNoopDirectThreadedProducer(longAdder, threadCount);
+        return new DataSetNoopToDirect(threadCount);
     }
 
-    private static RouteBuilder getTestNoopThreadedSedaProducer() {
+    private static RouteBuilder getDataSetNoopToSeda() {
         int threadCount = threadCount();
-        return new TestNoopSedaThreadedProducer(threadCount);
+        return new DataSetNoopToSeda(threadCount);
     }
 
     private static RouteBuilder getThreadedProducerTemplate() {
@@ -143,7 +142,8 @@ public class MainProducer {
         SimpleDataSet simpleDataSet = new SimpleDataSet();
 
         simpleDataSet.setDefaultBody(Boolean.TRUE);
-        simpleDataSet.setSize(testSize);
+        simpleDataSet.setSize(testSize / 2);
+        simpleDataSet.setDefaultBody("{\"value\":\"data\"}");
 
         main.bind("testSet", simpleDataSet);
     }

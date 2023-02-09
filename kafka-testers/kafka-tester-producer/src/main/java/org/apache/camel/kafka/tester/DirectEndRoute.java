@@ -3,6 +3,8 @@ package org.apache.camel.kafka.tester;
 import java.util.concurrent.atomic.LongAdder;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.kafka.tester.support.Sample;
+import org.apache.camel.model.dataformat.JsonLibrary;
 
 public class DirectEndRoute extends RouteBuilder {
     private final int threadCount;

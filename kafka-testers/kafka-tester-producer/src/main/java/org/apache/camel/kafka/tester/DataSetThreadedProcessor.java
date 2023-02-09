@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory;
 /**
  * A Camel Java DSL Router
  */
-public class TestNoopThreadedProducer extends RouteBuilder {
-    private static final Logger LOG = LoggerFactory.getLogger(TestNoopThreadedProducer.class);
+public class DataSetThreadedProcessor extends RouteBuilder {
+    private static final Logger LOG = LoggerFactory.getLogger(DataSetThreadedProcessor.class);
 
     private final LongAdder longAdder;
     private final int threadCount;
 
-    public TestNoopThreadedProducer(LongAdder longAdder, int threadCount) {
+    public DataSetThreadedProcessor(LongAdder longAdder, int threadCount) {
         this.longAdder = longAdder;
         this.threadCount = threadCount;
     }
