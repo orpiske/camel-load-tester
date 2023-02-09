@@ -28,16 +28,7 @@ public class TestNoopSedaThreadedProducer extends RouteBuilder {
         LOG.info("Using thread count: {}", threadCount);
 
         from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}&dataSetIndex=off")
-                .to("seda:test");
-
-        if (threadCount == 0) {
-            from("seda:test")
-                    .routeId("noop-to-seda")
-                    .process(exchange -> longAdder.increment());
-        } else {
-            fromF("seda:test?concurrentConsumers=%s", threadCount)
-                    .routeId("noop-to-seda-threaded")
-                    .process(exchange -> longAdder.increment());
-        }
+                .routeId("noop-to-seda")
+                .to("seda:test?blockWhenFull=true&offerTimeout=1000");
     }
 }
