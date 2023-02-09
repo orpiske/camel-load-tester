@@ -19,8 +19,12 @@ public class TestMainListener implements MainListener {
     private final Reporter reporter;
 
 
-    public TestMainListener(RateWriter writer, LongAdder longAdder, long testSize, Reporter.Action stopAction) {
-        this.reporter = new Reporter(writer, longAdder, testSize, stopAction);
+    public TestMainListener(RateWriter writer, LongAdder longAdder, long testSize, WriterReporter.Action stopAction) {
+        this(new WriterReporter(writer, longAdder, testSize, stopAction));
+    }
+
+    public TestMainListener(Reporter reporter) {
+        this.reporter = reporter;
     }
 
     @Override

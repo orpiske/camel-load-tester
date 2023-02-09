@@ -11,6 +11,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.dataset.SimpleDataSet;
 import org.apache.camel.kafka.tester.common.IOUtil;
 import org.apache.camel.kafka.tester.common.TestMainListener;
+import org.apache.camel.kafka.tester.common.WriterReporter;
 import org.apache.camel.kafka.tester.io.BinaryRateWriter;
 import org.apache.camel.kafka.tester.io.LatencyWriter;
 import org.apache.camel.kafka.tester.io.RateWriter;
@@ -43,7 +44,8 @@ public class MainProducer {
         try (RateWriter rateWriter = new BinaryRateWriter(testRateFile, FileHeader.WRITER_DEFAULT_PRODUCER)) {
             RouteBuilder routeBuilder = getRouteBuilder(longAdder);
             main.configure().addRoutesBuilder(routeBuilder);
-            main.addMainListener(new TestMainListener(rateWriter, longAdder, testSize, main::stop));
+            WriterReporter writerReporter = new WriterReporter(rateWriter, longAdder, testSize, main::stop);
+            main.addMainListener(new TestMainListener(writerReporter));
 
             main.run();
         } catch (Exception e) {
