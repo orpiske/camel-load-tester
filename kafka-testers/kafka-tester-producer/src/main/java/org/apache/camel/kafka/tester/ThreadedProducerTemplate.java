@@ -77,7 +77,7 @@ public class ThreadedProducerTemplate extends RouteBuilder {
                 nextFireTime += intervalInNanos;
             }
 
-            producerTemplate.sendBody("seda:test", "test");
+            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", "test");
 
             numMessages--;
         }
