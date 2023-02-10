@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.LongAdder;
 
 import org.apache.camel.kafka.tester.common.IOUtil;
 import org.apache.camel.kafka.tester.common.TestMainListener;
+import org.apache.camel.kafka.tester.common.WriterReporter;
 import org.apache.camel.kafka.tester.io.common.FileHeader;
 import org.apache.camel.kafka.tester.io.BinaryRateWriter;
 import org.apache.camel.kafka.tester.io.RateWriter;
@@ -31,7 +32,9 @@ public class MainConsumer {
 
         try (RateWriter rateWriter = new BinaryRateWriter(reportFile, FileHeader.WRITER_DEFAULT_CONSUMER)) {
             main.configure().addRoutesBuilder(new TestConsumer(longAdder, topic));
-            main.addMainListener(new TestMainListener(rateWriter, longAdder, testSize, main::stop));
+            WriterReporter writerReporter = new WriterReporter(rateWriter, testSize, main::stop);
+
+            main.addMainListener(new TestMainListener(writerReporter));
             main.run(args);
         }
 
