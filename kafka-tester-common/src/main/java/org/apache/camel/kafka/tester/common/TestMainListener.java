@@ -3,10 +3,8 @@ package org.apache.camel.kafka.tester.common;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.LongAdder;
 
 import org.apache.camel.CamelContext;
-import org.apache.camel.kafka.tester.io.RateWriter;
 import org.apache.camel.main.BaseMainSupport;
 import org.apache.camel.main.MainListener;
 import org.apache.camel.spi.ThreadPoolProfile;
