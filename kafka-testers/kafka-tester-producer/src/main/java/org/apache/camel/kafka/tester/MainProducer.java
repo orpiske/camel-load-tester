@@ -49,7 +49,7 @@ public class MainProducer {
             RouteBuilder routeBuilder = Routes.getRouteBuilder();
             main.configure().addRoutesBuilder(routeBuilder);
 
-            WriterReporter writerReporter = new WriterReporter(rateWriter, testSize, main::shutdown);
+            WriterReporter writerReporter = new WriterReporter(rateWriter, testSize, main::stop);
             main.addMainListener(new TestMainListener(writerReporter));
 
             main.run();
