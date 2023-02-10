@@ -10,6 +10,7 @@ public final class Parameters {
     public static final String CAMEL_MAIN_DURATION_MAX_MESSAGES = "camel.main.durationMaxMessages";
     public static final String TEST_PRODUCER_TYPE = "test.producer.type";
     public static final String TEST_THREAD_COUNT = "test.thread.count";
+    public static final String TEST_TARGET_RATE = "test.target.rate";
 
     private Parameters() {
 
@@ -30,5 +31,13 @@ public final class Parameters {
 
     public static String kafkaTopic() {
         return System.getProperty(Parameters.TEST_KAFKA_TOPIC, "test-topic-producer");
+    }
+
+    public static int duration() {
+        return Integer.parseInt(System.getProperty("camel.main.durationMaxMessages", "0"));
+    }
+
+    public static int targetRate() {
+        return Integer.valueOf(System.getProperty(Parameters.TEST_TARGET_RATE, "0"));
     }
 }

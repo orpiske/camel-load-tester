@@ -44,7 +44,12 @@ public abstract class AbstractReporter implements Reporter {
         long delta = (testSize - lastCount);
         double progress = 100.0 * ((double) delta / (double) testSize);
         String message = String.format("Remaining: %.5f%% (%d of %d) - %d messages to finish", progress, lastCount, testSize, delta);
+
         LOG.info(message);
+
+        double rate = (longAdder.longValue() - lastCount) / 10.0;
+        String rateMessage = String.format("Current rate: %.5f exchanges/sec", rate);
+        LOG.info(rateMessage);
     }
 
     @Override

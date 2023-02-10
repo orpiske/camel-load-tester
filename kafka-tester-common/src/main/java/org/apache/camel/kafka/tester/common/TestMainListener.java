@@ -46,6 +46,7 @@ public class TestMainListener implements MainListener {
     @Override
     public void afterStop(BaseMainSupport main) {
         reporter.closeReport();
+        main.shutdown();
     }
 
     @Override

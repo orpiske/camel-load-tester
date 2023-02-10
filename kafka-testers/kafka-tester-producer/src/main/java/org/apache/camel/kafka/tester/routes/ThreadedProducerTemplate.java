@@ -1,5 +1,7 @@
 package org.apache.camel.kafka.tester.routes;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.LockSupport;
@@ -15,15 +17,16 @@ public class ThreadedProducerTemplate extends RouteBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(ThreadedProducerTemplate.class);
 
     private final int threadCount;
-    private final int testSize = Integer.parseInt(System.getProperty("camel.main.durationMaxMessages", "0"));
+    private final int testSize;
     private final ExecutorService executorService;
     private int targetRate;
 
     public ThreadedProducerTemplate() {
         this.threadCount = Parameters.threadCount();
-
+        testSize = Parameters.duration() > 0 ? Parameters.duration() : Integer.MAX_VALUE;
+        
         executorService = Executors.newFixedThreadPool(threadCount);
-        targetRate = Integer.valueOf(System.getProperty("test.target.rate", "100000"));
+        targetRate = Parameters.targetRate() ;
     }
 
     private static long getExchangeInterval(final long rate) {
@@ -59,7 +62,7 @@ public class ThreadedProducerTemplate extends RouteBuilder {
         return now;
     }
 
-    private void produceMessages(int numMessages) {
+    private void produceMessagesWithRate(int numMessages) {
         final long intervalInNanos = getIntervalInNanos();
         final ProducerTemplate producerTemplate = getCamelContext().createProducerTemplate();
         long nextFireTime = System.nanoTime() + intervalInNanos;
@@ -77,17 +80,40 @@ public class ThreadedProducerTemplate extends RouteBuilder {
 
             numMessages--;
         }
+
+        System.exit(0);
+    }
+
+    private void produceMessages(int numMessages) {
+        final ProducerTemplate producerTemplate = getCamelContext().createProducerTemplate();
+
+        LOG.info("Sending message {} from {}", numMessages, Thread.currentThread().getId());
+
+        for (int i = 0; i < numMessages; i++) {
+            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", "test");
+        }
+
+        System.exit(0);
     }
 
     private void produce(Exchange exchange) {
-        for (int i = 0; i < threadCount; i++) {
+        if (targetRate == 0) {
+            for (int i = 0; i < threadCount; i++) {
                 executorService.submit(() -> produceMessages(testSize / threadCount));
+            }
+        } else {
+            for (int i = 0; i < threadCount; i++) {
+                executorService.submit(() -> produceMessagesWithRate(testSize / threadCount));
+            }
         }
     }
 
     @Override
     public void configure() {
         LOG.info("Using thread count for parallel production: {}", threadCount);
+
+        onException(IllegalStateException.class)
+                .process(e -> LOG.error("The SEDA queue is likely full and the system may be unable to catch to the load. Fix the test parameters"));
 
         from("timer:start?repeatCount=1&delay=2000").to("direct:start");
 
