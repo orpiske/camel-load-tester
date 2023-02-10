@@ -45,7 +45,9 @@ deploy-config:
 
 deploy-scripts:
 	scp scripts/runner/controller/start-controller.sh $(TEST_HOST):$(TESTER_DIR)
+	scp scripts/runner/controller/start-session.sh $(TEST_HOST):$(TESTER_DIR)
 	ssh $(TEST_HOST) chmod +x $(TESTER_DIR)/start-controller.sh
+	ssh $(TEST_HOST) chmod +x $(TESTER_DIR)/start-session.sh
 
 deploy-prometheus:
 	ssh $(TEST_HOST) mkdir -p $(TEST_USER_HOME)/tools/prometheus $(TESTER_DIR)/config/prometheus

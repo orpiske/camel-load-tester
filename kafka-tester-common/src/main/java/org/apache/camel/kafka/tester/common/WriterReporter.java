@@ -10,8 +10,8 @@ public class WriterReporter extends AbstractReporter {
 
     private final RateWriter writer;
 
-    public WriterReporter(RateWriter writer, LongAdder longAdder, long testSize, WriterReporter.Action staleAction) {
-        super(testSize, staleAction, longAdder);
+    public WriterReporter(RateWriter writer, long testSize, WriterReporter.Action staleAction) {
+        super(testSize, staleAction, Counter.getInstance().getAdder());
         this.writer = writer;
     }
 

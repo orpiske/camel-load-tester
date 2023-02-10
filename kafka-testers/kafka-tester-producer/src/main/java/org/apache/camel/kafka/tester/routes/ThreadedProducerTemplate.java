@@ -1,4 +1,4 @@
-package org.apache.camel.kafka.tester;
+package org.apache.camel.kafka.tester.routes;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -7,6 +7,7 @@ import java.util.concurrent.locks.LockSupport;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.kafka.tester.common.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +19,8 @@ public class ThreadedProducerTemplate extends RouteBuilder {
     private final ExecutorService executorService;
     private int targetRate;
 
-    public ThreadedProducerTemplate(int threadCount) {
-        this.threadCount = threadCount;
+    public ThreadedProducerTemplate() {
+        this.threadCount = Parameters.threadCount();
 
         executorService = Executors.newFixedThreadPool(threadCount);
         targetRate = Integer.valueOf(System.getProperty("test.target.rate", "100000"));

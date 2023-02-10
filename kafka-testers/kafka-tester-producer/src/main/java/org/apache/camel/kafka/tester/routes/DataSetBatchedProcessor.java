@@ -1,8 +1,10 @@
-package org.apache.camel.kafka.tester;
+package org.apache.camel.kafka.tester.routes;
 
 import java.util.concurrent.atomic.LongAdder;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.kafka.tester.common.Counter;
+import org.apache.camel.kafka.tester.common.Parameters;
 import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +19,9 @@ public class DataSetBatchedProcessor extends RouteBuilder {
     private final LongAdder longAdder;
     private final int batchSize;
 
-    public DataSetBatchedProcessor(LongAdder longAdder, int batchSize) {
-        this.longAdder = longAdder;
-        this.batchSize = batchSize;
+    public DataSetBatchedProcessor() {
+        this.longAdder = Counter.getInstance().getAdder();
+        this.batchSize = Parameters.batchSize();
     }
 
     /**

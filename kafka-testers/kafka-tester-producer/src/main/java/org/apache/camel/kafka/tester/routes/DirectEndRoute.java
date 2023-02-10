@@ -1,18 +1,18 @@
-package org.apache.camel.kafka.tester;
+package org.apache.camel.kafka.tester.routes;
 
 import java.util.concurrent.atomic.LongAdder;
 
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.kafka.tester.support.Sample;
-import org.apache.camel.model.dataformat.JsonLibrary;
+import org.apache.camel.kafka.tester.common.Counter;
+import org.apache.camel.kafka.tester.common.Parameters;
 
 public class DirectEndRoute extends RouteBuilder {
     private final int threadCount;
     private final LongAdder longAdder;
 
-    public DirectEndRoute(int threadCount, LongAdder longAdder) {
-        this.threadCount = threadCount;
-        this.longAdder = longAdder;
+    public DirectEndRoute() {
+        this.threadCount = Parameters.threadCount();
+        this.longAdder = Counter.getInstance().getAdder();
     }
 
     @Override

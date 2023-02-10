@@ -1,16 +1,17 @@
-package org.apache.camel.kafka.tester;
+package org.apache.camel.kafka.tester.routes;
 
 import java.util.concurrent.atomic.LongAdder;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.kafka.tester.common.Counter;
 
 public class SedaEndRoute extends RouteBuilder {
     private final int threadCount;
     private final LongAdder longAdder;
 
-    public SedaEndRoute(int threadCount, LongAdder longAdder) {
+    public SedaEndRoute(int threadCount) {
         this.threadCount = threadCount;
-        this.longAdder = longAdder;
+        this.longAdder = Counter.getInstance().getAdder();
     }
 
     @Override

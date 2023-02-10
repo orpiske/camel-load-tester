@@ -1,8 +1,10 @@
-package org.apache.camel.kafka.tester;
+package org.apache.camel.kafka.tester.routes;
 
 import java.util.concurrent.atomic.LongAdder;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.kafka.tester.common.Counter;
+import org.apache.camel.kafka.tester.common.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,9 +18,9 @@ public class DataSetThreadedProcessor extends RouteBuilder {
     private final LongAdder longAdder;
     private final int threadCount;
 
-    public DataSetThreadedProcessor(LongAdder longAdder, int threadCount) {
-        this.longAdder = longAdder;
-        this.threadCount = threadCount;
+    public DataSetThreadedProcessor() {
+        this.longAdder = Counter.getInstance().getAdder();
+        this.threadCount = Parameters.threadCount();
     }
 
     /**
@@ -29,11 +31,11 @@ public class DataSetThreadedProcessor extends RouteBuilder {
 
         if (threadCount == 0) {
             from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}&dataSetIndex=off")
-                    .routeId("noop")
+                    .routeId("dataset-single-threaded")
                     .process(exchange -> longAdder.increment());
         } else {
             from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}&dataSetIndex=off")
-                    .routeId("noop-threaded")
+                    .routeId("dataset-threaded")
                     .threads(threadCount)
                     .process(exchange -> longAdder.increment());
         }
