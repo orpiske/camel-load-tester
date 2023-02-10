@@ -1,15 +1,19 @@
 package org.apache.camel.kafka.tester.routes;
 
-import java.time.Duration;
-import java.time.Instant;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
+import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.kafka.tester.common.Parameters;
+import org.apache.camel.spi.RouteStartupOrder;
+import org.apache.camel.spi.ShutdownStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +28,7 @@ public class ThreadedProducerTemplate extends RouteBuilder {
     public ThreadedProducerTemplate() {
         this.threadCount = Parameters.threadCount();
         testSize = Parameters.duration() > 0 ? Parameters.duration() : Integer.MAX_VALUE;
-        
+
         executorService = Executors.newFixedThreadPool(threadCount);
         targetRate = Parameters.targetRate() ;
     }
@@ -92,8 +96,6 @@ public class ThreadedProducerTemplate extends RouteBuilder {
         for (int i = 0; i < numMessages; i++) {
             producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", "test");
         }
-
-        System.exit(0);
     }
 
     private void produce(Exchange exchange) {
@@ -111,6 +113,128 @@ public class ThreadedProducerTemplate extends RouteBuilder {
     @Override
     public void configure() {
         LOG.info("Using thread count for parallel production: {}", threadCount);
+
+        getCamelContext().setShutdownStrategy(new ShutdownStrategy() {
+            @Override
+            public void shutdownForced(CamelContext context, List<RouteStartupOrder> routes) throws Exception {
+
+            }
+
+            @Override
+            public void shutdown(CamelContext context, List<RouteStartupOrder> routes) throws Exception {
+
+            }
+
+            @Override
+            public void suspend(CamelContext context, List<RouteStartupOrder> routes) throws Exception {
+
+            }
+
+            @Override
+            public void shutdown(CamelContext context, List<RouteStartupOrder> routes, long timeout, TimeUnit timeUnit) throws Exception {
+
+            }
+
+            @Override
+            public boolean shutdown(CamelContext context, RouteStartupOrder route, long timeout, TimeUnit timeUnit, boolean abortAfterTimeout) throws Exception {
+                return false;
+            }
+
+            @Override
+            public void suspend(CamelContext context, List<RouteStartupOrder> routes, long timeout, TimeUnit timeUnit) throws Exception {
+
+            }
+
+            @Override
+            public void setTimeout(long timeout) {
+
+            }
+
+            @Override
+            public long getTimeout() {
+                return 0;
+            }
+
+            @Override
+            public void setTimeUnit(TimeUnit timeUnit) {
+
+            }
+
+            @Override
+            public TimeUnit getTimeUnit() {
+                return null;
+            }
+
+            @Override
+            public void setSuppressLoggingOnTimeout(boolean suppressLoggingOnTimeout) {
+
+            }
+
+            @Override
+            public boolean isSuppressLoggingOnTimeout() {
+                return false;
+            }
+
+            @Override
+            public void setShutdownNowOnTimeout(boolean shutdownNowOnTimeout) {
+
+            }
+
+            @Override
+            public boolean isShutdownNowOnTimeout() {
+                return false;
+            }
+
+            @Override
+            public void setShutdownRoutesInReverseOrder(boolean shutdownRoutesInReverseOrder) {
+
+            }
+
+            @Override
+            public boolean isShutdownRoutesInReverseOrder() {
+                return false;
+            }
+
+            @Override
+            public void setLogInflightExchangesOnTimeout(boolean logInflightExchangesOnTimeout) {
+
+            }
+
+            @Override
+            public boolean isLogInflightExchangesOnTimeout() {
+                return false;
+            }
+
+            @Override
+            public boolean isForceShutdown() {
+                return false;
+            }
+
+            @Override
+            public boolean hasTimeoutOccurred() {
+                return false;
+            }
+
+            @Override
+            public LoggingLevel getLoggingLevel() {
+                return null;
+            }
+
+            @Override
+            public void setLoggingLevel(LoggingLevel loggingLevel) {
+
+            }
+
+            @Override
+            public void start() {
+
+            }
+
+            @Override
+            public void stop() {
+
+            }
+        });
 
         onException(IllegalStateException.class)
                 .process(e -> LOG.error("The SEDA queue is likely full and the system may be unable to catch to the load. Fix the test parameters"));
