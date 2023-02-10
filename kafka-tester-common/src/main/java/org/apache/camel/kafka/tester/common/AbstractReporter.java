@@ -47,8 +47,8 @@ public abstract class AbstractReporter implements Reporter {
 
         LOG.info(message);
 
-        double rate = (longAdder.longValue() - lastCount) / 10.0;
-        String rateMessage = String.format("Current rate: %.5f exchanges/sec", rate);
+        double rate = longAdder.longValue() - lastReportedCount;
+        String rateMessage = String.format("Current rate: %.2f exchanges/sec", rate);
         LOG.info(rateMessage);
     }
 
