@@ -2,6 +2,7 @@ package org.apache.camel.kafka.tester.routes;
 
 import java.io.File;
 
+import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
@@ -20,6 +21,7 @@ public class DataSetInjectionToSeda extends RouteBuilder {
 
     private final int threadCount;
     private ProducerTemplate producerTemplate;
+    private Endpoint endpoint;
 
     public DataSetInjectionToSeda() {
         this.threadCount = Parameters.threadCount();
@@ -27,10 +29,10 @@ public class DataSetInjectionToSeda extends RouteBuilder {
 
     private void inject(Exchange exchange) {
         try {
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", Integer.valueOf(1));
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", "skip");
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", new File("a"));
-            producerTemplate.send("seda:test?blockWhenFull=true&offerTimeout=1000", exchange);
+            producerTemplate.sendBody(endpoint, Integer.valueOf(1));
+            producerTemplate.sendBody(endpoint, "skip");
+            producerTemplate.sendBody(endpoint, new File("a"));
+            producerTemplate.send(endpoint, exchange);
         } catch (Exception e) {
             LOG.error("Error: {}", e.getMessage(), e.getMessage());
         }
@@ -41,6 +43,7 @@ public class DataSetInjectionToSeda extends RouteBuilder {
      */
     public void configure() {
         producerTemplate = getContext().createProducerTemplate();
+        endpoint = getContext().getEndpoint("seda:test?blockWhenFull=true&offerTimeout=1000");
 
         onException(IllegalStateException.class)
                 .process(e -> LOG.error("The SEDA queue is likely full and the system may be unable to catch to the load. Fix the test parameters"));

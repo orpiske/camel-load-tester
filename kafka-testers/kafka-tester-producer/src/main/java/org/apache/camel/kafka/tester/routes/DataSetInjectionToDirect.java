@@ -2,6 +2,7 @@ package org.apache.camel.kafka.tester.routes;
 
 import java.io.File;
 
+import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
@@ -20,6 +21,7 @@ public class DataSetInjectionToDirect extends RouteBuilder {
     private final int threadCount;
 
     private ProducerTemplate producerTemplate;
+    private Endpoint endpoint;
 
     public DataSetInjectionToDirect() {
         this.threadCount = Parameters.threadCount();
@@ -27,9 +29,9 @@ public class DataSetInjectionToDirect extends RouteBuilder {
 
     private void inject(Exchange exchange) {
         try {
-            producerTemplate.sendBody("direct:test", Integer.valueOf(1));
-            producerTemplate.sendBody("direct:test", "skip");
-            producerTemplate.sendBody("direct:test", new File("a"));
+            producerTemplate.sendBody(endpoint, Integer.valueOf(1));
+            producerTemplate.sendBody(endpoint, "skip");
+            producerTemplate.sendBody(endpoint, new File("a"));
         } catch (Exception e) {
             LOG.error("Error: {}", e.getMessage(), e.getMessage());
         }
@@ -42,6 +44,7 @@ public class DataSetInjectionToDirect extends RouteBuilder {
         LOG.info("Using thread count: {}", threadCount);
 
         producerTemplate = getContext().createProducerTemplate();
+        endpoint = getContext().getEndpoint("direct:test");
 
         from("dataset:testSet?produceDelay=0&minRate={{?min.rate}}&initialDelay={{initial.delay:2000}}&dataSetIndex=off")
                 .routeId("dataset-injection")

@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.LockSupport;
 
+import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
@@ -72,6 +73,8 @@ public class ThreadedProducerTemplate extends RouteBuilder {
 
         LOG.info("Sending message {} from {}", numMessages, Thread.currentThread().getId());
 
+        Endpoint endpoint = getCamelContext().getEndpoint("seda:test?blockWhenFull=true&offerTimeout=1000");
+
         while (numMessages > 0) {
             if (intervalInNanos > 0) {
                 final long now = waitNanoInterval(nextFireTime, intervalInNanos);
@@ -79,10 +82,10 @@ public class ThreadedProducerTemplate extends RouteBuilder {
                 nextFireTime += intervalInNanos;
             }
 
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", "test-string");
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", someFile);
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", someInt);
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", sampleObject);
+            producerTemplate.sendBody(endpoint, "test-string");
+            producerTemplate.sendBody(endpoint, someFile);
+            producerTemplate.sendBody(endpoint, someInt);
+            producerTemplate.sendBody(endpoint, sampleObject);
 
             numMessages--;
         }
@@ -95,11 +98,13 @@ public class ThreadedProducerTemplate extends RouteBuilder {
 
         LOG.info("Sending message {} from {}", numMessages, Thread.currentThread().getId());
 
+        Endpoint endpoint = getCamelContext().getEndpoint("seda:test?blockWhenFull=true&offerTimeout=1000");
+
         for (int i = 0; i < numMessages; i++) {
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", "test-string");
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", someFile);
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", someInt);
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", sampleObject);
+            producerTemplate.sendBody(endpoint, "test-string");
+            producerTemplate.sendBody(endpoint, someFile);
+            producerTemplate.sendBody(endpoint, someInt);
+            producerTemplate.sendBody(endpoint, sampleObject);
         }
 
     }
