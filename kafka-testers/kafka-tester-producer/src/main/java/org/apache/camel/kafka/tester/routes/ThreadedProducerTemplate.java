@@ -20,6 +20,9 @@ public class ThreadedProducerTemplate extends RouteBuilder {
     private final int testSize;
     private final ExecutorService executorService;
     private int targetRate;
+    private File someFile = new File("some file");
+    private Integer someInt = Integer.valueOf(1);
+    private Sample sampleObject = new Sample();
 
     public ThreadedProducerTemplate() {
         this.threadCount = Parameters.threadCount();
@@ -77,9 +80,9 @@ public class ThreadedProducerTemplate extends RouteBuilder {
             }
 
             producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", "test-string");
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", new File("some file"));
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", Integer.valueOf(1));
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", new Sample());
+            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", someFile);
+            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", someInt);
+            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", sampleObject);
 
             numMessages--;
         }
@@ -94,9 +97,9 @@ public class ThreadedProducerTemplate extends RouteBuilder {
 
         for (int i = 0; i < numMessages; i++) {
             producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", "test-string");
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", new File("some file"));
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", Integer.valueOf(1));
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", new Sample());
+            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", someFile);
+            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", someInt);
+            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", sampleObject);
         }
 
     }
