@@ -1,5 +1,6 @@
 package org.apache.camel.kafka.tester.routes;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,6 +13,7 @@ import org.apache.camel.LoggingLevel;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.kafka.tester.common.Parameters;
+import org.apache.camel.kafka.tester.support.Sample;
 import org.apache.camel.spi.RouteStartupOrder;
 import org.apache.camel.spi.ShutdownStrategy;
 import org.slf4j.Logger;
@@ -80,7 +82,10 @@ public class ThreadedProducerTemplate extends RouteBuilder {
                 nextFireTime += intervalInNanos;
             }
 
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", "test");
+            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", "test-string");
+            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", new File("some file"));
+            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", Integer.valueOf(1));
+            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", new Sample());
 
             numMessages--;
         }
@@ -94,7 +99,10 @@ public class ThreadedProducerTemplate extends RouteBuilder {
         LOG.info("Sending message {} from {}", numMessages, Thread.currentThread().getId());
 
         for (int i = 0; i < numMessages; i++) {
-            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", "test");
+            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", "test-string");
+            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", new File("some file"));
+            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", Integer.valueOf(1));
+            producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", new Sample());
         }
 
     }
