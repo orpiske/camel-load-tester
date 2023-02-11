@@ -96,6 +96,7 @@ public class ThreadedProducerTemplate extends RouteBuilder {
         for (int i = 0; i < numMessages; i++) {
             producerTemplate.sendBody("seda:test?blockWhenFull=true&offerTimeout=1000", "test");
         }
+
     }
 
     private void produce(Exchange exchange) {
@@ -113,128 +114,6 @@ public class ThreadedProducerTemplate extends RouteBuilder {
     @Override
     public void configure() {
         LOG.info("Using thread count for parallel production: {}", threadCount);
-
-        getCamelContext().setShutdownStrategy(new ShutdownStrategy() {
-            @Override
-            public void shutdownForced(CamelContext context, List<RouteStartupOrder> routes) throws Exception {
-
-            }
-
-            @Override
-            public void shutdown(CamelContext context, List<RouteStartupOrder> routes) throws Exception {
-
-            }
-
-            @Override
-            public void suspend(CamelContext context, List<RouteStartupOrder> routes) throws Exception {
-
-            }
-
-            @Override
-            public void shutdown(CamelContext context, List<RouteStartupOrder> routes, long timeout, TimeUnit timeUnit) throws Exception {
-
-            }
-
-            @Override
-            public boolean shutdown(CamelContext context, RouteStartupOrder route, long timeout, TimeUnit timeUnit, boolean abortAfterTimeout) throws Exception {
-                return false;
-            }
-
-            @Override
-            public void suspend(CamelContext context, List<RouteStartupOrder> routes, long timeout, TimeUnit timeUnit) throws Exception {
-
-            }
-
-            @Override
-            public void setTimeout(long timeout) {
-
-            }
-
-            @Override
-            public long getTimeout() {
-                return 0;
-            }
-
-            @Override
-            public void setTimeUnit(TimeUnit timeUnit) {
-
-            }
-
-            @Override
-            public TimeUnit getTimeUnit() {
-                return null;
-            }
-
-            @Override
-            public void setSuppressLoggingOnTimeout(boolean suppressLoggingOnTimeout) {
-
-            }
-
-            @Override
-            public boolean isSuppressLoggingOnTimeout() {
-                return false;
-            }
-
-            @Override
-            public void setShutdownNowOnTimeout(boolean shutdownNowOnTimeout) {
-
-            }
-
-            @Override
-            public boolean isShutdownNowOnTimeout() {
-                return false;
-            }
-
-            @Override
-            public void setShutdownRoutesInReverseOrder(boolean shutdownRoutesInReverseOrder) {
-
-            }
-
-            @Override
-            public boolean isShutdownRoutesInReverseOrder() {
-                return false;
-            }
-
-            @Override
-            public void setLogInflightExchangesOnTimeout(boolean logInflightExchangesOnTimeout) {
-
-            }
-
-            @Override
-            public boolean isLogInflightExchangesOnTimeout() {
-                return false;
-            }
-
-            @Override
-            public boolean isForceShutdown() {
-                return false;
-            }
-
-            @Override
-            public boolean hasTimeoutOccurred() {
-                return false;
-            }
-
-            @Override
-            public LoggingLevel getLoggingLevel() {
-                return null;
-            }
-
-            @Override
-            public void setLoggingLevel(LoggingLevel loggingLevel) {
-
-            }
-
-            @Override
-            public void start() {
-
-            }
-
-            @Override
-            public void stop() {
-
-            }
-        });
 
         onException(IllegalStateException.class)
                 .process(e -> LOG.error("The SEDA queue is likely full and the system may be unable to catch to the load. Fix the test parameters"));
