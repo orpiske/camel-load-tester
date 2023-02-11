@@ -26,7 +26,7 @@ public class ThreadedProducerTemplate extends RouteBuilder {
     private Sample sampleObject = new Sample();
 
     public ThreadedProducerTemplate() {
-        this.threadCount = Parameters.threadCount();
+        this.threadCount = Parameters.threadCountProducer();
         testSize = Parameters.duration() > 0 ? Parameters.duration() : Integer.MAX_VALUE;
 
         executorService = Executors.newFixedThreadPool(threadCount);

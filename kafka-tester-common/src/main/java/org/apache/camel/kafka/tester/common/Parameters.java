@@ -10,19 +10,28 @@ public final class Parameters {
     public static final String CAMEL_MAIN_DURATION_MAX_MESSAGES = "camel.main.durationMaxMessages";
     public static final String TEST_PRODUCER_TYPE = "test.producer.type";
     public static final String TEST_THREAD_COUNT = "test.thread.count";
+    public static final String TEST_THREAD_COUNT_PRODUCER = "test.thread.count.producer";
     public static final String TEST_TARGET_RATE = "test.target.rate";
 
     private Parameters() {
 
     }
 
-    public static int threadCount() {
-        String strThreadCount = System.getProperty(TEST_THREAD_COUNT, "1");
+    private static int threadCountFromProperty(String testThreadCount) {
+        String strThreadCount = System.getProperty(testThreadCount, "1");
         if (strThreadCount.equals("max")) {
             return Runtime.getRuntime().availableProcessors();
         }
 
         return Integer.parseInt(strThreadCount);
+    }
+
+    public static int threadCount() {
+        return threadCountFromProperty(TEST_THREAD_COUNT);
+    }
+
+    public static int threadCountProducer() {
+        return threadCountFromProperty(TEST_THREAD_COUNT_PRODUCER);
     }
 
     public static int batchSize() {
