@@ -11,7 +11,11 @@ public abstract class AbstractReporter implements Reporter {
     protected final Action staleAction;
     protected final LongAdder longAdder;
     protected long lastCount = 0;
+    // this one is updated every second (used for stale calculation)
     protected long lastReportedCount = 0;
+    // This one stores the last reported count for rate calculation. It updates at a different interval than lastReportedCount
+    protected long lastReportedCountRate = 0;
+
     private long staleCounter = 0;
 
     public AbstractReporter(long testSize, Action staleAction, LongAdder longAdder) {
@@ -47,9 +51,11 @@ public abstract class AbstractReporter implements Reporter {
 
         LOG.info(message);
 
-        double rate = longAdder.longValue() - lastReportedCount;
-        String rateMessage = String.format("Current rate: %.2f exchanges/sec", rate);
+
+        double rate = (lastCount - lastReportedCountRate) / 10.0;
+        String rateMessage = String.format("Current rate: %f exchanges/sec", rate);
         LOG.info(rateMessage);
+        lastReportedCountRate = lastCount;
     }
 
     @Override
