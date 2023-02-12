@@ -49,7 +49,15 @@ public class MainProducer {
             RouteBuilder routeBuilder = Routes.getRouteBuilder();
             main.configure().addRoutesBuilder(routeBuilder);
 
-            WriterReporter writerReporter = new WriterReporter(rateWriter, testSize, main::stop);
+            WriterReporter writerReporter;
+            String onCompleteAction = System.getProperty(Parameters.TEST_ON_COMPLETE_ACTION, "do-nothing");
+            if (onCompleteAction.equals("exit")) {
+                writerReporter = new WriterReporter(rateWriter, testSize, main::stop, MainProducer::forceExit);
+            } else {
+                writerReporter = new WriterReporter(rateWriter, testSize, main::stop, null);
+            }
+
+
             main.addMainListener(new TestMainListener(writerReporter));
 
             main.run();
@@ -70,6 +78,11 @@ public class MainProducer {
         simpleDataSet.setDefaultBody("{\"value\":\"data\"}");
 
         main.bind("testSet", simpleDataSet);
+    }
+
+    private static void forceExit(long messages) {
+        System.out.println("Forcing exit after receiving " + messages + " messages");
+        System.exit(0);
     }
 }
 

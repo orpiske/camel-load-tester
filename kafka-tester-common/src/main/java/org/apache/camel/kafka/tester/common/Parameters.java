@@ -12,6 +12,7 @@ public final class Parameters {
     public static final String TEST_THREAD_COUNT = "test.thread.count";
     public static final String TEST_THREAD_COUNT_PRODUCER = "test.thread.count.producer";
     public static final String TEST_TARGET_RATE = "test.target.rate";
+    public static final String TEST_ON_COMPLETE_ACTION = "test.on.complete.action";
 
     private Parameters() {
 
