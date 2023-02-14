@@ -23,17 +23,39 @@ public class TestMainListener implements MainListener {
 
     @Override
     public void afterConfigure(BaseMainSupport main) {
+        /*
+         This is the number of other threads that may be active at any point during the test:
+         1 for Camel main
+         1 for the timer://start (when using the threaded producer)
+         3 other ad-hoc parallel tasks that may be executed by the code at any point during the test
+         */
+
+        final int numOtherThreads = 5;
         int threadCount = Parameters.threadCount();
+        int producerThreadCount = Parameters.threadCountProducer();
+
         final CamelContext camelContext = main.getCamelContext();
         final ThreadPoolProfile defaultThreadPoolProfile = camelContext.getExecutorServiceManager().getDefaultThreadPoolProfile();
 
-        if (threadCount >= defaultThreadPoolProfile.getMaxPoolSize()) {
-            // This is usually a very bad idea, but it allow us to try some scenarios with over commit of up to 50%
-            final double increment = defaultThreadPoolProfile.getMaxPoolSize() * 0.5;
-            final int maxPoolSize = defaultThreadPoolProfile.getMaxPoolSize() + (int) increment;
+        LOG.info("The system is configured with the thread pool: {}", defaultThreadPoolProfile.getId());
+        LOG.info("The max pool size for the thread pool is: {}", defaultThreadPoolProfile.getMaxPoolSize());
+        LOG.info("The pool size for the thread pool is: {}", defaultThreadPoolProfile.getPoolSize());
+        LOG.info("The max queue size for the thread pool is: {}", defaultThreadPoolProfile.getMaxQueueSize());
+        LOG.info("The keep alive time is: {}", defaultThreadPoolProfile.getKeepAliveTime().longValue());
+
+        // See the note about on the numOtherThreads
+        final int requiredPoolSize = (threadCount + producerThreadCount) + numOtherThreads;
+        if (requiredPoolSize >= defaultThreadPoolProfile.getMaxPoolSize()) {
             LOG.warn("The test is enabling over committing of resources by increasing the max pool size from {} to {}",
-                    defaultThreadPoolProfile.getMaxPoolSize(), maxPoolSize);
-            defaultThreadPoolProfile.setMaxPoolSize(maxPoolSize);
+                    defaultThreadPoolProfile.getMaxPoolSize(), requiredPoolSize);
+            defaultThreadPoolProfile.setMaxPoolSize(requiredPoolSize);
+
+            LOG.info("The max pool size for the thread pool was adjusted to: {}", defaultThreadPoolProfile.getMaxPoolSize());
+            if (requiredPoolSize / 2 > defaultThreadPoolProfile.getPoolSize()) {
+                defaultThreadPoolProfile.setPoolSize(requiredPoolSize / 2);
+
+                LOG.info("The pool size for the thread pool was adjusted to: {}", defaultThreadPoolProfile.getPoolSize());
+            }
         }
     }
 
