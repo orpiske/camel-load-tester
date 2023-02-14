@@ -2,6 +2,7 @@ TEST_HOST?=dione
 TEST_USER_HOME=/home/$(USER)
 TOOLS_HOME:=$(TEST_USER_HOME)/tools
 TESTER_DIR=$(TOOLS_HOME)/kafka-tester/
+MVN_PRG:=mvnd
 
 DATA_HOME:=$(TEST_USER_HOME)/data
 KAFKA_URI?=dione:9092
@@ -19,7 +20,7 @@ dest-dir:
 	ssh $(TEST_HOST) mkdir -p $(TOOLS_HOME)/kafka-tester/
 
 $(CAMEL_VERSIONS): dest-dir
-	mvn -Pcamel-$@ clean package
+	$(MVN_PRG) -Pcamel-$@ clean package
 	scp kafka-testers/kafka-tester-producer/target/kafka-tester-producer-$@*.jar $(TEST_HOST):$(TESTER_DIR)
 	scp kafka-testers/kafka-tester-consumer/target/kafka-tester-consumer-$@*.jar $(TEST_HOST):$(TESTER_DIR)
 	@[[ $@ == $(CONTROLLER_VERSION) ]] && scp controllers/controller-test/target/controller-test-$@*.jar $(TEST_HOST):$(TESTER_DIR) || echo "Skipping controller for" $@
