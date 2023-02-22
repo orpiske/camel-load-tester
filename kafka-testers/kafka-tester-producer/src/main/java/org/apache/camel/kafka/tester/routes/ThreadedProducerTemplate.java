@@ -1,6 +1,7 @@
 package org.apache.camel.kafka.tester.routes;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.LockSupport;
@@ -24,6 +25,7 @@ public class ThreadedProducerTemplate extends RouteBuilder {
     private File someFile = new File("some file");
     private Integer someInt = Integer.valueOf(1);
     private Sample sampleObject = new Sample();
+
 
     public ThreadedProducerTemplate() {
         this.threadCount = Parameters.threadCountProducer();
@@ -74,6 +76,7 @@ public class ThreadedProducerTemplate extends RouteBuilder {
         LOG.info("Sending message {} from {} with rate {}", numMessages, Thread.currentThread().getId(), targetRate);
 
         Endpoint endpoint = getCamelContext().getEndpoint("seda:test?blockWhenFull=true&offerTimeout=1000");
+        List<Object> data = List.of("test-string", someFile, someInt, sampleObject);
 
         while (numMessages > 0) {
             if (intervalInNanos > 0) {
@@ -82,10 +85,8 @@ public class ThreadedProducerTemplate extends RouteBuilder {
                 nextFireTime += intervalInNanos;
             }
 
-            producerTemplate.sendBody(endpoint, "test-string");
-            producerTemplate.sendBody(endpoint, someFile);
-            producerTemplate.sendBody(endpoint, someInt);
-            producerTemplate.sendBody(endpoint, sampleObject);
+            Object payload = data.get(numMessages % data.size());
+            producerTemplate.sendBody(endpoint, payload);
 
             numMessages--;
         }
@@ -97,16 +98,14 @@ public class ThreadedProducerTemplate extends RouteBuilder {
         final ProducerTemplate producerTemplate = getCamelContext().createProducerTemplate();
 
         LOG.info("Sending message {} from {}", numMessages, Thread.currentThread().getId());
+        List<Object> data = List.of("test-string", someFile, someInt, sampleObject);
 
         Endpoint endpoint = getCamelContext().getEndpoint("seda:test?blockWhenFull=true&offerTimeout=1000");
 
         for (int i = 0; i < numMessages; i++) {
-            producerTemplate.sendBody(endpoint, "test-string");
-            producerTemplate.sendBody(endpoint, someFile);
-            producerTemplate.sendBody(endpoint, someInt);
-            producerTemplate.sendBody(endpoint, sampleObject);
+            Object payload = data.get(i % data.size());
+            producerTemplate.sendBody(endpoint, payload);
         }
-
     }
 
     private void produce(Exchange exchange) {
