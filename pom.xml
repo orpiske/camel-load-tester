@@ -136,6 +136,24 @@
 
   <profiles>
     <profile>
+      <id>camel-3.14</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <camel.version>3.14.7</camel.version>
+        <log4j2-version>2.17.2</log4j2-version>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-slf4j-impl</artifactId>
+          <scope>runtime</scope>
+          <version>${log4j2-version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
       <id>camel-3.18</id>
       <activation>
         <activeByDefault>false</activeByDefault>
