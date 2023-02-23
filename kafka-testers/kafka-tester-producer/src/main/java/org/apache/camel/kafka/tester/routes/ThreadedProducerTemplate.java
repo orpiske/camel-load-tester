@@ -97,7 +97,7 @@ public class ThreadedProducerTemplate extends RouteBuilder {
     private void produceMessages(int numMessages) {
         final ProducerTemplate producerTemplate = getCamelContext().createProducerTemplate();
 
-        LOG.info("Sending message {} from {}", numMessages, Thread.currentThread().getId());
+        LOG.info("Sending {} messages from {}", numMessages, Thread.currentThread().getId());
         List<Object> data = List.of("test-string", someFile, someInt, sampleObject);
 
         Endpoint endpoint = getCamelContext().getEndpoint("seda:test?blockWhenFull=true&offerTimeout=1000");
