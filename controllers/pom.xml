@@ -62,10 +62,6 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-jackson</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-kafka</artifactId>
-        </dependency>
         <!-- This enables JMX management for Camel -->
         <dependency>
             <groupId>org.apache.camel</groupId>
