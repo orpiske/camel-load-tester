@@ -71,6 +71,11 @@ public class TestMainListener implements MainListener {
         main.shutdown();
     }
 
+    public void configure(BaseMainSupport main) {
+        // NO-OP
+    }
+
+
     @Override
     public void beforeConfigure(BaseMainSupport main) {
         // NO-OP
@@ -91,11 +96,5 @@ public class TestMainListener implements MainListener {
     @Override
     public void beforeStop(BaseMainSupport main) {
         executorService.shutdown();
-    }
-
-    @Override
-    public void configure(CamelContext context) {
-        // NO-OP
-
     }
 }
