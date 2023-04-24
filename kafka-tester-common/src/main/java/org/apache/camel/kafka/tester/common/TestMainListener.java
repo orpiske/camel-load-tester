@@ -75,6 +75,10 @@ public class TestMainListener implements MainListener {
         // NO-OP
     }
 
+    public void configure(CamelContext context) {
+
+    }
+
 
     @Override
     public void beforeConfigure(BaseMainSupport main) {
