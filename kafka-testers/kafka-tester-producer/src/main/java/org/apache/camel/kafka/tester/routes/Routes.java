@@ -22,6 +22,7 @@ public final class Routes {
         routes.put("kafka", KafkaProducerRouteBuilder::new);
         routes.put("threaded-producer", SedaThreadedProducerTemplate::new);
         routes.put("threaded-seda-producer", SedaThreadedProducerTemplate::new);
+        routes.put("threaded-disruptor-producer", DisruptorVMThreadedProducerTemplate::new);
     }
 
     private Routes() {

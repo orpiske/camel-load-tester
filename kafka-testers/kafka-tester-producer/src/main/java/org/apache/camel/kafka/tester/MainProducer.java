@@ -12,6 +12,7 @@ import org.apache.camel.kafka.tester.io.BinaryRateWriter;
 import org.apache.camel.kafka.tester.io.RateWriter;
 import org.apache.camel.kafka.tester.io.common.FileHeader;
 import org.apache.camel.kafka.tester.routes.DirectEndRoute;
+import org.apache.camel.kafka.tester.routes.DisruptorEndRoute;
 import org.apache.camel.kafka.tester.routes.Routes;
 import org.apache.camel.kafka.tester.routes.SedaEndRoute;
 import org.apache.camel.main.Main;
@@ -43,6 +44,7 @@ public class MainProducer {
 
         try (RateWriter rateWriter = new BinaryRateWriter(testRateFile, FileHeader.WRITER_DEFAULT_PRODUCER)) {
             int threadCount = threadCount();
+            main.configure().addRoutesBuilder(new DisruptorEndRoute(threadCount));
             main.configure().addRoutesBuilder(new SedaEndRoute(threadCount));
             main.configure().addRoutesBuilder(new DirectEndRoute());
 
