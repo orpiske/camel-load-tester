@@ -11,6 +11,7 @@ import org.apache.camel.kafka.tester.common.types.TestMetrics;
 import org.apache.camel.kafka.tester.output.ConsoleOutputHandler;
 import org.apache.camel.kafka.tester.output.DelegateOutputHandler;
 import org.apache.camel.kafka.tester.output.JsonOutputHandler;
+import org.apache.camel.kafka.tester.output.NoLatencyConsoleOutputHandler;
 import org.apache.camel.kafka.tester.output.PropertiesOutputHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,12 @@ public class MainAnalyzer {
 
         final DelegateOutputHandler delegateOutputHandler = new DelegateOutputHandler();
 
-        delegateOutputHandler.add(new ConsoleOutputHandler());
+        if (testLatencies == null) {
+            delegateOutputHandler.add(new NoLatencyConsoleOutputHandler());
+        } else {
+            delegateOutputHandler.add(new ConsoleOutputHandler());
+        }
+
         final PropertiesOutputHandler propertiesOutputHandler = new PropertiesOutputHandler();
         delegateOutputHandler.add(propertiesOutputHandler);
 

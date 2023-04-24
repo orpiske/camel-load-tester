@@ -24,7 +24,8 @@ public class ReportGenerator {
     public void generate() throws IOException, CamelException {
         VelocityTemplateParser templateParser = new VelocityTemplateParser(properties);
 
-        File outputFile = templateParser.getOutputFile(new File(outputDir));
+        final File outputDirFile = new File(outputDir);
+        File outputFile = templateParser.getOutputFile(outputDirFile);
 
         try (FileWriter fw = new FileWriter(outputFile)) {
             templateParser.parse(fw);
