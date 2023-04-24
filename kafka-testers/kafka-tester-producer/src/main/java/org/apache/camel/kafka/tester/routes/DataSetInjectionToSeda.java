@@ -34,7 +34,7 @@ public class DataSetInjectionToSeda extends RouteBuilder {
             producerTemplate.sendBody(endpoint, new File("a"));
             producerTemplate.send(endpoint, exchange);
         } catch (Exception e) {
-            LOG.error("Error: {}", e.getMessage(), e.getMessage());
+            LOG.error("Error: {}", e.getMessage(), e);
         }
     }
 

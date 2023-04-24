@@ -33,7 +33,7 @@ public class DataSetInjectionToDirect extends RouteBuilder {
             producerTemplate.sendBody(endpoint, "skip");
             producerTemplate.sendBody(endpoint, new File("a"));
         } catch (Exception e) {
-            LOG.error("Error: {}", e.getMessage(), e.getMessage());
+            LOG.error("Error: {}", e.getMessage(), e);
         }
     }
 
