@@ -6,8 +6,11 @@ import java.util.function.Supplier;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.kafka.tester.common.Parameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class Routes {
+    private static final Logger LOG = LoggerFactory.getLogger(Routes.class);
     private static final Map<String, Supplier<RouteBuilder>> routes;
 
     static {
@@ -30,6 +33,7 @@ public final class Routes {
 
     public static RouteBuilder getRouteBuilder() {
         String routeType = System.getProperty(Parameters.TEST_PRODUCER_TYPE, "kafka");
+        LOG.info("Creating a new producer of type {}", routeType);
 
         Supplier<RouteBuilder> supplier = routes.get(routeType);
 
