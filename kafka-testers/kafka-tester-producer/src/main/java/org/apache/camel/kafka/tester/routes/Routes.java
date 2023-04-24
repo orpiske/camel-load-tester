@@ -20,7 +20,8 @@ public final class Routes {
         routes.put("dataset-noop-to-seda", DataSetNoopToSeda::new);
         routes.put("dataset-threaded-processor", DataSetThreadedProcessor::new);
         routes.put("kafka", KafkaProducerRouteBuilder::new);
-        routes.put("threaded-producer", ThreadedProducerTemplate::new);
+        routes.put("threaded-producer", SedaThreadedProducerTemplate::new);
+        routes.put("threaded-seda-producer", SedaThreadedProducerTemplate::new);
     }
 
     private Routes() {

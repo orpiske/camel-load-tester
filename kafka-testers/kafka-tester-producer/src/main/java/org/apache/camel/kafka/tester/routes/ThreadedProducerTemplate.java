@@ -15,7 +15,7 @@ import org.apache.camel.kafka.tester.support.Sample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ThreadedProducerTemplate extends RouteBuilder {
+public abstract class ThreadedProducerTemplate extends RouteBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(ThreadedProducerTemplate.class);
 
     private final int threadCount;
@@ -27,7 +27,7 @@ public class ThreadedProducerTemplate extends RouteBuilder {
     private Sample sampleObject = new Sample();
 
 
-    public ThreadedProducerTemplate() {
+    public ThreadedProducerTemplate(int threadCount) {
         this.threadCount = Parameters.threadCountProducer();
         testSize = Parameters.duration() > 0 ? Parameters.duration() : Integer.MAX_VALUE;
 
@@ -68,14 +68,13 @@ public class ThreadedProducerTemplate extends RouteBuilder {
         return now;
     }
 
-    private void produceMessagesWithRate(int numMessages) {
+    protected void produceMessagesWithRate(int numMessages, ProducerTemplate producerTemplate, Endpoint endpoint) {
         final long intervalInNanos = getIntervalInNanos();
-        final ProducerTemplate producerTemplate = getCamelContext().createProducerTemplate();
         long nextFireTime = System.nanoTime() + intervalInNanos;
 
         LOG.info("Sending message {} from {} with rate {}", numMessages, Thread.currentThread().getId(), targetRate);
 
-        Endpoint endpoint = getCamelContext().getEndpoint("seda:test?blockWhenFull=true&offerTimeout=1000");
+
         List<Object> data = List.of("test-string", someFile, someInt, sampleObject);
 
         while (numMessages > 0) {
@@ -94,13 +93,11 @@ public class ThreadedProducerTemplate extends RouteBuilder {
         System.exit(0);
     }
 
-    private void produceMessages(int numMessages) {
-        final ProducerTemplate producerTemplate = getCamelContext().createProducerTemplate();
+    abstract void produceMessagesWithRate(int numMessages);
 
+    protected void produceMessages(int numMessages, ProducerTemplate producerTemplate, Endpoint endpoint) {
         LOG.info("Sending {} messages from {}", numMessages, Thread.currentThread().getId());
         List<Object> data = List.of("test-string", someFile, someInt, sampleObject);
-
-        Endpoint endpoint = getCamelContext().getEndpoint("seda:test?blockWhenFull=true&offerTimeout=1000");
 
         for (int i = 0; i < numMessages; i++) {
             Object payload = data.get(i % data.size());
@@ -108,7 +105,9 @@ public class ThreadedProducerTemplate extends RouteBuilder {
         }
     }
 
-    private void produce(Exchange exchange) {
+    abstract void produceMessages(int numMessages);
+
+    protected void produce(Exchange exchange) {
         if (targetRate == 0) {
             for (int i = 0; i < threadCount; i++) {
                 executorService.submit(() -> produceMessages(testSize / threadCount));
@@ -120,16 +119,31 @@ public class ThreadedProducerTemplate extends RouteBuilder {
         }
     }
 
-    @Override
-    public void configure() {
-        LOG.info("Using thread count for parallel production: {}", threadCount);
+    public int getThreadCount() {
+        return threadCount;
+    }
 
-        onException(IllegalStateException.class)
-                .process(e -> LOG.error("The SEDA queue is likely full and the system may be unable to catch to the load. Fix the test parameters"));
+    public int getTestSize() {
+        return testSize;
+    }
 
-        from("timer:start?repeatCount=1&delay=2000").to("direct:start");
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
 
-        from("direct:start")
-                .process(this::produce);
+    public int getTargetRate() {
+        return targetRate;
+    }
+
+    public File getSomeFile() {
+        return someFile;
+    }
+
+    public Integer getSomeInt() {
+        return someInt;
+    }
+
+    public Sample getSampleObject() {
+        return sampleObject;
     }
 }
