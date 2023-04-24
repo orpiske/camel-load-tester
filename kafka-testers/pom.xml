@@ -49,11 +49,6 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-jackson</artifactId>
         </dependency>
-        <!-- This enables JMX management for Camel -->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.camel</groupId>-->
-<!--            <artifactId>camel-management</artifactId>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>org.apache.camel</groupId>
@@ -73,5 +68,21 @@
         <module>kafka-tester-producer</module>
         <module>kafka-tester-analyzer</module>
     </modules>
+
+    <profiles>
+        <profile>
+            <id>management</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <dependencies>
+                <!-- This enables JMX management for Camel -->
+                <dependency>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-management</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
 </project>
