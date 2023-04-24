@@ -83,7 +83,9 @@ public class VelocityTemplateParser {
     public File getOutputFile(File outputDir) throws IOException {
         File outputFile = new File(outputDir, "report.html");
         if (outputFile.exists()) {
-            throw new IOException("Resource already exists: " + outputFile);
+            if (outputFile.delete()) {
+                throw new IOException("Unable to delete report: " + outputFile);
+            }
         }
 
         return outputFile;
