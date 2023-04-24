@@ -25,7 +25,7 @@ public class KafkaProducerRouteBuilder extends RouteBuilder {
     public KafkaProducerRouteBuilder() {
         this.longAdder = Counter.getInstance().getAdder();
         this.batchSize = Parameters.batchSize();
-        this.aggregate = batchSize > 0 ? true : false;
+        this.aggregate = batchSize > 0;
         this.topic = Parameters.kafkaTopic();
     }
 

@@ -21,10 +21,10 @@ public abstract class ThreadedProducerTemplate extends RouteBuilder {
     private final int threadCount;
     private final int testSize;
     private final ExecutorService executorService;
-    private int targetRate;
-    private File someFile = new File("some file");
-    private Integer someInt = Integer.valueOf(1);
-    private Sample sampleObject = new Sample();
+    private final int targetRate;
+    private final File someFile = new File("some file");
+    private final Integer someInt = 1;
+    private final Sample sampleObject = new Sample();
 
 
     public ThreadedProducerTemplate(int threadCount) {

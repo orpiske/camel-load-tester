@@ -29,7 +29,7 @@ public class DataSetInjectionToDirect extends RouteBuilder {
 
     private void inject(Exchange exchange) {
         try {
-            producerTemplate.sendBody(endpoint, Integer.valueOf(1));
+            producerTemplate.sendBody(endpoint, 1);
             producerTemplate.sendBody(endpoint, "skip");
             producerTemplate.sendBody(endpoint, new File("a"));
         } catch (Exception e) {
