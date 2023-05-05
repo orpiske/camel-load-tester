@@ -3,6 +3,7 @@ package org.apache.camel.kafka.tester.routes;
 import java.util.concurrent.atomic.LongAdder;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.disruptor.DisruptorEndpoint;
 import org.apache.camel.kafka.tester.common.Counter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,11 @@ public class DisruptorEndRoute extends RouteBuilder {
     @Override
     public void configure() {
         LOG.info("Using thread count for parallel consumption: {}", threadCount);
+
+        DisruptorEndpoint disruptor = getCamelContext().getEndpoint("disruptor:test", DisruptorEndpoint.class);
+        int size = disruptor.getBufferSize();
+        LOG.info("Using ring buffer size: {}", size);
+
 
         if (threadCount == 0) {
             from("disruptor:test")
