@@ -1,7 +1,7 @@
 TEST_HOST?=dione
 TEST_USER_HOME=/home/$(USER)
 TOOLS_HOME:=$(TEST_USER_HOME)/tools
-TESTER_DIR=$(TOOLS_HOME)/camel-load/
+TESTER_DIR=$(TOOLS_HOME)/camel-load-tester/
 MVN_PRG:=mvnd
 
 DATA_HOME:=$(TEST_USER_HOME)/data
