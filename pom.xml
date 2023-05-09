@@ -5,11 +5,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.apache.camel</groupId>
-  <artifactId>kafka-tester-parent</artifactId>
+  <artifactId>camel-load-tester</artifactId>
   <packaging>pom</packaging>
   <version>1.0.0-SNAPSHOT</version>
 
-  <name>Camel Kafka Tester</name>
+  <name>Camel Load Tester</name>
 
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
@@ -296,9 +296,9 @@
   </profiles>
 
   <modules>
-    <module>kafka-tester-io</module>
-    <module>kafka-tester-common</module>
-    <module>kafka-testers</module>
+    <module>camel-load-tester-io</module>
+    <module>camel-load-tester-common</module>
+    <module>camel-load-testers</module>
     <module>controllers</module>
 
   </modules>

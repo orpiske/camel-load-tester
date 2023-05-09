@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>controller-test</artifactId>
+    <name>Controller :: Test</name>
     <dependencies>
         <dependency>
             <groupId>org.apache.camel</groupId>

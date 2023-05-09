@@ -6,14 +6,14 @@
 
   <parent>
     <groupId>org.apache.camel</groupId>
-    <artifactId>kafka-testers</artifactId>
+    <artifactId>camel-load-testers</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kafka-tester-consumer</artifactId>
+  <artifactId>camel-load-tester-consumer</artifactId>
   <packaging>jar</packaging>
 
-  <name>Camel Kafka Tester Consumer</name>
+  <name>Camel Load Tester :: Consumer</name>
 
   <build>
     <plugins>

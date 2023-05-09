@@ -5,11 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.camel</groupId>
-        <artifactId>kafka-tester-parent</artifactId>
+        <artifactId>camel-load-tester</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>controllers</artifactId>
+    <name>Controller :: Parent</name>
     <packaging>pom</packaging>
 
     <properties>
@@ -71,7 +72,7 @@
 
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>kafka-tester-common</artifactId>
+            <artifactId>camel-load-tester-common</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
