@@ -1,7 +1,7 @@
 TEST_HOST?=dione
 TEST_USER_HOME=/home/$(USER)
 TOOLS_HOME:=$(TEST_USER_HOME)/tools
-TESTER_DIR=$(TOOLS_HOME)/kafka-tester/
+TESTER_DIR=$(TOOLS_HOME)/camel-load/
 MVN_PRG:=mvnd
 
 DATA_HOME:=$(TEST_USER_HOME)/data
@@ -17,14 +17,14 @@ CONTROLLER_VERSION=3.20
 ANALYZER_VERSION=3.20
 
 dest-dir:
-	ssh $(TEST_HOST) mkdir -p $(TOOLS_HOME)/kafka-tester/
+	ssh $(TEST_HOST) mkdir -p $(TOOLS_HOME)/camel-load-tester/
 
 $(CAMEL_VERSIONS): dest-dir
 	$(MVN_PRG) -Pcamel-$@ clean package
-	scp kafka-testers/kafka-tester-producer/target/kafka-tester-producer-$@*.jar $(TEST_HOST):$(TESTER_DIR)
-	scp kafka-testers/kafka-tester-consumer/target/kafka-tester-consumer-$@*.jar $(TEST_HOST):$(TESTER_DIR)
+	scp camel-load-testers/camel-load-tester-producer/target/camel-load-tester-producer-$@*.jar $(TEST_HOST):$(TESTER_DIR)
+	scp camel-load-testers/camel-load-tester-consumer/target/camel-load-tester-consumer-$@*.jar $(TEST_HOST):$(TESTER_DIR)
 	@[[ $@ == $(CONTROLLER_VERSION) ]] && scp controllers/controller-test/target/controller-test-$@*.jar $(TEST_HOST):$(TESTER_DIR) || echo "Skipping controller for" $@
-	@[[ $@ == $(ANALYZER_VERSION) ]] && scp kafka-testers/kafka-tester-analyzer/target/kafka-tester-analyzer-$@*.jar $(TEST_HOST):$(TESTER_DIR)/kafka-tester-analyzer.jar || echo "Skipping analyzer for" $@
+	@[[ $@ == $(ANALYZER_VERSION) ]] && scp camel-load-testers/camel-load-tester-analyzer/target/camel-load-tester-analyzer-$@*.jar $(TEST_HOST):$(TESTER_DIR)/camel-load-tester-analyzer.jar || echo "Skipping analyzer for" $@
 
 gen-config:
 	@mkdir -p $(TARGET_CONFIG_DIR)
