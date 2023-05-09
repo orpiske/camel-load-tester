@@ -1,14 +1,52 @@
-Camel Kafka Mock Tester
+Camel Load Tester
 =========================
 
 Introduction
 ===
 
-Simple Camel Kafka mock consumer for computing the consumption rate for the Camel Kafka component. It also comes with a low rate producer to aid with debugging. 
+This project contains a collection of load testers for Apache Camel. This is meant as a macro-benchmark tool to provide additional
+data for the [camel-performance-tests](http://github.com/apache/camel-performance-tests) project. This is meant as a tool for Camel
+developers and contributors to evaluate internal changes to Camel. This is not meant as a user tool.
+
+Running Tests
+====
+
+Running Producer Tests
+=====
+
+```shell
+java -Doutput.dir=/path/to/report \                     # Path to the report directory
+    -Dtest.rate.file=/path/to/report/report.data        # Path to the report file
+    -Dtest.name=threaded-disruptor-producer \           # Test name to add to the reports
+    -XX:+UseNUMA -Xmx4G -Xms4G -server \                # Common Java options (tweak as needed)
+    -Dcamel.main.durationMaxSeconds=180 \               # Test duration (in seconds)
+    -Dcamel.main.shutdownTimeout=5 \                    # Shutdown timeout (in seconds)
+    -Dcamel.main.durationMaxIdleSeconds=10 \            # Max idle time (in seconds)
+    -Dtest.producer.type=threaded-disruptor-producer \  # Test producer type (see the next section for details)
+    -Dtest.thread.count=4 \                             # Consumer count
+    -Dtest.thread.count.producer=4 \                    # Producer count
+    -Dtest.on.complete.action=exit                      # Exit action
+```
+
+Test Types
+=====
+
+* dataset-batched-processor: tests the dataset producer with an aggregation EIP
+* dataset-injection-to-direct: tests dataset, with JSon unmarshalling, sending to direct
+* dataset-injection-to-seda: tests dataset, with JSon unmarshalling, sending to SEDA
+* dataset-noop-to-direct: simple dataset to direct route
+* dataset-noop-to-seda: simple dataset to SEDA route
+* dataset-threaded-processor: dataset with threaded processor 
+* kafka: from dataset to Kafka
+* threaded-seda-producer: a highly threaded SEDA producer
+* threaded-disruptor-producer: a highly threaded Disruptor producer
+
+Running Kafka-based Tests
+====
 
 
 To run the consumer test:
-===
+====
 
 1. Delete the `test` topic on kafka
 
@@ -38,7 +76,7 @@ mvn -Pcamel-3.12.0-SNAPSHOT clean package && ./start-consumer.sh kafka-host:9092
 
 
 Setup Automation
-===
+====
 
 Edit the `development` inventory in ansible directory to use the hostname or IP of your test host. You should have a user with `sudo` permissions on the test host.
 
