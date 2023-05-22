@@ -26,6 +26,7 @@ public final class Routes {
         routes.put("threaded-producer", SedaThreadedProducerTemplate::new);
         routes.put("threaded-seda-producer", SedaThreadedProducerTemplate::new);
         routes.put("threaded-disruptor-producer", DisruptorVMThreadedProducerTemplate::new);
+        routes.put("threaded-controlbus-producer", ControlBusThreadedProducerTemplate::new);
     }
 
     private Routes() {
