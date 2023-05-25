@@ -27,7 +27,7 @@ public class ControlBusThreadedProducerTemplate extends ThreadedProducerTemplate
         produceMessagesWithRate(numMessages, producerTemplate, endpoint);
     }
 
-    protected void produceMessages(int numMessages, ProducerTemplate producerTemplate, Endpoint endpoint) {
+    protected void produceMessages(int numMessages, ProducerTemplate producerTemplate, String endpoint) {
         LOG.info("Sending {} messages from {}", numMessages, Thread.currentThread().getId());
         List<Object> data = List.of("test-string", getSomeFile(), getSomeInt(), getSampleObject());
 
@@ -39,10 +39,10 @@ public class ControlBusThreadedProducerTemplate extends ThreadedProducerTemplate
         }
     }
 
-
+    // Note: in this test we want to force Camel to resolve the endpoint every time
     protected void produceMessages(int numMessages) {
         final ProducerTemplate producerTemplate = getCamelContext().createProducerTemplate();
-        final Endpoint endpoint = getCamelContext().getEndpoint("controlbus:route?routeId=route1&action=status&loggingLevel=off");
+        final String endpoint = "controlbus:route?routeId=route1&action=status&loggingLevel=off";
 
         produceMessages(numMessages, producerTemplate, endpoint);
     }
