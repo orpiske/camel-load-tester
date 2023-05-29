@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.kafka.tester.common.Parameters;
+import org.apache.camel.kafka.tester.routes.eip.DisruptorCBR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +28,7 @@ public final class Routes {
         routes.put("threaded-seda-producer", SedaThreadedProducerTemplate::new);
         routes.put("threaded-disruptor-producer", DisruptorVMThreadedProducerTemplate::new);
         routes.put("threaded-controlbus-producer", ControlBusThreadedProducerTemplate::new);
+        routes.put("eip-cbr-text-route", DisruptorCBR::new);
     }
 
     private Routes() {

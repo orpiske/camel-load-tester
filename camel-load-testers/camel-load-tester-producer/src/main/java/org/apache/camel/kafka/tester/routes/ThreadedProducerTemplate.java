@@ -93,7 +93,7 @@ public abstract class ThreadedProducerTemplate extends RouteBuilder {
         System.exit(0);
     }
 
-    abstract void produceMessagesWithRate(int numMessages);
+    protected abstract void produceMessagesWithRate(int numMessages);
 
     protected void produceMessages(int numMessages, ProducerTemplate producerTemplate, Endpoint endpoint) {
         LOG.info("Sending {} messages from {}", numMessages, Thread.currentThread().getId());
@@ -105,7 +105,7 @@ public abstract class ThreadedProducerTemplate extends RouteBuilder {
         }
     }
 
-    abstract void produceMessages(int numMessages);
+    protected abstract void produceMessages(int numMessages);
 
     protected void produce(Exchange exchange) {
         if (targetRate == 0) {
