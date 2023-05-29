@@ -14,11 +14,26 @@ import org.slf4j.LoggerFactory;
 public class DisruptorCBR extends ThreadedProducerTemplate {
     private static final Logger LOG = LoggerFactory.getLogger(DisruptorCBR.class);
     private final LongAdder longAdder;
+    private final boolean heterogeneousPayload;
 
     public DisruptorCBR() {
         super(Parameters.threadCountProducer());
 
         this.longAdder = Counter.getInstance().getAdder();
+        heterogeneousPayload = Boolean.valueOf(System.getProperty("eip.cbr.heterogeneousPayload", "true"));
+
+    }
+
+    protected void produceMessages(int numMessages, ProducerTemplate producerTemplate, Endpoint endpoint) {
+        if (heterogeneousPayload) {
+            super.produceMessages(numMessages, producerTemplate, endpoint);
+        } else {
+            LOG.info("Sending {} messages from {}", numMessages, Thread.currentThread().getId());
+
+            for (int i = 0; i < numMessages; i++) {
+                producerTemplate.sendBody(endpoint, "test-string");
+            }
+        }
     }
 
     protected void produceMessagesWithRate(int numMessages) {
