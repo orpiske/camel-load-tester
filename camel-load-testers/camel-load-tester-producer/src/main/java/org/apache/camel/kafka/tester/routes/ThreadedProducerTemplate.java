@@ -1,7 +1,6 @@
 package org.apache.camel.kafka.tester.routes;
 
 import java.io.File;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.LockSupport;
@@ -75,7 +74,7 @@ public abstract class ThreadedProducerTemplate extends RouteBuilder {
         LOG.info("Sending message {} from {} with rate {}", numMessages, Thread.currentThread().getId(), targetRate);
 
 
-        List<Object> data = List.of("test-string", someFile, someInt, sampleObject);
+        Object[] data = new Object[]{"test-string", someFile, someInt, sampleObject};
 
         while (numMessages > 0) {
             if (intervalInNanos > 0) {
@@ -84,7 +83,7 @@ public abstract class ThreadedProducerTemplate extends RouteBuilder {
                 nextFireTime += intervalInNanos;
             }
 
-            Object payload = data.get(numMessages % data.size());
+            Object payload = data[numMessages % data.length];
             producerTemplate.sendBody(endpoint, payload);
 
             numMessages--;
@@ -97,10 +96,10 @@ public abstract class ThreadedProducerTemplate extends RouteBuilder {
 
     protected void produceMessages(int numMessages, ProducerTemplate producerTemplate, Endpoint endpoint) {
         LOG.info("Sending {} messages from {}", numMessages, Thread.currentThread().getId());
-        List<Object> data = List.of("test-string", someFile, someInt, sampleObject);
+        Object[] data = new Object[]{"test-string", someFile, someInt, sampleObject};
 
         for (int i = 0; i < numMessages; i++) {
-            Object payload = data.get(i % data.size());
+            Object payload = data[i % data.length];
             producerTemplate.sendBody(endpoint, payload);
         }
     }
