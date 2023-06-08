@@ -106,6 +106,8 @@ public abstract class ThreadedProducerTemplate extends RouteBuilder {
 
     protected abstract void produceMessages(int numMessages);
 
+    // We don't use the exchange in most cases
+    @SuppressWarnings("unused")
     protected void produce(Exchange exchange) {
         if (targetRate == 0) {
             for (int i = 0; i < threadCount; i++) {
