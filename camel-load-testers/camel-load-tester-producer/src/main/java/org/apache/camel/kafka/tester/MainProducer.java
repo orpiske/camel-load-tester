@@ -59,7 +59,6 @@ public class MainProducer {
                 writerReporter = new WriterReporter(rateWriter, testSize, main::stop, null);
             }
 
-
             main.addMainListener(new TestMainListener(writerReporter));
 
             main.run();
