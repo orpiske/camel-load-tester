@@ -10,7 +10,7 @@ KAFKA_URI?=dione:9092
 .PHONY: install
 
 CAMEL_VERSIONS?=3.18 3.20 3.21 4.0 4.1
-ANALYZER_VERSION=3.20
+ANALYZER_VERSION=4.0
 
 dest-dir:
 	ssh $(TEST_HOST) mkdir -p $(TOOLS_HOME)/camel-load-tester/
