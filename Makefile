@@ -9,8 +9,7 @@ KAFKA_URI?=dione:9092
 
 .PHONY: install
 
-CAMEL_VERSIONS?=3.18 3.20 3.21 4.0.0-M1 4.0.0-M2 4.0.0-M3 4.0.0-RC2 4.0
-CONTROLLER_VERSION=3.20
+CAMEL_VERSIONS?=3.18 3.20 3.21 4.0 4.1
 ANALYZER_VERSION=3.20
 
 dest-dir:
@@ -23,5 +22,5 @@ $(CAMEL_VERSIONS): dest-dir
 	@[[ $@ == $(ANALYZER_VERSION) ]] && scp camel-load-testers/camel-load-tester-analyzer/target/camel-load-tester-analyzer-$@*.jar $(TEST_HOST):$(TESTER_DIR)/camel-load-tester-analyzer.jar || echo "Skipping analyzer for" $@
 
 
-deploy: $(CAMEL_VERSIONS) deploy-config deploy-scripts
+deploy: $(CAMEL_VERSIONS)
 
