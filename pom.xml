@@ -343,7 +343,6 @@
     <module>camel-load-tester-io</module>
     <module>camel-load-tester-common</module>
     <module>camel-load-testers</module>
-    <module>controllers</module>
 
   </modules>
 

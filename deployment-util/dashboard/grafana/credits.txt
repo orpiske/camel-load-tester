@@ -1,2 +1,0 @@
-JVM dashboard modified from: https://grafana.com/grafana/dashboards/8563-jvm-dashboard/ with original source at https://gist.github.com/chanjarster/3970a1c6fe8eaaad0046f8072fb37c1d
-
