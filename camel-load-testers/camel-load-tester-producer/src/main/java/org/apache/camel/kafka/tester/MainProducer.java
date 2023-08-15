@@ -11,15 +11,10 @@ import org.apache.camel.kafka.tester.common.WriterReporter;
 import org.apache.camel.kafka.tester.io.BinaryRateWriter;
 import org.apache.camel.kafka.tester.io.RateWriter;
 import org.apache.camel.kafka.tester.io.common.FileHeader;
-import org.apache.camel.kafka.tester.routes.DirectEndRoute;
-import org.apache.camel.kafka.tester.routes.DisruptorEndRoute;
 import org.apache.camel.kafka.tester.routes.Routes;
-import org.apache.camel.kafka.tester.routes.SedaEndRoute;
 import org.apache.camel.main.Main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.apache.camel.kafka.tester.common.Parameters.threadCount;
 
 /**
  * A Camel Application
@@ -43,10 +38,10 @@ public class MainProducer {
         File testRateFile = IOUtil.create(testRateFileName);
 
         try (RateWriter rateWriter = new BinaryRateWriter(testRateFile, FileHeader.WRITER_DEFAULT_PRODUCER)) {
-            int threadCount = threadCount();
-            main.configure().addRoutesBuilder(new DisruptorEndRoute(threadCount));
-            main.configure().addRoutesBuilder(new SedaEndRoute(threadCount));
-            main.configure().addRoutesBuilder(new DirectEndRoute());
+            RouteBuilder endRoute = Routes.getEndRouteBuilder();
+            if (endRoute != null) {
+                main.configure().addRoutesBuilder(endRoute);
+            }
 
             RouteBuilder routeBuilder = Routes.getRouteBuilder();
             main.configure().addRoutesBuilder(routeBuilder);

@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.LongAdder;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.kafka.tester.common.Counter;
+import org.apache.camel.kafka.tester.common.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,8 +13,8 @@ public class SedaEndRoute extends RouteBuilder {
     private final int threadCount;
     private final LongAdder longAdder;
 
-    public SedaEndRoute(int threadCount) {
-        this.threadCount = threadCount;
+    public SedaEndRoute() {
+        this.threadCount = Parameters.threadCount();
         this.longAdder = Counter.getInstance().getAdder();
     }
 
