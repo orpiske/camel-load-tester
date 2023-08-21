@@ -75,7 +75,7 @@ public class DisruptorRoutingSlipBean extends ThreadedProducerTemplate {
         LOG.info("Using thread count for parallel production: {}", getThreadCount());
 
         from("timer:start?repeatCount=1&delay=2000")
-                .multicast().to("direct:start");
+                .to("direct:start");
 
         from("disruptor:slip-route-1")
                 .process(this::noopProcess);
