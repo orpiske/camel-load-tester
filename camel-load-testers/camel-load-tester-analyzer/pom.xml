@@ -52,7 +52,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.apache.camel.kafka.tester.MainAnalyzer</mainClass>
+                                    <mainClass>org.apache.camel.load.analyzer.MainAnalyzer</mainClass>
                                     <manifestEntries>
                                         <Multi-Release>true</Multi-Release>
                                     </manifestEntries>

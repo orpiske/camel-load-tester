@@ -28,7 +28,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.apache.camel.kafka.tester.MainProducer</mainClass>
+                                    <mainClass>org.apache.camel.load.tester.MainProducer</mainClass>
                                     <manifestEntries>
                                         <Multi-Release>true</Multi-Release>
                                     </manifestEntries>
