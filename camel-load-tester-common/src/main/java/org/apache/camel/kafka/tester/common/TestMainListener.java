@@ -23,6 +23,9 @@ public class TestMainListener implements MainListener {
 
     @Override
     public void afterConfigure(BaseMainSupport main) {
+        final CamelContext camelContext = main.getCamelContext();
+        LOG.info("Running the test with Camel version {}", camelContext.getVersion());
+
         /*
          This is the number of other threads that may be active at any point during the test:
          1 for Camel main
@@ -34,7 +37,6 @@ public class TestMainListener implements MainListener {
         int threadCount = Parameters.threadCount();
         int producerThreadCount = Parameters.threadCountProducer();
 
-        final CamelContext camelContext = main.getCamelContext();
         final ThreadPoolProfile defaultThreadPoolProfile = camelContext.getExecutorServiceManager().getDefaultThreadPoolProfile();
 
         LOG.info("The system is configured with the thread pool: {}", defaultThreadPoolProfile.getId());
