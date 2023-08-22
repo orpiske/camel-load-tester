@@ -7,19 +7,19 @@ MVN_PRG:=mvnd
 DATA_HOME:=$(TEST_USER_HOME)/data
 KAFKA_URI?=dione:9092
 
-.PHONY: install
-
 CAMEL_VERSIONS?=3.18 3.20 3.21 4.0 4.1
 ANALYZER_VERSION=4.0
 
+.PHONY: all deploy install $(CAMEL_VERSIONS)
+
 dest-dir:
-	ssh $(TEST_HOST) mkdir -p $(TOOLS_HOME)/camel-load-tester/
+	$(foreach host,$(TEST_HOSTS),ssh $(host) mkdir -p $(TOOLS_HOME)/camel-load-tester/; )
 
 $(CAMEL_VERSIONS): dest-dir
 	$(MVN_PRG) -Pcamel-$@ clean package
-	scp camel-load-testers/camel-load-tester-producer/target/camel-load-tester-producer-$@*.jar $(TEST_HOST):$(TESTER_DIR)
-	scp camel-load-testers/camel-load-tester-consumer/target/camel-load-tester-consumer-$@*.jar $(TEST_HOST):$(TESTER_DIR)
-	@[[ $@ == $(ANALYZER_VERSION) ]] && scp camel-load-testers/camel-load-tester-analyzer/target/camel-load-tester-analyzer-$@*.jar $(TEST_HOST):$(TESTER_DIR)/camel-load-tester-analyzer.jar || echo "Skipping analyzer for" $@
+	$(foreach host,$(TEST_HOSTS),scp camel-load-testers/camel-load-tester-producer/target/camel-load-tester-producer-$@*.jar $(host):$(TESTER_DIR); )
+	$(foreach host,$(TEST_HOSTS),scp camel-load-testers/camel-load-tester-consumer/target/camel-load-tester-consumer-$@*.jar $(host):$(TESTER_DIR); )
+	@[[ $@ == $(ANALYZER_VERSION) ]] && $(foreach host,$(TEST_HOSTS),scp camel-load-testers/camel-load-tester-analyzer/target/camel-load-tester-analyzer-$@*.jar $(TEST_HOST):$(TESTER_DIR)/camel-load-tester-analyzer.jar || echo "Skipping analyzer for" $@; )
 
 
 deploy: $(CAMEL_VERSIONS)
