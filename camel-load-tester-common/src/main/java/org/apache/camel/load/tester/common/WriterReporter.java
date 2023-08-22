@@ -12,7 +12,7 @@ public class WriterReporter extends AbstractReporter {
     private final RateWriter writer;
     private Consumer<Long> onComplete;
 
-    public WriterReporter(RateWriter writer, long testSize, WriterReporter.Action staleAction, Consumer<Long> onComplete) {
+    public WriterReporter(RateWriter writer, long testSize, Reporter.Action staleAction, Consumer<Long> onComplete) {
         super(testSize, staleAction, Counter.getInstance().getAdder());
         this.writer = writer;
         this.onComplete = onComplete;
