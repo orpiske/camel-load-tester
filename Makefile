@@ -1,4 +1,3 @@
-TEST_HOST?=dione
 TEST_USER_HOME=/home/$(USER)
 TOOLS_HOME:=$(TEST_USER_HOME)/tools
 TESTER_DIR=$(TOOLS_HOME)/camel-load-tester/
@@ -19,7 +18,7 @@ $(CAMEL_VERSIONS): dest-dir
 	$(MVN_PRG) -Pcamel-$@ clean package
 	$(foreach host,$(TEST_HOSTS),scp camel-load-testers/camel-load-tester-producer/target/camel-load-tester-producer-$@*.jar $(host):$(TESTER_DIR); )
 	$(foreach host,$(TEST_HOSTS),scp camel-load-testers/camel-load-tester-consumer/target/camel-load-tester-consumer-$@*.jar $(host):$(TESTER_DIR); )
-	@[[ $@ == $(ANALYZER_VERSION) ]] && $(foreach host,$(TEST_HOSTS),scp camel-load-testers/camel-load-tester-analyzer/target/camel-load-tester-analyzer-$@*.jar $(TEST_HOST):$(TESTER_DIR)/camel-load-tester-analyzer.jar || echo "Skipping analyzer for" $@; )
+	@[[ $@ == $(ANALYZER_VERSION) ]] && $(foreach host,$(TEST_HOSTS),scp camel-load-testers/camel-load-tester-analyzer/target/camel-load-tester-analyzer-$@*.jar $(host):$(TESTER_DIR)/camel-load-tester-analyzer.jar || echo "Skipping analyzer for" $@; )
 
 
 deploy: $(CAMEL_VERSIONS)
