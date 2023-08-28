@@ -8,6 +8,9 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.load.tester.routes.eip.DisruptorCBR;
 import org.apache.camel.load.tester.routes.eip.DisruptorRoutingSlipBean;
 import org.apache.camel.load.tester.common.Parameters;
+import org.apache.camel.load.tester.routes.end.DirectEndRoute;
+import org.apache.camel.load.tester.routes.end.DisruptorEndRoute;
+import org.apache.camel.load.tester.routes.end.SedaEndRoute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

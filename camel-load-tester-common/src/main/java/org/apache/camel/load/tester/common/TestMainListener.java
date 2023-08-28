@@ -34,8 +34,9 @@ public class TestMainListener implements MainListener {
          */
 
         final int numOtherThreads = 5;
-        int threadCount = Parameters.threadCount();
-        int producerThreadCount = Parameters.threadCountProducer();
+        int threadCountProcessor = Parameters.threadCountProcessor();
+        int threadCountConsumer = Parameters.threadCountConsumer();
+        int threadCountProducer = Parameters.threadCountProducer();
 
         final ThreadPoolProfile defaultThreadPoolProfile = camelContext.getExecutorServiceManager().getDefaultThreadPoolProfile();
 
@@ -43,10 +44,13 @@ public class TestMainListener implements MainListener {
         LOG.info("The max pool size for the thread pool is: {}", defaultThreadPoolProfile.getMaxPoolSize());
         LOG.info("The pool size for the thread pool is: {}", defaultThreadPoolProfile.getPoolSize());
         LOG.info("The max queue size for the thread pool is: {}", defaultThreadPoolProfile.getMaxQueueSize());
-        LOG.info("The keep alive time is: {}", defaultThreadPoolProfile.getKeepAliveTime().longValue());
+        LOG.info("The processor thread count is: {}", threadCountProcessor);
+        LOG.info("The consumer thread count is: {}", threadCountConsumer);
+        LOG.info("The producer thread count is: {}", threadCountProducer);
+        LOG.info("The keep alive time is: {}", defaultThreadPoolProfile.getKeepAliveTime());
 
         // See the note about on the numOtherThreads
-        final int requiredPoolSize = (threadCount + producerThreadCount) + numOtherThreads;
+        final int requiredPoolSize = (threadCountProcessor + threadCountConsumer + threadCountProducer) + numOtherThreads;
         if (requiredPoolSize >= defaultThreadPoolProfile.getMaxPoolSize()) {
             LOG.warn("The test is enabling over committing of resources by increasing the max pool size from {} to {}",
                     defaultThreadPoolProfile.getMaxPoolSize(), requiredPoolSize);

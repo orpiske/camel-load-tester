@@ -61,7 +61,7 @@ public class DisruptorCBR extends ThreadedProducerTemplate {
 
     @Override
     public void configure() {
-        LOG.info("Using thread count for parallel production: {}", getThreadCount());
+        LOG.info("Using thread count for parallel production: {}", getProducerThreadCount());
 
         from("timer:start?repeatCount=1&delay=2000").to("direct:start");
 

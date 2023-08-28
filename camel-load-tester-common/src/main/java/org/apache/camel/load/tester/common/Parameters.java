@@ -9,7 +9,9 @@ public final class Parameters {
     public static final String TEST_RATE_FILE = "test.rate.file";
     public static final String CAMEL_MAIN_DURATION_MAX_MESSAGES = "camel.main.durationMaxMessages";
     public static final String TEST_PRODUCER_TYPE = "test.producer.type";
-    public static final String TEST_THREAD_COUNT = "test.thread.count";
+    public static final String TEST_THREAD_COUNT_PROCESSOR = "test.thread.count.processor";
+    public static final String TEST_THREAD_COUNT_CONSUMER = "test.thread.count.consumer";
+
     public static final String TEST_THREAD_COUNT_PRODUCER = "test.thread.count.producer";
     public static final String TEST_TARGET_RATE = "test.target.rate";
     public static final String TEST_ON_COMPLETE_ACTION = "test.on.complete.action";
@@ -27,8 +29,17 @@ public final class Parameters {
         return Integer.parseInt(strThreadCount);
     }
 
+    @Deprecated
     public static int threadCount() {
-        return threadCountFromProperty(TEST_THREAD_COUNT);
+        return threadCountConsumer();
+    }
+
+    public static int threadCountProcessor() {
+        return threadCountFromProperty(TEST_THREAD_COUNT_PROCESSOR);
+    }
+
+    public static int threadCountConsumer() {
+        return threadCountFromProperty(TEST_THREAD_COUNT_CONSUMER);
     }
 
     public static int threadCountProducer() {

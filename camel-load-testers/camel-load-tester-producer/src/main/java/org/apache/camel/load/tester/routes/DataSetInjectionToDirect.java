@@ -18,14 +18,8 @@ import org.slf4j.LoggerFactory;
  */
 public class DataSetInjectionToDirect extends RouteBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(DataSetInjectionToDirect.class);
-    private final int threadCount;
-
     private ProducerTemplate producerTemplate;
     private Endpoint endpoint;
-
-    public DataSetInjectionToDirect() {
-        this.threadCount = Parameters.threadCount();
-    }
 
     private void inject(Exchange exchange) {
         try {
@@ -41,8 +35,6 @@ public class DataSetInjectionToDirect extends RouteBuilder {
      * Let's configure the Camel routing rules using Java code...
      */
     public void configure() {
-        LOG.info("Using thread count: {}", threadCount);
-
         producerTemplate = getContext().createProducerTemplate();
         endpoint = getContext().getEndpoint("direct:test");
 

@@ -45,8 +45,8 @@ public class DisruptorRoutingSlipBean extends ThreadedProducerTemplate {
     @Override
     protected void produceMessages(int numMessages) {
         final ProducerTemplate producerTemplate = getCamelContext().createProducerTemplate();
-        final Endpoint endpoint1 = getCamelContext().getEndpoint("direct:start-1");
-        final Endpoint endpoint2 = getCamelContext().getEndpoint("direct:start-2");
+        final Endpoint endpoint1 = getCamelContext().getEndpoint("disruptor:start-1");
+        final Endpoint endpoint2 = getCamelContext().getEndpoint("disruptor:start-2");
 
         produceMessages(numMessages, producerTemplate, endpoint1, endpoint2);
     }
@@ -54,8 +54,8 @@ public class DisruptorRoutingSlipBean extends ThreadedProducerTemplate {
     @Override
     protected void produce(Exchange exchange) {
         if (super.getTargetRate() == 0) {
-            for (int i = 0; i < super.getThreadCount(); i++) {
-                super.getExecutorService().submit(() -> produceMessages(super.getTestSize() / super.getThreadCount()));
+            for (int i = 0; i < super.getProducerThreadCount(); i++) {
+                super.getExecutorService().submit(() -> produceMessages(super.getTestSize() / super.getProducerThreadCount()));
             }
         } else {
             throw new UnsupportedOperationException("Producing with target rate is not supported yet");
@@ -72,7 +72,7 @@ public class DisruptorRoutingSlipBean extends ThreadedProducerTemplate {
 
     @Override
     public void configure() {
-        LOG.info("Using thread count for parallel production: {}", getThreadCount());
+        LOG.info("Using thread count for parallel production: {}", getProducerThreadCount());
 
         from("timer:start?repeatCount=1&delay=2000")
                 .to("direct:start");
@@ -80,10 +80,10 @@ public class DisruptorRoutingSlipBean extends ThreadedProducerTemplate {
         from("direct:start")
                 .process(this::produce);
 
-        from("direct:start-1")
+        from("disruptor:start-1")
                 .bean(new MyDynamicRouterPojo("disruptor:slip-route-1"));
 
-        from("direct:start-2")
+        from("disruptor:start-2")
                 .bean(new MyDynamicRouterPojo("disruptor:slip-route-2"));
 
         from("disruptor:slip-route-1")
@@ -95,8 +95,8 @@ public class DisruptorRoutingSlipBean extends ThreadedProducerTemplate {
 
 
     public static class MyDynamicRouterPojo {
-
         private final String target;
+
 
         public MyDynamicRouterPojo(String target) {
             this.target = target;

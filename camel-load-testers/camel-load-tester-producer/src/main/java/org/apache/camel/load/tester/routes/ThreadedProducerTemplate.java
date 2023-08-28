@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public abstract class ThreadedProducerTemplate extends RouteBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(ThreadedProducerTemplate.class);
 
-    private final int threadCount;
+    private final int producerThreadCount;
     private final int testSize;
     private final ExecutorService executorService;
     private final int targetRate;
@@ -27,11 +27,11 @@ public abstract class ThreadedProducerTemplate extends RouteBuilder {
     private final Sample sampleObject = new Sample();
 
 
-    public ThreadedProducerTemplate(int threadCount) {
-        this.threadCount = Parameters.threadCountProducer();
+    public ThreadedProducerTemplate(int producerThreadCount) {
+        this.producerThreadCount = Parameters.threadCountProducer();
         testSize = Parameters.duration() > 0 ? Parameters.duration() : Integer.MAX_VALUE;
 
-        executorService = Executors.newFixedThreadPool(threadCount);
+        executorService = Executors.newFixedThreadPool(producerThreadCount);
         targetRate = Parameters.targetRate() ;
     }
 
@@ -109,18 +109,18 @@ public abstract class ThreadedProducerTemplate extends RouteBuilder {
 
     protected void produce(Exchange exchange) {
         if (targetRate == 0) {
-            for (int i = 0; i < threadCount; i++) {
-                executorService.submit(() -> produceMessages(testSize / threadCount));
+            for (int i = 0; i < producerThreadCount; i++) {
+                executorService.submit(() -> produceMessages(testSize / producerThreadCount));
             }
         } else {
-            for (int i = 0; i < threadCount; i++) {
-                executorService.submit(() -> produceMessagesWithRate(testSize / threadCount));
+            for (int i = 0; i < producerThreadCount; i++) {
+                executorService.submit(() -> produceMessagesWithRate(testSize / producerThreadCount));
             }
         }
     }
 
-    public int getThreadCount() {
-        return threadCount;
+    public int getProducerThreadCount() {
+        return producerThreadCount;
     }
 
     public int getTestSize() {

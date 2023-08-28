@@ -30,7 +30,7 @@ public class SedaThreadedProducerTemplate extends ThreadedProducerTemplate {
 
     @Override
     public void configure() {
-        LOG.info("Using thread count for parallel production: {}", getThreadCount());
+        LOG.info("Using thread count for parallel production: {}", getProducerThreadCount());
 
         onException(IllegalStateException.class)
                 .process(e -> LOG.error("The SEDA queue is likely full and the system may be unable to catch to the load. Fix the test parameters"));
