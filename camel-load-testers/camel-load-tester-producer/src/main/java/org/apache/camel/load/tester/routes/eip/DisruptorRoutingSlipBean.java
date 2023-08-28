@@ -77,12 +77,6 @@ public class DisruptorRoutingSlipBean extends ThreadedProducerTemplate {
         from("timer:start?repeatCount=1&delay=2000")
                 .to("direct:start");
 
-        from("disruptor:slip-route-1")
-                .process(this::noopProcess);
-
-        from("disruptor:slip-route-2")
-                .process(this::noopProcess2);
-
         from("direct:start")
                 .process(this::produce);
 
@@ -91,6 +85,12 @@ public class DisruptorRoutingSlipBean extends ThreadedProducerTemplate {
 
         from("direct:start-2")
                 .bean(new MyDynamicRouterPojo("disruptor:slip-route-2"));
+
+        from("disruptor:slip-route-1")
+                .process(this::noopProcess);
+
+        from("disruptor:slip-route-2")
+                .process(this::noopProcess2);
     }
 
 
