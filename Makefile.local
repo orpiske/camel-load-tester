@@ -1,0 +1,25 @@
+TEST_USER_HOME=$(HOME)
+TOOLS_HOME:=$(TEST_USER_HOME)/tools
+TESTER_DIR=$(TOOLS_HOME)/camel-load-tester/
+MVN_PRG:=mvnd
+
+DATA_HOME:=$(TEST_USER_HOME)/data
+KAFKA_URI?=dione:9092
+
+CAMEL_VERSIONS?=3.18 3.20 3.21 4.0 4.1
+ANALYZER_VERSION=4.0
+
+.PHONY: all deploy install $(CAMEL_VERSIONS)
+
+dest-dir:
+	mkdir -p $(TOOLS_HOME)/camel-load-tester
+
+$(CAMEL_VERSIONS): dest-dir
+	$(MVN_PRG) -Pcamel-$@ clean package
+	cp camel-load-testers/camel-load-tester-producer/target/camel-load-tester-producer-$@*.jar $(TESTER_DIR)
+	cp camel-load-testers/camel-load-tester-consumer/target/camel-load-tester-consumer-$@*.jar $(TESTER_DIR)
+	[[ $@ == $(ANALYZER_VERSION) ]] && cp camel-load-testers/camel-load-tester-analyzer/target/camel-load-tester-analyzer-$@*.jar $(TESTER_DIR)/camel-load-tester-analyzer.jar || echo "Skipping analyzer for" $@
+
+
+deploy: $(CAMEL_VERSIONS)
+
