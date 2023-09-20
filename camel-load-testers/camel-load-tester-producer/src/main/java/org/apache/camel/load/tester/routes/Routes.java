@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.load.tester.routes.eip.AggregatorSimple;
 import org.apache.camel.load.tester.routes.eip.DisruptorCBR;
 import org.apache.camel.load.tester.routes.eip.DisruptorRoutingSlipBean;
 import org.apache.camel.load.tester.common.Parameters;
@@ -43,6 +44,7 @@ public final class Routes {
         routes.put("threaded-controlbus-producer", ControlBusThreadedProducerTemplate::new);
         routes.put("eip-cbr-text-route", DisruptorCBR::new);
         routes.put("eip-routing-slip-bean-disruptor", DisruptorRoutingSlipBean::new);
+        routes.put("eip-aggregator-simple-route", AggregatorSimple::new);
 
         return routes;
     }
@@ -63,6 +65,7 @@ public final class Routes {
         routes.put("threaded-controlbus-producer", null);
         routes.put("eip-cbr-text-route", null);
         routes.put("eip-routing-slip-bean-disruptor", null);
+        routes.put("eip-aggregator-simple-route", null);
 
         return routes;
     }
