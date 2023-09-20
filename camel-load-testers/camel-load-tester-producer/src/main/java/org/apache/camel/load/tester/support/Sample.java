@@ -10,4 +10,10 @@ public class Sample {
     public void setValue(String value) {
         this.value = value;
     }
+
+// This is cheating: makes a converter to be registered and things to run much faster ;)
+//    @Override
+//    public String toString() {
+//        return value;
+//    }
 }
