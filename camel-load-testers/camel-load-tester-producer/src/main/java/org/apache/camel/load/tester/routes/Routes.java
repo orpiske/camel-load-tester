@@ -9,6 +9,10 @@ import org.apache.camel.load.tester.routes.eip.AggregatorSimple;
 import org.apache.camel.load.tester.routes.eip.DisruptorCBR;
 import org.apache.camel.load.tester.routes.eip.DisruptorRoutingSlipBean;
 import org.apache.camel.load.tester.common.Parameters;
+import org.apache.camel.load.tester.routes.eip.FilterTextNegative;
+import org.apache.camel.load.tester.routes.eip.FilterTextPositive;
+import org.apache.camel.load.tester.routes.eip.FilterXpathNegative;
+import org.apache.camel.load.tester.routes.eip.FilterXpathPositive;
 import org.apache.camel.load.tester.routes.end.DirectEndRoute;
 import org.apache.camel.load.tester.routes.end.DisruptorEndRoute;
 import org.apache.camel.load.tester.routes.end.SedaEndRoute;
@@ -45,6 +49,10 @@ public final class Routes {
         routes.put("eip-cbr-text-route", DisruptorCBR::new);
         routes.put("eip-routing-slip-bean-disruptor", DisruptorRoutingSlipBean::new);
         routes.put("eip-aggregator-simple-route", AggregatorSimple::new);
+        routes.put("filter-xpath-positive", FilterXpathPositive::new);
+        routes.put("filter-xpath-negative", FilterXpathNegative::new);
+        routes.put("filter-text-positive", FilterTextPositive::new);
+        routes.put("filter-text-negative", FilterTextNegative::new);
 
         return routes;
     }
@@ -66,6 +74,10 @@ public final class Routes {
         routes.put("eip-cbr-text-route", null);
         routes.put("eip-routing-slip-bean-disruptor", null);
         routes.put("eip-aggregator-simple-route", null);
+        routes.put("filter-xpath-positive", null);
+        routes.put("filter-xpath-negative", null);
+        routes.put("filter-text-positive", null);
+        routes.put("filter-text-negative", null);
 
         return routes;
     }
