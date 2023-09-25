@@ -97,13 +97,15 @@ public final class Routes {
 
     public static RouteBuilder getEndRouteBuilder() {
         String routeType = System.getProperty(Parameters.TEST_PRODUCER_TYPE, "kafka");
-        LOG.info("Creating a new producer of type {}", routeType);
+
 
         Supplier<RouteBuilder> supplier = endRoutes.get(routeType);
         if (supplier != null) {
+            LOG.info("Creating a new end route of type {}", routeType);
             return supplier.get();
         }
 
+        LOG.info("No end route available for route type {}", routeType);
         return null;
     }
 }
