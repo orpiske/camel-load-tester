@@ -8,9 +8,7 @@ import java.nio.channels.FileChannel;
 import java.time.Instant;
 
 import org.apache.camel.load.tester.io.common.FileHeader;
-import org.apache.camel.load.tester.io.common.InvalidRecordException;
 import org.apache.camel.load.tester.io.common.RateEntry;
-import org.apache.camel.load.tester.io.common.RecordOverwriteException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,19 +63,23 @@ public class BinaryRateWriter implements RateWriter {
      * @param now timestamp of rate collection (as epoch seconds)
      * @throws IOException for multiple types of I/O errors
      */
-    public void write(int metadata, long count, long now) throws IOException {
+    public RecordState write(int metadata, long count, long now) throws IOException {
         checkBufferCapacity();
 
-        checkRecordTimeSlot(now);
+        final RecordState state = checkRecordTimeSlot(now);
 
-        byteBuffer.putInt(metadata);
-        byteBuffer.putLong(count);
-        byteBuffer.putLong(now);
-        last = now;
+        if (state == RecordState.CURRENT) {
+            byteBuffer.putInt(metadata);
+            byteBuffer.putLong(count);
+            byteBuffer.putLong(now);
+            last = now;
+        }
+
+        return state;
     }
 
-    public void write(int metadata, long count, Instant timestamp) throws IOException {
-        write(metadata, count, timestamp.getEpochSecond());
+    public RecordState write(int metadata, long count, Instant timestamp) throws IOException {
+        return write(metadata, count, timestamp.getEpochSecond());
     }
 
     private void checkBufferCapacity() throws IOException {
@@ -92,13 +94,13 @@ public class BinaryRateWriter implements RateWriter {
         }
     }
 
-    private void checkRecordTimeSlot(long now) {
+    private RecordState checkRecordTimeSlot(long now) {
         if (now <= last) {
             if (now < last) {
-                throw new InvalidRecordException(now, last, "Sequential record with a timestamp in the past");
+                return RecordState.OUTDATED;
             }
 
-            throw new RecordOverwriteException(now, last, "Multiple records for within the same second slot");
+            return RecordState.DUPLICATED;
         }
         else {
             long next = last + 1;
@@ -106,6 +108,8 @@ public class BinaryRateWriter implements RateWriter {
                 LOG.warn("Trying to save a non-sequential record: now {} / expected {}", now, next);
             }
         }
+
+        return RecordState.CURRENT;
     }
 
     /**
@@ -129,11 +133,12 @@ public class BinaryRateWriter implements RateWriter {
         }
     }
 
-    public void tryWrite(int metadata, long count, Instant instant) throws IOException {
+    public RecordState tryWrite(int metadata, long count, Instant instant) throws IOException {
         long timestamp = instant.getEpochSecond();
         if (timestamp > last) {
-            write(metadata, count, timestamp);
-
+            return write(metadata, count, timestamp);
         }
+
+        return RecordState.OUTDATED;
     }
 }

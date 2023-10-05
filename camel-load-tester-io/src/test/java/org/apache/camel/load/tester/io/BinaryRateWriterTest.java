@@ -16,10 +16,13 @@
 
 package org.apache.camel.load.tester.io;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.camel.load.tester.io.common.FileHeader;
-import org.apache.camel.load.tester.io.common.InvalidRecordException;
 import org.apache.camel.load.tester.io.common.RateEntry;
-import org.apache.camel.load.tester.io.common.RecordOverwriteException;
 import org.apache.camel.load.tester.io.common.Role;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
@@ -27,11 +30,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
-import java.io.File;
-import java.io.IOException;
-import java.time.Instant;
-import java.util.concurrent.TimeUnit;
 
 public class BinaryRateWriterTest {
     private File reportFile;
@@ -125,12 +123,10 @@ public class BinaryRateWriterTest {
 
             Assertions.assertDoesNotThrow(() -> binaryRateWriter.write(0, 1, now));
             // Should throw RecordOverwriteException if trying to save a record for the same timestamp
-            Assertions.assertThrows(RecordOverwriteException.class,
-                    () -> binaryRateWriter.write(0, 1, now));
+            Assertions.assertEquals(RecordState.DUPLICATED, binaryRateWriter.write(0, 1, now));
 
-            // Should throw InvalidRecordException if trying to save a record for the same timestamp
-            Assertions.assertThrows(InvalidRecordException.class,
-                    () -> binaryRateWriter.write(0, 1, now.minusSeconds(1)));
+            // Should throw InvalidRecordException if trying to save a record for an outdated timestamp
+            Assertions.assertEquals(RecordState.OUTDATED, binaryRateWriter.write(0, 1, now.minusSeconds(1)));
         }
         finally {
             clean();

@@ -5,9 +5,9 @@ import java.time.Instant;
 
 public interface RateWriter extends AutoCloseable {
 
-    void write(int metadata, long count, long timestamp) throws IOException;
+    RecordState write(int metadata, long count, long timestamp) throws IOException;
 
-    void write(int metadata, long count, Instant instant) throws IOException;
+    RecordState write(int metadata, long count, Instant instant) throws IOException;
 
-    void tryWrite(int metadata, long count, Instant instant) throws IOException;
+    RecordState tryWrite(int metadata, long count, Instant instant) throws IOException;
 }

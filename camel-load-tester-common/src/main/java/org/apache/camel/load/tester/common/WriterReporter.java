@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Consumer;
 
 import org.apache.camel.load.tester.io.RateWriter;
+import org.apache.camel.load.tester.io.RecordState;
 
 public class WriterReporter extends AbstractReporter {
 
@@ -22,8 +23,14 @@ public class WriterReporter extends AbstractReporter {
         long difference = measure(longAdder);
 
         try {
-            writer.write(0, difference, Instant.now());
-        } catch (Exception e) {
+            final Instant now = Instant.now();
+            RecordState state = writer.write(0, difference, now);
+            if (state == RecordState.OUTDATED) {
+                LOG.error("Sequential record with a timestamp in the past: {}", now);
+            } else if (state == RecordState.DUPLICATED) {
+                LOG.error("Multiple records for within the same second slot: {}", now);
+            }
+        } catch (IOException e) {
             LOG.error("Unable to update records: {}", e.getMessage());
         }
     }
