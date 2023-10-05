@@ -127,9 +127,7 @@ public class BinaryRateWriter implements RateWriter {
             flush();
             fileChannel.close();
         } catch (IOException e) {
-            Logger logger = LoggerFactory.getLogger(BinaryRateWriter.class);
-
-            logger.error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
         }
     }
 
