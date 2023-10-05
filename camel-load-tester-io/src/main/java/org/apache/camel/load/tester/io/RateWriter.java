@@ -1,11 +1,9 @@
 package org.apache.camel.load.tester.io;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 
 public interface RateWriter extends AutoCloseable {
-    File reportFile();
 
     void write(int metadata, long count, long timestamp) throws IOException;
 

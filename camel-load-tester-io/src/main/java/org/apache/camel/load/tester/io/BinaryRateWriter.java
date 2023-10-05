@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 public class BinaryRateWriter implements RateWriter {
     private static final Logger LOG = LoggerFactory.getLogger(BinaryRateWriter.class);
 
-    private final File reportFile;
     private final FileChannel fileChannel;
     private long last = 0;
 
@@ -31,8 +30,6 @@ public class BinaryRateWriter implements RateWriter {
      * @throws IOException in case of I/O errors
      */
     public BinaryRateWriter(final File reportFile, final FileHeader fileHeader) throws IOException {
-        this.reportFile = reportFile;
-
         fileChannel = new FileOutputStream(reportFile).getChannel();
 
         writeHeader(fileHeader);
@@ -60,11 +57,6 @@ public class BinaryRateWriter implements RateWriter {
         write();
     }
 
-
-    @Override
-    public File reportFile() {
-        return reportFile;
-    }
 
     /**
      * Writes a performance entry to the file
