@@ -51,7 +51,7 @@ public final class Counter {
     }
 
     public void setupLatencyRecorder() {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> saveLatencyFile()));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::saveLatencyFile));
     }
 
 
