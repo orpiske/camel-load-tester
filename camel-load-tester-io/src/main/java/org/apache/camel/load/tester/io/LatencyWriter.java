@@ -75,7 +75,7 @@ public final class LatencyWriter implements AutoCloseable {
         try {
             //to be sure everything has been correctly written (not necessary)
             this.out.flush();
-        } catch (Throwable e) {
+        } catch (Exception e) {
             LOG.error("Unable to flush records: {}", e.getMessage());
         } finally {
             this.logWriter.close();
