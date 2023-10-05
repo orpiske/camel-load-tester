@@ -6,7 +6,6 @@ import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.load.tester.common.Parameters;
 import org.apache.camel.load.tester.support.Sample;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.slf4j.Logger;
