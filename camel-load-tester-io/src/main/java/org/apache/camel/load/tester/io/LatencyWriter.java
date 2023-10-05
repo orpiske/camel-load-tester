@@ -23,6 +23,8 @@ import java.io.OutputStream;
 
 import org.HdrHistogram.EncodableHistogram;
 import org.HdrHistogram.HistogramLogWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Writes the latency data in the HdrHistogram data format.
@@ -30,6 +32,7 @@ import org.HdrHistogram.HistogramLogWriter;
  * @see <a href="https://github.com/HdrHistogram/HdrHistogram">HdrHistogram</a>
  */
 public final class LatencyWriter implements AutoCloseable {
+    private static final Logger LOG = LoggerFactory.getLogger(LatencyWriter.class);
 
     private final HistogramLogWriter logWriter;
     private final OutputStream out;
@@ -73,7 +76,7 @@ public final class LatencyWriter implements AutoCloseable {
             //to be sure everything has been correctly written (not necessary)
             this.out.flush();
         } catch (Throwable e) {
-            e.printStackTrace();
+            LOG.error("Unable to flush records: {}", e.getMessage());
         } finally {
             this.logWriter.close();
         }
