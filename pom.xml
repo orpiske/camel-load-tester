@@ -210,7 +210,7 @@
       </dependencies>
     </profile>
     <profile>
-      <id>camel-3.x</id>
+      <id>camel-3.22</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
