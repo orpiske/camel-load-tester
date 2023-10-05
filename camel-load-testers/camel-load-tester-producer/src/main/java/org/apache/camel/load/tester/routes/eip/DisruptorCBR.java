@@ -20,7 +20,7 @@ public class DisruptorCBR extends ThreadedProducerTemplate {
         super(Parameters.threadCountProducer());
 
         this.longAdder = Counter.getInstance().getAdder();
-        heterogeneousPayload = Boolean.valueOf(System.getProperty("eip.cbr.heterogeneousPayload", "true"));
+        heterogeneousPayload = Boolean.parseBoolean(System.getProperty("eip.cbr.heterogeneousPayload", "true"));
 
     }
 

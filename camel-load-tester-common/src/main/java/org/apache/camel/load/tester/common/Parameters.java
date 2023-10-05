@@ -59,6 +59,6 @@ public final class Parameters {
     }
 
     public static int targetRate() {
-        return Integer.valueOf(System.getProperty(Parameters.TEST_TARGET_RATE, "0"));
+        return Integer.parseInt(System.getProperty(Parameters.TEST_TARGET_RATE, "0"));
     }
 }
