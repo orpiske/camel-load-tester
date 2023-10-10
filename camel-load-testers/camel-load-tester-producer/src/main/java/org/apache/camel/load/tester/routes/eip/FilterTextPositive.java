@@ -25,6 +25,7 @@ public class FilterTextPositive extends ThreadedProducerTemplate {
         this.longAdder = Counter.getInstance().getAdder();
     }
 
+    @Override
     protected void produceMessages(int numMessages, ProducerTemplate producerTemplate, Endpoint endpoint) {
         LOG.info("Sending {} messages from {}", numMessages, Thread.currentThread().getId());
 

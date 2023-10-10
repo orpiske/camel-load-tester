@@ -25,6 +25,7 @@ public class FilterXpathNegative extends ThreadedProducerTemplate {
         this.threadCountConsumer = Parameters.threadCountConsumer();
     }
 
+    @Override
     protected void produceMessages(int numMessages, ProducerTemplate producerTemplate, Endpoint endpoint) {
         LOG.info("Sending {} messages from {}", numMessages, Thread.currentThread().getId());
 
