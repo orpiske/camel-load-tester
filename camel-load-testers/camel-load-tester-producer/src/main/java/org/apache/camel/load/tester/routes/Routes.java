@@ -9,6 +9,7 @@ import org.apache.camel.load.tester.routes.eip.AggregatorSimple;
 import org.apache.camel.load.tester.routes.eip.DisruptorCBR;
 import org.apache.camel.load.tester.routes.eip.DisruptorRoutingSlipBean;
 import org.apache.camel.load.tester.common.Parameters;
+import org.apache.camel.load.tester.routes.eip.FilterDataSonnetPositive;
 import org.apache.camel.load.tester.routes.eip.FilterTextNegative;
 import org.apache.camel.load.tester.routes.eip.FilterTextPositive;
 import org.apache.camel.load.tester.routes.eip.FilterXpathNegative;
@@ -53,6 +54,7 @@ public final class Routes {
         routes.put("filter-xpath-negative", FilterXpathNegative::new);
         routes.put("filter-text-positive", FilterTextPositive::new);
         routes.put("filter-text-negative", FilterTextNegative::new);
+        routes.put("filter-datasonnet-positive", FilterDataSonnetPositive::new);
 
         return routes;
     }
@@ -78,6 +80,7 @@ public final class Routes {
         routes.put("filter-xpath-negative", null);
         routes.put("filter-text-positive", null);
         routes.put("filter-text-negative", null);
+        routes.put("filter-datasonnect-positive", null);
 
         return routes;
     }
