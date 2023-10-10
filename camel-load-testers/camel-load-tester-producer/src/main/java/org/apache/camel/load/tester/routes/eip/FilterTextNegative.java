@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 public class FilterTextNegative extends ThreadedProducerTemplate {
     private static String DATA = "HELLO";
     private static final String HEADER = "filter";
-    private static final String POSITIVE = "positive";
     private static final String NEGATIVE = "negative";
 
     private static final Logger LOG = LoggerFactory.getLogger(FilterTextNegative.class);
