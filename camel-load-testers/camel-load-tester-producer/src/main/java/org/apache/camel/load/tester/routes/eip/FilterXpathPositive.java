@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 public class FilterXpathPositive extends ThreadedProducerTemplate {
     private static String JBOURNE_DATA = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><person user=\"jbourne\"><firstName>Jason</firstName><lastName>Bourne</lastName><city>London</city></person>";
 
-    private static final Logger LOG = LoggerFactory.getLogger(AggregatorSimple.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FilterXpathPositive.class);
     private final LongAdder longAdder;
     private final int threadCountConsumer;
 

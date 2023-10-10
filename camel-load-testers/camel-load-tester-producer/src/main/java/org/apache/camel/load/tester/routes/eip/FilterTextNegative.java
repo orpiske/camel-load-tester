@@ -17,7 +17,7 @@ public class FilterTextNegative extends ThreadedProducerTemplate {
     private static final String POSITIVE = "positive";
     private static final String NEGATIVE = "negative";
 
-    private static final Logger LOG = LoggerFactory.getLogger(AggregatorSimple.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FilterTextNegative.class);
     private final LongAdder longAdder;
 
     public FilterTextNegative() {
