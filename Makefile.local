@@ -16,8 +16,8 @@ dest-dir:
 
 $(CAMEL_VERSIONS): dest-dir
 	$(MVN_PRG) -Pcamel-$@ clean package
-	cp camel-load-testers/camel-load-tester-producer/target/camel-load-tester-producer-$@*.jar $(TESTER_DIR)
-	cp camel-load-testers/camel-load-tester-consumer/target/camel-load-tester-consumer-$@*.jar $(TESTER_DIR)
+	cp camel-load-testers/camel-load-tester-producer/target/camel-load-tester-producer-$@*.jar $(TESTER_DIR)/camel-load-tester-producer-$@.jar
+	cp camel-load-testers/camel-load-tester-consumer/target/camel-load-tester-consumer-$@*.jar $(TESTER_DIR)/camel-load-tester-consumer-$@.jar
 	[[ $@ == $(ANALYZER_VERSION) ]] && cp camel-load-testers/camel-load-tester-analyzer/target/camel-load-tester-analyzer-$@*.jar $(TESTER_DIR)/camel-load-tester-analyzer.jar || echo "Skipping analyzer for" $@
 
 

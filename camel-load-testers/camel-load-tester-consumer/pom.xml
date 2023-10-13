@@ -13,38 +13,23 @@
   <artifactId>camel-load-tester-consumer</artifactId>
   <packaging>jar</packaging>
 
+  <properties>
+    <clt.main.class>org.apache.camel.load.tester.MainConsumer</clt.main.class>
+  </properties>
+
   <name>Camel Load Tester :: Consumer</name>
 
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.4</version>
-        <executions>
-          <execution>
-            <id>share-consumer</id>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>org.apache.camel.load.tester.MainConsumer</mainClass>
-                  <manifestEntries>
-                    <Multi-Release>true</Multi-Release>
-                  </manifestEntries>
-                </transformer>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                  <resource>META-INF/services/org/apache/camel/TypeConverterLoader</resource>
-                </transformer>
-              </transformers>
-              <finalName>${project.artifactId}-${camel.version}</finalName>
-            </configuration>
-          </execution>
-        </executions>
+        <artifactId>maven-assembly-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
+
 </project>
