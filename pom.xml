@@ -275,7 +275,7 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
-        <camel.version>4.1.0-SNAPSHOT</camel.version>
+        <camel.version>4.1.0</camel.version>
         <log4j2-version>2.20.0</log4j2-version>
         <slf4j-version>2.0.7</slf4j-version>
       </properties>
