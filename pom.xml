@@ -295,6 +295,32 @@
         </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>camel-4.2</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <camel.version>4.2.0-SNAPSHOT</camel.version>
+        <log4j2-version>2.20.0</log4j2-version>
+        <slf4j-version>2.0.7</slf4j-version>
+      </properties>
+
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-slf4j2-impl</artifactId>
+          <scope>runtime</scope>
+          <version>${log4j2-version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-core</artifactId>
+          <scope>runtime</scope>
+          <version>${log4j2-version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 
   <modules>
