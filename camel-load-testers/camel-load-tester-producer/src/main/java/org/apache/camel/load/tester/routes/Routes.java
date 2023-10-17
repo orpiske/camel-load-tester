@@ -14,6 +14,7 @@ import org.apache.camel.load.tester.routes.eip.FilterTextNegative;
 import org.apache.camel.load.tester.routes.eip.FilterTextPositive;
 import org.apache.camel.load.tester.routes.eip.FilterXpathNegative;
 import org.apache.camel.load.tester.routes.eip.FilterXpathPositive;
+import org.apache.camel.load.tester.routes.eip.ToDHeaderTest;
 import org.apache.camel.load.tester.routes.end.DirectEndRoute;
 import org.apache.camel.load.tester.routes.end.DisruptorEndRoute;
 import org.apache.camel.load.tester.routes.end.SedaEndRoute;
@@ -42,6 +43,7 @@ public final class Routes {
         routes.put("dataset-noop-to-direct", DataSetNoopToDirect::new);
         routes.put("dataset-noop-to-seda", DataSetNoopToSeda::new);
         routes.put("dataset-threaded-processor", DataSetThreadedProcessor::new);
+        routes.put("dataset-noop-header-tod", ToDHeaderTest::new);
         routes.put("kafka", KafkaProducerRouteBuilder::new);
         routes.put("threaded-producer", SedaThreadedProducerTemplate::new);
         routes.put("threaded-seda-producer", SedaThreadedProducerTemplate::new);
@@ -68,6 +70,7 @@ public final class Routes {
         routes.put("dataset-noop-to-direct", DirectEndRoute::new);
         routes.put("dataset-noop-to-seda", SedaEndRoute::new);
         routes.put("dataset-threaded-processor", null);
+        routes.put("dataset-noop-header-tod", null);
         routes.put("kafka", null);
         routes.put("threaded-producer", SedaEndRoute::new);
         routes.put("threaded-seda-producer", SedaEndRoute::new);

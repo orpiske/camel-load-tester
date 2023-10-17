@@ -3,7 +3,6 @@ package org.apache.camel.load.tester;
 import java.io.File;
 
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.dataset.SimpleDataSet;
 import org.apache.camel.load.tester.common.IOUtil;
 import org.apache.camel.load.tester.common.Parameters;
 import org.apache.camel.load.tester.common.TestMainListener;
@@ -11,6 +10,7 @@ import org.apache.camel.load.tester.common.WriterReporter;
 import org.apache.camel.load.tester.io.BinaryRateWriter;
 import org.apache.camel.load.tester.io.RateWriter;
 import org.apache.camel.load.tester.io.common.FileHeader;
+import org.apache.camel.load.tester.routes.DataSetHelper;
 import org.apache.camel.load.tester.routes.Routes;
 import org.apache.camel.main.Main;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ public class MainProducer {
             testSize = Integer.MAX_VALUE - 1;
         }
 
-        bindDataSet(main, testSize);
+        DataSetHelper.bindDataSet(main, testSize);
 
         File testRateFile = IOUtil.create(testRateFileName);
 
@@ -64,16 +64,6 @@ public class MainProducer {
 
             System.exit(1);
         }
-    }
-
-    private static void bindDataSet(Main main, int testSize) {
-        SimpleDataSet simpleDataSet = new SimpleDataSet();
-
-        simpleDataSet.setDefaultBody(Boolean.TRUE);
-        simpleDataSet.setSize(testSize);
-        simpleDataSet.setDefaultBody("{\"value\":\"data\"}");
-
-        main.bind("testSet", simpleDataSet);
     }
 
     private static void forceExit(long messages) {
