@@ -73,9 +73,9 @@
     </dependencies>
 
     <modules>
-        <module>camel-load-tester-consumer</module>
         <module>camel-load-tester-producer</module>
         <module>camel-load-tester-analyzer</module>
+        <module>camel-load-tester-consumers</module>
     </modules>
 
     <profiles>

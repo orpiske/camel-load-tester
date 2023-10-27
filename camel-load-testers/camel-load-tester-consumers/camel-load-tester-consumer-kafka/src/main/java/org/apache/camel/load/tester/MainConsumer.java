@@ -31,7 +31,7 @@ public class MainConsumer {
         File reportFile = IOUtil.create(name);
 
         try (RateWriter rateWriter = new BinaryRateWriter(reportFile, FileHeader.WRITER_DEFAULT_CONSUMER)) {
-            main.configure().addRoutesBuilder(new TestConsumer(longAdder, topic));
+            main.configure().addRoutesBuilder(new KafkaConsumerRoute(longAdder, topic));
             WriterReporter writerReporter = new WriterReporter(rateWriter, testSize, main::stop, null);
 
             main.addMainListener(new TestMainListener(writerReporter));

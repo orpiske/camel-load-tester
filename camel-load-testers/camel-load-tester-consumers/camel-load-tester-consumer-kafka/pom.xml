@@ -6,18 +6,18 @@
 
   <parent>
     <groupId>org.apache.camel</groupId>
-    <artifactId>camel-load-testers</artifactId>
+    <artifactId>camel-load-tester-consumers</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>camel-load-tester-consumer</artifactId>
+  <artifactId>camel-load-tester-consumer-kafka</artifactId>
   <packaging>jar</packaging>
 
   <properties>
     <clt.main.class>org.apache.camel.load.tester.MainConsumer</clt.main.class>
   </properties>
 
-  <name>Camel Load Tester :: Consumer</name>
+  <name>Camel Load Tester :: Consumer :: Kafka</name>
 
   <build>
     <plugins>

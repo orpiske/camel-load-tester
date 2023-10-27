@@ -7,11 +7,11 @@ import org.apache.camel.builder.RouteBuilder;
 /**
  * A Camel Java DSL Router
  */
-public class TestConsumer extends RouteBuilder {
+public class KafkaConsumerRoute extends RouteBuilder {
     private final LongAdder longAdder;
     private final String topic;
 
-    public TestConsumer(LongAdder longAdder, String topic) {
+    public KafkaConsumerRoute(LongAdder longAdder, String topic) {
         this.longAdder = longAdder;
         this.topic = topic;
     }
