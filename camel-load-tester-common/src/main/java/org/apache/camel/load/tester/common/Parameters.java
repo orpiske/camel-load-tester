@@ -16,6 +16,8 @@ public final class Parameters {
     public static final String TEST_TARGET_RATE = "test.target.rate";
     public static final String TEST_ON_COMPLETE_ACTION = "test.on.complete.action";
 
+    public static final String HTTP_PORT_PARAMETER = "test.consumer.http.port";
+
     private Parameters() {
 
     }
@@ -60,5 +62,9 @@ public final class Parameters {
 
     public static int targetRate() {
         return Integer.parseInt(System.getProperty(Parameters.TEST_TARGET_RATE, "0"));
+    }
+
+    public static int httpPortConsumer() {
+        return Integer.parseInt(System.getProperty(HTTP_PORT_PARAMETER, "8080"));
     }
 }
