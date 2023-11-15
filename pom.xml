@@ -195,7 +195,7 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
-        <camel.version>3.21.1</camel.version>
+        <camel.version>3.21.2</camel.version>
         <log4j2-version>2.18.0</log4j2-version>
       </properties>
       <dependencies>
