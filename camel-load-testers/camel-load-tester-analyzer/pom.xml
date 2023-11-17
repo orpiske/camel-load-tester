@@ -37,6 +37,8 @@
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>${log4j2-version}</version>
         </dependency>
+
+
     </dependencies>
 
 
@@ -52,5 +54,33 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>camel-3.20</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                    <version>2.15.2</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>camel-3.21</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                    <version>2.15.2</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
 </project>
