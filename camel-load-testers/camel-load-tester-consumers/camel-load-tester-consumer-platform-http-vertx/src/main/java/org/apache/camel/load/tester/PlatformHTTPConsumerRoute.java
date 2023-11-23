@@ -1,5 +1,7 @@
 package org.apache.camel.load.tester;
 
+import java.util.concurrent.CountDownLatch;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.platform.http.vertx.VertxPlatformHttpServer;
@@ -14,8 +16,10 @@ import org.slf4j.LoggerFactory;
 public class PlatformHTTPConsumerRoute extends RouteBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(PlatformHTTPConsumerRoute.class);
     private final VertxPlatformHttpServer vertxPlatformHttpServer;
+    private final CountDownLatch latch;
 
-    public PlatformHTTPConsumerRoute() {
+    public PlatformHTTPConsumerRoute(CountDownLatch latch) {
+        this.latch = latch;
         final int port = Parameters.httpPortConsumer();
 
         VertxPlatformHttpServerConfiguration conf = new VertxPlatformHttpServerConfiguration();
@@ -26,29 +30,28 @@ public class PlatformHTTPConsumerRoute extends RouteBuilder {
 
     public void kill(Exchange exchange) {
         LOG.info("Killing the process");
-
-        try {
-            vertxPlatformHttpServer.shutdown();
-        } catch (Exception e) {
-            LOG.warn("Failed to stop the server during shutdown: {}", e.getMessage(), e);
-        }
-
-        System.exit(0);
+        latch.countDown();
     }
 
     /**
      * Let's configure the Camel routing rules using Java code...
      */
     public void configure() throws Exception {
-
         getCamelContext().addService(vertxPlatformHttpServer);
 
         from("platform-http:/hello")
             .transform(simple("Hello ${body}"));
 
+        from("platform-http:/version")
+                .transform(constant(getCamelContext().getVersion()));
+
         from("platform-http:/kill")
-                .transform(simple("Killing the service"))
+                .transform(constant("Killing the service"))
+                .to("seda:kill");
+
+        from("seda:kill")
                 .process(this::kill);
+
     }
 
 }
