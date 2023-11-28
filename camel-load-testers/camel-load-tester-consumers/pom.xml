@@ -32,6 +32,7 @@
     <modules>
         <module>camel-load-tester-consumer-kafka</module>
         <module>camel-load-tester-consumer-platform-http-vertx</module>
+        <module>camel-load-tester-consumer-netty-http</module>
     </modules>
 
 </project>
