@@ -370,7 +370,7 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
-        <camel.version>4.4.0-SNAPSHOT</camel.version>
+        <camel.version>4.4.2</camel.version>
         <log4j2-version>2.21.1</log4j2-version>
         <slf4j-version>2.0.9</slf4j-version>
       </properties>
