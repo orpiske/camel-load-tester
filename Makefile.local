@@ -17,7 +17,9 @@ dest-dir:
 $(CAMEL_VERSIONS): dest-dir
 	$(MVN_PRG) -Pcamel-$@ clean package
 	cp camel-load-testers/camel-load-tester-producer/target/camel-load-tester-producer-$@*.jar $(TESTER_DIR)
-	cp camel-load-testers/camel-load-tester-consumer/target/camel-load-tester-consumer-$@*.jar $(TESTER_DIR)
+	cp camel-load-testers/camel-load-tester-consumers/camel-load-tester-consumer-kafka/target/camel-load-tester-consumer-kafka-$@*.jar $(TESTER_DIR)
+	cp camel-load-testers/camel-load-tester-consumers/camel-load-tester-consumer-netty-http/target/camel-load-tester-consumer-netty-http-$@*.jar $(TESTER_DIR)
+	cp camel-load-testers/camel-load-tester-consumers/camel-load-tester-consumer-platform-http-vertx/target/camel-load-tester-consumer-platform-http-vertx-$@*.jar $(TESTER_DIR)
 	[[ $@ == $(ANALYZER_VERSION) ]] && cp camel-load-testers/camel-load-tester-analyzer/target/camel-load-tester-analyzer-$@*.jar $(TESTER_DIR)/camel-load-tester-analyzer.jar || echo "Skipping analyzer for" $@
 
 
